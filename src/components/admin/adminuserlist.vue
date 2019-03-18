@@ -9,8 +9,8 @@
                     <th width="150">用户类型</th>
                     <th width="100">注册电话</th>
                     <th width="150">注册邮箱</th>
-                    <th width="150">注册时间</th>
-                    <th width="150">上次登录</th>
+                    <th width="180">注册时间</th>
+                    <th width="180">上次登录</th>
                     <th width="100">操作</th>
                 </tr>
             </thead>
@@ -22,15 +22,16 @@
                     <td>{{user.isadmin=='0'?'普通用户':(user.isadmin=='1'?'普通管理员':'超级管理员')}}</td>
                     <td>{{user.user_tel}}</td>
                     <td>{{user.user_email}}</td>
-                    <td>{{user.created_time.substring(0,10)}}</td>
-                    <td>{{user.last_login_time}}</td>
-                    <td><button @click="deleteuser(user._id)">删除</button></td>
+                    <td>{{user.created_time|moment('YYYY-MM-DD HH:mm:ss')}}</td>
+                    <td>{{user.last_login_time|moment('YYYY-MM-DD HH:mm:ss')}}</td>
+                    <td><button @click="deleteuser(user.user_id)">删除</button></td>
                 </tr>
             </tbody>
         </table>
     </div>
 </template>
 <script>
+import axios from 'axios'
 import {mapActions,mapGetters} from 'vuex'
 export default {
     name:'userlist',
@@ -50,7 +51,21 @@ export default {
            
         },
         deleteuser(id){
-           
+           axios.post('http://localhost:3333/admin/deleteuser',{
+               user_id:id
+           }).then(
+               response=>{
+                   if(response.data.code==0){
+                       this.$store.dispatch('getUserlist')
+                       console.log(response.data.message)
+                   }else{
+                       console.log("删除失败");
+                   }
+               },
+               response=>{
+                   console.log("error:"+response)
+               }
+           )
         }
     },
 }

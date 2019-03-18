@@ -78,5 +78,20 @@ router.post('/getadmininfo', function(req, res, next) {
     })
 })
 
+//删除用户
+router.post('/deleteuser', function(req, res, next) {
+    var user_id = req.body.user_id;
+    var client = mysql_connect.connectServer();
+    var data = {
+        user_id: parseInt(user_id)
+    }
+    Admin.deleteuser(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '删除成功',
+        })
+    })
+})
+
 
 module.exports = router

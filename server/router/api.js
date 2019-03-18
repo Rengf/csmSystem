@@ -1,5 +1,10 @@
 var express = require('express');
 var router = express.Router();
+var multipart = require('connect-multiparty');
+var multipartMiddleware = multipart();
+var fs = require('fs');
+var path = require('path');
+
 var mysql_connect = require('../db/mysql_connect')
 var User = require('../db/user');
 
@@ -60,11 +65,14 @@ router.post('/user/login', function(req, res, next) {
     var username = userdata.username;
     var user_password = userdata.password;
     var captcha = userdata.captcha;
+    var date = new Date();
+    var login_time = date.Format("yyyy-MM-dd hh:mm:ss")
     if (username && user_password && captcha) {
         if (captcha === req.session.captcha) {
             var client = mysql_connect.connectServer();
             var data = {
                 user_name: username,
+                login_time: login_time
             }
             User.login(client, data, function(result) {
                 if (result[0]) {
@@ -77,10 +85,13 @@ router.post('/user/login', function(req, res, next) {
                             real_name: result[0].real_name,
                             isadmin: result[0].isadmin,
                         }
-                        res.json({
-                            code: 0,
-                            message: '登录成功',
-                            user: req.session.user
+                        data.user_id = result[0].user_id
+                        User.updatelogintime(client, data, function(result) {
+                            res.json({
+                                code: 0,
+                                message: '登录成功',
+                                user: req.session.user
+                            })
                         })
                     } else {
                         return res.json({
@@ -145,15 +156,17 @@ router.post('/user/regist', function(req, res, next) {
 router.post('/updatepassword', function(req, res, next) {
     var oldpassword = req.body.oldpassword;
     var user_password = req.body.user_password;
-    var user_id = req.body.user_id
+    var user_id = req.body.user_id;
+    var date = new Date();
+    var modified_time = date.Format("yyyy-MM-dd hh:mm:ss")
     if (user_id && user_password && oldpassword) {
         var client = mysql_connect.connectServer();
         var data = {
             user_id: user_id,
-            user_password: user_password
+            user_password: user_password,
+            modified_time: modified_time,
         }
         User.searchbyid(client, data, function(result) {
-            console.log(result)
             if (result[0]) {
                 if (result[0].user_password === oldpassword) {
                     User.updatepassword(client, data, function(result) {
@@ -196,6 +209,66 @@ router.get("/user/logout", function(req, res) {
             code: 1,
             message: "退出失败"
         })
+    }
+})
+
+
+//修改个人信息
+router.post('/updateuserinfo', multipartMiddleware, (req, res, next) => {
+    var userdata = req.body;
+    var date = new Date();
+    var modified_time = date.Format("yyyy-MM-dd hh:mm:ss");
+    var data = {
+        user_name: userdata.newuser_name,
+        user_email: userdata.newuser_email,
+        user_tel: userdata.newuser_tel,
+        real_name: userdata.newreal_name,
+        modified_time: modified_time,
+        user_avatar: '',
+        user_id: userdata.user_id
+    }
+    var myfile = req.files.files; //文件数据
+    var client = mysql_connect.connectServer();
+    if (myfile == undefined) {
+        data.user_avatar = userdata.files;
+        User.updateuserinfo(client, data, function(result) {
+            res.json({
+                code: 0,
+                message: "上传成功",
+                result: result
+            });
+        })
+    } else {
+        var filePath = '';
+        var originalFilename = '';
+        var imgpath = '';
+        if (myfile) {
+            filePath = myfile.path || '';
+            originalFilename = myfile.originalFilename;
+        }
+        if (originalFilename) {
+            var newfilename = originalFilename;
+            var newPath = path.join(__dirname, '../../', 'static/image/' + newfilename);
+            var newimgpath = '../../static/image/' + originalFilename;
+            data.user_avatar = newimgpath;
+            imgpath = newimgpath;
+            fs.writeFile(newPath, fs.readFileSync(filePath), function(err, result) {
+                if (err) {
+                    return res.json({
+                        code: 1,
+                        message: "上传失败",
+                    });
+                } else {
+                    User.updateuserinfo(client, data, function(result) {
+                        res.json({
+                            code: 0,
+                            message: "修改成功",
+                            result: result
+                        });
+                    })
+                }
+            })
+        }
     }
 })
 module.exports = router

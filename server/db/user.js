@@ -38,7 +38,7 @@ module.exports = {
     //修改个人信息
     updateuserinfo(client, data, callback) {
         var sql = `update user set 
-        user_name=?,user_email=?,user_tel=?,real_name=?,user_avatar=? 
+        user_name=?,user_email=?,user_tel=?,real_name=?,user_avatar=?,last_modified_time=?
         where user_id = ?`
         var params = [
             data.user_name,
@@ -46,6 +46,7 @@ module.exports = {
             data.user_tel,
             data.real_name,
             data.user_avatar,
+            data.modified_time,
             data.user_id,
         ];
         client.query(sql, params, (err, result) => {
@@ -55,6 +56,24 @@ module.exports = {
             callback(result);
         })
     },
+
+    //修改登录时间
+    updatelogintime(client, data, callback) {
+        var sql = `update user set 
+        last_login_time=?
+        where user_id = ?`
+        var params = [
+            data.login_time,
+            data.user_id,
+        ];
+        client.query(sql, params, (err, result) => {
+            if (err) {
+                throw err
+            }
+            callback(result);
+        })
+    },
+
 
     //按id查询
     searchbyid(client, data, callback) {
@@ -74,10 +93,11 @@ module.exports = {
     //修改密码
     updatepassword(client, data, callback) {
         var sql = `update user set 
-        user_password=?
+        user_password=?,last_modified_time=?
         where user_id = ?`
         var params = [
             data.user_password,
+            data.modified_time,
             data.user_id,
         ];
         client.query(sql, params, (err, result) => {

@@ -1,7 +1,7 @@
 <template>
     <div class="header">
         <div class="left_box box">
-            <span class="logo">商品销售后台管理系统</span>
+            <span class="logo">商品销售后台管理系统{{userinfo}}</span>
             <i class="edition">1.0</i>
         </div>
         <div class="right_box box">
@@ -19,12 +19,12 @@
             </div>
             <div class="admin_box">
                 <a @click="showAdmin">
-                    <img :src="user.user_avatar" alt="portrait" class="portrait">
+                    <img :src="userinfo.user_avatar" alt="portrait" class="portrait">
                     <span>欢迎您，普通管理员</span>
                     <i class="iconfont icon-ren" v-html=other>&#xe665;</i>
                 </a>
                 <ul class="admin_other" v-show="showadmin">
-                        <li>
+                        <li @click="close">
                             <router-link :to="{'path':'/admin/userinfo'}">
                                 <i class="iconfont icon-ren">&#xe72b;</i>
                                 <span>个人信息</span>
@@ -83,6 +83,7 @@
     </div>
 </template>
 <script>
+import {mapGetters} from 'vuex'
 export default {
     name:'AdminHeader',
     props:{
@@ -98,7 +99,10 @@ export default {
         }
     },
     created() {
-        
+        this.$store.dispatch('getUserInfo')
+    },
+    computed: {
+        ...mapGetters(['userinfo'])
     },
     methods: {
         showNews(){
@@ -118,6 +122,10 @@ export default {
             }else{
                 this.other='&#xe666'
             }
+        },
+        close(){
+             this.showadmin=false;
+            this.other='&#xe665'
         }
     },
 }

@@ -28,13 +28,14 @@
                     <td>{{user.last_modified_time|moment('YYYY-MM-DD HH:mm:ss')}}</td>
                     <td>{{user.statistics}}</td>
                     <td>{{user.last_login_time|moment('YYYY-MM-DD HH:mm:ss')}}</td>
-                    <td><button @click="deleteuser(user._id)">删除</button></td>
+                    <td><button @click="deleteuser(user.user_id)">删除</button></td>
                 </tr>
             </tbody>
         </table>
     </div>
 </template>
 <script>
+import axios from 'axios'
 import {mapActions,mapGetters} from 'vuex'
 export default {
     name:'userlist',
@@ -54,7 +55,21 @@ export default {
            
         },
         deleteuser(id){
-           
+            axios.post('http://localhost:3333/admin/deleteuser',{
+               user_id:id
+           }).then(
+               response=>{
+                   if(response.data.code==0){
+                       this.$store.dispatch('getAdminlist')
+                       console.log(response.data.message)
+                   }else{
+                       console.log("删除失败");
+                   }
+               },
+               response=>{
+                   console.log("error:"+response)
+               }
+           )
         }
     },
 }

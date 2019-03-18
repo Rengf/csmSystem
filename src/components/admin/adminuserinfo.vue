@@ -196,7 +196,7 @@ export default {
           formData.append('newreal_name',this.newreal_name);
           formData.append('newuser_tel',this.newuser_tel);
           formData.append('newuser_email',this.newuser_email);
-          axios.post("http://localhost:3333/main/updateuserinfo",formData).then(
+          axios.post("http://localhost:3333/api/updateuserinfo",formData).then(
               response=>{
                   if(response.data.code==0){
                       this.showtips=true;

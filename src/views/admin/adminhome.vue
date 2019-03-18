@@ -1,6 +1,6 @@
 <template>
     <div class="home">
-        <admin-header :user="user"></admin-header>
+        <admin-header></admin-header>
         <admin-menu></admin-menu>
         <router-view></router-view>
     </div>
@@ -12,12 +12,11 @@ export default {
     name:'AdminHome',
     data(){
         return {
-            user:{},
-            showbg:false
+            
         }
     },
     created() {
-        this.user=JSON.parse(localStorage.getItem('user'))
+        
     },
     methods: {
     },
