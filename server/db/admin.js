@@ -41,5 +41,20 @@ module.exports = {
             if (err) throw err
             callback(result)
         })
+    },
+
+    //设置管理员
+    editadmin(client, data, callback) {
+        var sql = `update user set
+        isadmin=?
+        where user_id=?`
+        var params = [
+            data.isadmin,
+            data.user_id
+        ];
+        client.query(sql, params, (err, result) => {
+            if (err) throw err
+            callback(result)
+        })
     }
 }

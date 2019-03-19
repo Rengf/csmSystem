@@ -1,10 +1,11 @@
 <template>
     <div class="adminlist">
+        <div class="userlistbox">
         <table>
             <thead>
                 <tr>
                     <th width="30">#</th>
-                    <th width="100">用户名</th>
+                    <th width="120">用户名</th>
                     <th width="100">真实姓名</th>
                     <th width="150">用户类型</th>
                     <th width="100">注册电话</th>
@@ -19,19 +20,20 @@
             <tbody>
                 <tr v-for="(user,index) in adminlist" :key="index">
                     <td>{{index+1}}</td>
-                    <td>{{user.user_name}}</td>
+                    <td><router-link :to="{path:'/admin/userinfo?user_id='+user.user_id}">{{user.user_name}}</router-link></td>
                     <td>{{user.real_name==null?'未实名':user.real_name}}</td>
                     <td>{{user.isadmin=='1'?'普通管理员':'超级管理员'}}</td>
                     <td>{{user.user_tel}}</td>
                     <td>{{user.user_email}}</td>
-                    <td>{{user.created_time|moment('YYYY-MM-DD HH:mm:ss')}}</td>
-                    <td>{{user.last_modified_time|moment('YYYY-MM-DD HH:mm:ss')}}</td>
+                    <td>{{user.created_time|dateformat('YYYY-MM-DD HH:mm:ss')}}</td>
+                    <td>{{user.last_modified_time|dateformat('YYYY-MM-DD HH:mm:ss')}}</td>
                     <td>{{user.statistics}}</td>
-                    <td>{{user.last_login_time|moment('YYYY-MM-DD HH:mm:ss')}}</td>
+                    <td>{{user.last_login_time|dateformat('YYYY-MM-DD HH:mm:ss')}}</td>
                     <td><button @click="deleteuser(user.user_id)">删除</button></td>
                 </tr>
             </tbody>
         </table>
+        </div>
     </div>
 </template>
 <script>
@@ -77,12 +79,15 @@ export default {
 <style scoped>
 .adminlist{
     box-sizing: border-box;
-    border: 1px solid #ddd;
     position: relative;
     left: 11%;
     width: 89%;
     background: #fff;
     padding: 10px 10px;
+}
+.userlistbox{
+    padding: 20px;
+    border: 1px solid #ccc;
 }
 .adminlist table{
     display: block;

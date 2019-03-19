@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var mysql_connect = require('../db/mysql_connect')
 var Admin = require('../db/admin');
+var Goods = require('../db/goods');
 
 Date.prototype.Format = function(fmt) {
     var o = {
@@ -93,5 +94,67 @@ router.post('/deleteuser', function(req, res, next) {
     })
 })
 
+//设置管理员
+router.post('/editadmin', function(req, res, next) {
+    var user_id = req.body.user_id;
+    var isadmin = req.body.isadmin;
+    var client = mysql_connect.connectServer();
+    var data = {
+        user_id: parseInt(user_id),
+        isadmin: parseInt(isadmin)
+    }
+    Admin.editadmin(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '设置成功',
+        })
+    })
+})
+
+
+//添加商品分类
+router.post('/addcategory', function(req, res, next) {
+    var goods_type_name = req.body.goods_type_name;
+    var date = new Date();
+    var created_time = date.Format("yyyy-MM-dd HH:mm:ss")
+    var client = mysql_connect.connectServer();
+    var data = {
+        goods_type_name: goods_type_name,
+        created_time: created_time
+    }
+    Goods.addcategory(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '添加成功',
+        })
+    })
+})
+
+//获取分类列表
+router.get('/getcategorylist', function(req, res, next) {
+    var client = mysql_connect.connectServer();
+    Goods.getcategorylist(client, function(result) {
+        res.json({
+            code: 0,
+            message: '查询成功',
+            categorylist: result
+        })
+    })
+})
+
+//删除分类
+router.post('/deletecategory', function(req, res, next) {
+    var goods_type_id = req.body.goods_type_id;
+    var data = {
+        goods_type_id: goods_type_id
+    }
+    var client = mysql_connect.connectServer();
+    Goods.deletecategory(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '删除成功',
+        })
+    })
+})
 
 module.exports = router

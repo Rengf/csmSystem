@@ -5,12 +5,18 @@ import App from './App'
 import router from './router'
 import axios from 'axios'
 import store from './store'
+import moment from 'moment'
 
 axios.defaults.withCredentials = true
 Vue.prototype.$http = axios
 
 Vue.config.productionTip = false
-Vue.use(require('vue-moment'));
+
+
+Vue.filter('dateformat', function(dataStr, pattern = 'YYYY-MM-DD HH:mm:ss') {  
+    return moment(dataStr).format(pattern)
+
+})
 
 /* eslint-disable no-new */
 new Vue({

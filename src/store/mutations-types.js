@@ -14,3 +14,5 @@ export const RECEIVE_CAPTCHA = 'receive_captcha' //验证码
 
 
 export const RECEIVE_ADMININFO = 'receive_admininfo' //管理员信息
+
+export const RECEIVE_CATEGORY_LIST = 'receive_category_list' //管理员信息

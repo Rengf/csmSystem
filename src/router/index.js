@@ -8,6 +8,8 @@ import AdminHome from '@/views/admin/adminhome'
 import UserList from '@/components/admin/adminuserlist'
 import AdminList from '@/components/admin/adminadminlist'
 import UserInfo from '@/components/admin/adminuserinfo'
+import EditAdmin from '@/components/admin/admineditadmin'
+import AddCategory from '@/components/admin/addgoodscategory'
 
 Vue.use(Router)
 
@@ -40,6 +42,14 @@ export default new Router({
             path: '/admin/userinfo',
             name: 'UserInfo',
             component: UserInfo,
+        }, {
+            path: '/admin/editadmin',
+            name: 'EditAdmin',
+            component: EditAdmin,
+        }, {
+            path: '/admin/addcategory',
+            name: 'AddCategory',
+            component: AddCategory,
         }]
     }]
 })

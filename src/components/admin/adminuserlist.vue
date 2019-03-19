@@ -17,13 +17,13 @@
             <tbody>
                 <tr v-for="(user,index) in userlist" :key="index">
                     <td>{{index+1}}</td>
-                    <td>{{user.user_name}}</td>
+                    <td><router-link :to="{path:'/admin/userinfo?user_id='+user.user_id}">{{user.user_name}}</router-link></td>
                     <td>{{user.real_name==null?'未实名':user.real_name}}</td>
                     <td>{{user.isadmin=='0'?'普通用户':(user.isadmin=='1'?'普通管理员':'超级管理员')}}</td>
                     <td>{{user.user_tel}}</td>
                     <td>{{user.user_email}}</td>
-                    <td>{{user.created_time|moment('YYYY-MM-DD HH:mm:ss')}}</td>
-                    <td>{{user.last_login_time|moment('YYYY-MM-DD HH:mm:ss')}}</td>
+                    <td>{{user.created_time|dateformat('YYYY-MM-DD HH:mm:ss')}}</td>
+                    <td>{{user.last_login_time|dateformat('YYYY-MM-DD HH:mm:ss')}}</td>
                     <td><button @click="deleteuser(user.user_id)">删除</button></td>
                 </tr>
             </tbody>

@@ -285,7 +285,7 @@ export default {
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 2px;
-    z-index: 999;
+    z-index: 999999;
 }
 .admin_other li a{
     line-height: 33px;

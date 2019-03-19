@@ -27,3 +27,6 @@ export const reqAdminList = () => ajax(BASE_URL + ADMIN_API + '/getadminlist', {
 
 //按id获取个人全部列表
 export const reqAdminInfo = (id) => ajax(BASE_URL + ADMIN_API + '/getadmininfo', { id }, 'POST')
+
+//获取分类列表
+export const reqCategoryList = () => ajax(BASE_URL + ADMIN_API + '/getcategorylist', {}, 'GET')

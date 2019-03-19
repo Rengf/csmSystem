@@ -5,8 +5,19 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
 export default {
-  name: 'App'
+  name: 'App',
+  created() {
+     this.$store.dispatch('getUserInfo');
+        window.mirrorCommandQueue = {
+          system: 'aaaa',
+          user: localStorage.getItem("username")||''
+      }
+    },
+    computed: {
+      ...mapGetters(['userinfo'])
+    },
 }
 </script>
 

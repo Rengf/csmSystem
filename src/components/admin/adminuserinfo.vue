@@ -51,7 +51,7 @@
        <div class="editpwd" v-if="showpwd">
            <div class="editpwdheader">
                <span>修改密码</span>
-               <span class="close" @click="close">C</span>
+               <i  @click="close" class="iconfont close">&#xe711;</i>
            </div>
            <div class="editpwdbody">
                <ul>
@@ -223,6 +223,13 @@ export default {
 }
 </script>
 <style scoped>
+ .iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 .infoModify{
     position: relative;
     left: 11%;
@@ -346,8 +353,8 @@ export default {
 }
 .close{
     position: relative;
-    font-size: 20px;
-    left: 170px;
+    font-size: 16px;
+    left: 192px;
 }
 .close:hover{
     cursor: pointer;
