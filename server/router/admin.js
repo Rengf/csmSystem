@@ -1,5 +1,10 @@
 var express = require('express');
 var router = express.Router();
+var multipart = require('connect-multiparty');
+var multipartMiddleware = multipart();
+var fs = require('fs');
+var path = require('path');
+
 var mysql_connect = require('../db/mysql_connect')
 var Admin = require('../db/admin');
 var Goods = require('../db/goods');
@@ -157,4 +162,78 @@ router.post('/deletecategory', function(req, res, next) {
     })
 })
 
+//添加商品
+router.post('/addgoods', multipartMiddleware, function(req, res, next) {
+    var myfile = req.files.files;
+    var goodsdata = req.body;
+    var client = mysql_connect.connectServer();
+    var date = new Date();
+    var created_time = date.Format("yyyy-MM-dd HH:mm:ss")
+    var data = {
+        goods_name: goodsdata.goods_name,
+        goods_price: goodsdata.goods_price,
+        goods_type_id: parseInt(goodsdata.goods_type_id),
+        goods_description: goodsdata.goods_description,
+        created_time: created_time,
+        stock: goodsdata.stock
+    }
+    var filePath = '';
+    var originalFilename = '';
+    var imgpath = '';
+    if (myfile) {
+        filePath = myfile.path || '';
+        originalFilename = myfile.originalFilename;
+    }
+    if (originalFilename) {
+        var newfilename = originalFilename;
+        var newPath = path.join(__dirname, '../../', 'static/image/' + newfilename);
+        var newimgpath = '../../static/image/' + originalFilename;
+        data.goods_picture = newimgpath;
+        imgpath = newimgpath;
+        fs.writeFile(newPath, fs.readFileSync(filePath), function(err, result) {
+            if (err) {
+                return res.json({
+                    code: 1,
+                    message: "上传失败",
+                });
+            } else {
+                Goods.addgoods(client, data, function(result) {
+                    res.json({
+                        code: 0,
+                        message: "添加成功",
+                        result: result
+                    });
+                })
+            }
+        })
+    }
+})
+
+
+//获取商品列表
+router.get('/getgoodslist', function(req, res, next) {
+    var client = mysql_connect.connectServer();
+    Goods.getgoodslist(client, function(result) {
+        res.json({
+            code: 0,
+            message: '查询成功',
+            goodslist: result
+        })
+    })
+})
+
+//删除商品
+router.post('/deletegoods', function(req, res, next) {
+    var goods_id = req.body.goods_id;
+    var data = {
+        goods_id: goods_id
+    }
+    var client = mysql_connect.connectServer();
+    Goods.deletegoods(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '删除成功',
+        })
+    })
+})
 module.exports = router

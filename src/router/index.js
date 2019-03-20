@@ -10,6 +10,7 @@ import AdminList from '@/components/admin/adminadminlist'
 import UserInfo from '@/components/admin/adminuserinfo'
 import EditAdmin from '@/components/admin/admineditadmin'
 import AddCategory from '@/components/admin/addgoodscategory'
+import AddGoods from '@/components/admin/addgoods'
 
 Vue.use(Router)
 
@@ -50,6 +51,10 @@ export default new Router({
             path: '/admin/addcategory',
             name: 'AddCategory',
             component: AddCategory,
+        }, {
+            path: '/admin/addgoods',
+            name: 'AddGoods',
+            component: AddGoods,
         }]
     }]
 })

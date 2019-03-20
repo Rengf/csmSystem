@@ -30,3 +30,6 @@ export const reqAdminInfo = (id) => ajax(BASE_URL + ADMIN_API + '/getadmininfo',
 
 //获取分类列表
 export const reqCategoryList = () => ajax(BASE_URL + ADMIN_API + '/getcategorylist', {}, 'GET')
+
+//获取商品列表
+export const reqGoodsList = () => ajax(BASE_URL + ADMIN_API + '/getgoodslist', {}, 'GET')

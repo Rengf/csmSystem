@@ -20,7 +20,7 @@
                         <tr v-for="(category,index) in categorylist" :key="index">
                             <td>{{index+1}}</td>
                             <td>{{category.goods_type_name}}</td>
-                            <td>{{category.created_time}}</td>
+                            <td>{{category.created_time|dateformat('YYYY-MM-DD HH:mm:ss')}}</td>
                             <td>{{category.goods_type_count}}</td>
                             <td><button @click="deletecategory(category.goods_type_id)">删除</button><button>修改</button></td>
                         </tr>
