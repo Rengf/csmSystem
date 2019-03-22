@@ -1,16 +1,22 @@
 import {
     RECEIVE_CATEGORY_LIST,
     RECEIVE_GOODS_LIST,
+    RECEIVE_SUPPLIER_LIST,
+    RECEIVE_WAREHOUSING_LIST,
 } from './../mutations-types'
 
 import {
     reqCategoryList,
     reqGoodsList,
+    reqSupplierList,
+    reqWarehousingList
 } from './../../api/index'
 
 const state = {
     categorylist: {},
-    goodslist: {}
+    goodslist: {},
+    supplierlist: {},
+    warehousinglist: {}
 }
 
 const getters = {
@@ -19,6 +25,12 @@ const getters = {
     },
     goodslist(state) {
         return state.goodslist
+    },
+    supplierlist(state) {
+        return state.supplierlist
+    },
+    warehousinglist(state) {
+        return state.warehousinglist
     },
 }
 const actions = {
@@ -36,6 +48,20 @@ const actions = {
             commit(RECEIVE_GOODS_LIST, goodslist)
         }
     },
+    async getSupplierList({ commit }) {
+        const result = await reqSupplierList()
+        if (result.code == 0) {
+            const supplierlist = result.supplierlist;
+            commit(RECEIVE_SUPPLIER_LIST, supplierlist)
+        }
+    },
+    async getWarehousingList({ commit }) {
+        const result = await reqWarehousingList()
+        if (result.code == 0) {
+            const warehousinglist = result.warehousinglist;
+            commit(RECEIVE_WAREHOUSING_LIST, warehousinglist)
+        }
+    },
 }
 const mutations = {
     [RECEIVE_CATEGORY_LIST](state, categorylist) {
@@ -43,6 +69,12 @@ const mutations = {
     },
     [RECEIVE_GOODS_LIST](state, goodslist) {
         state.goodslist = goodslist;
+    },
+    [RECEIVE_SUPPLIER_LIST](state, supplierlist) {
+        state.supplierlist = supplierlist;
+    },
+    [RECEIVE_WAREHOUSING_LIST](state, warehousinglist) {
+        state.warehousinglist = warehousinglist;
     },
 }
 export default {

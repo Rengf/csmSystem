@@ -78,4 +78,92 @@ module.exports = {
             callback(result)
         })
     },
+
+    //添加供应商
+    addsupplier(client, data, callback) {
+        var sql = `insert into supplier
+        (supplier_name,supplier_contact,supplier_address,supplier_postcode,supplier_tel,supplier_email,supplier_bank,supplier_account)
+        values(?,?,?,?,?,?,?,?);`
+        var params = [
+            data.supplier_name,
+            data.supplier_contact,
+            data.supplier_address,
+            data.supplier_postcode,
+            data.supplier_tel,
+            data.supplier_email,
+            data.supplier_bank,
+            data.supplier_account
+        ];
+        client.query(sql, params, (err, result) => {
+            if (err) throw err
+            callback(result);
+        })
+    },
+
+    //获取供应商列表
+    getsupplierlist(client, callback) {
+        var sql = `select * from supplier`;
+        client.query(sql, (err, result) => {
+            if (err) throw err
+            callback(result);
+        })
+    },
+
+    //删除供应商
+    deletesupplier(client, data, callback) {
+        var sql = `delete from supplier
+        where supplier_id=?`
+        var params = [
+            data.supplier_id
+        ];
+        client.query(sql, params, (err, result) => {
+            if (err) throw err
+            callback(result)
+        })
+    },
+
+    //添加进货单
+    addwarehousing(client, data, callback) {
+        var sql = `insert into warehousing
+        ( warehousing_order_id,warehousing_time, goods_id,warehousing_count,total_price,warehousing_staff,supplier)
+        values(?,?,?,?,?,?,?);`
+        var params = [
+            data.warehousing_order_id,
+            data.warehousing_time,
+            data.goods_id,
+            data.warehousing_count,
+            data.total_price,
+            data.warehousing_staff,
+            data.supplier,
+        ];
+        client.query(sql, params, (err, result) => {
+            if (err) throw err
+            callback(result);
+        })
+    },
+
+    //获取进货单
+    getwarehousinglist(client, callback) {
+        var sql = `select * from warehousing 
+        inner join goods on warehousing.goods_id=goods.goods_id
+        inner join supplier on warehousing.supplier=supplier.supplier_id`
+        client.query(sql, (err, result) => {
+            if (err) throw err
+            callback(result);
+        })
+    },
+
+    //删除进货单
+    deletewarehousing(client, data, callback) {
+        var sql = `delete from warehousing
+        where warehousing_id=?`
+        var params = [
+            data.warehousing_id
+        ];
+        client.query(sql, params, (err, result) => {
+            if (err) throw err
+            callback(result)
+        })
+    },
+
 }

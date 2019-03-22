@@ -11,6 +11,8 @@ import UserInfo from '@/components/admin/adminuserinfo'
 import EditAdmin from '@/components/admin/admineditadmin'
 import AddCategory from '@/components/admin/addgoodscategory'
 import AddGoods from '@/components/admin/addgoods'
+import WareHousing from '@/components/admin/warehousing'
+import AddSupplier from '@/components/admin/supplier'
 
 Vue.use(Router)
 
@@ -55,6 +57,14 @@ export default new Router({
             path: '/admin/addgoods',
             name: 'AddGoods',
             component: AddGoods,
+        }, {
+            path: '/admin/warehousing',
+            name: 'WareHousing',
+            component: WareHousing,
+        }, {
+            path: '/admin/addsupplier',
+            name: 'AddSupplier',
+            component: AddSupplier,
         }]
     }]
 })

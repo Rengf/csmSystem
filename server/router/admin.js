@@ -236,4 +236,84 @@ router.post('/deletegoods', function(req, res, next) {
         })
     })
 })
+
+//添加供货商
+router.post('/addsupplier', function(req, res, next) {
+    var supplierdata = req.body;
+    var client = mysql_connect.connectServer();
+    var data = supplierdata;
+    Goods.addsupplier(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '添加成功',
+        })
+    })
+})
+
+//获取供应商列表
+router.get('/getsupplierlist', function(req, res, next) {
+    var client = mysql_connect.connectServer();
+    Goods.getsupplierlist(client, function(result) {
+        res.json({
+            code: 0,
+            message: '查询成功',
+            supplierlist: result
+        })
+    })
+})
+
+//删除供应商
+router.post('/deletesupplier', function(req, res, next) {
+    var supplier_id = req.body.supplier_id;
+    var data = {
+        supplier_id: supplier_id
+    }
+    var client = mysql_connect.connectServer();
+    Goods.deletesupplier(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '删除成功',
+        })
+    })
+})
+
+//添加进货
+router.post('/addwarehousing', function(req, res, next) {
+    var warehousingdata = req.body;
+    var client = mysql_connect.connectServer();
+    var data = warehousingdata;
+    Goods.addwarehousing(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '添加成功',
+        })
+    })
+})
+
+//获取供应商列表
+router.get('/getwarehousinglist', function(req, res, next) {
+    var client = mysql_connect.connectServer();
+    Goods.getwarehousinglist(client, function(result) {
+        res.json({
+            code: 0,
+            message: '查询成功',
+            warehousinglist: result
+        })
+    })
+})
+
+//删除进货单
+router.post('/deletewarehousing', function(req, res, next) {
+    var warehousing_id = req.body.warehousing_id;
+    var data = {
+        warehousing_id: warehousing_id
+    }
+    var client = mysql_connect.connectServer();
+    Goods.deletewarehousing(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '删除成功',
+        })
+    })
+})
 module.exports = router

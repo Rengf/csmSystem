@@ -33,3 +33,9 @@ export const reqCategoryList = () => ajax(BASE_URL + ADMIN_API + '/getcategoryli
 
 //获取商品列表
 export const reqGoodsList = () => ajax(BASE_URL + ADMIN_API + '/getgoodslist', {}, 'GET')
+
+//获取供应商列表
+export const reqSupplierList = () => ajax(BASE_URL + ADMIN_API + '/getsupplierlist', {}, 'GET')
+
+//获取进货单列表
+export const reqWarehousingList = () => ajax(BASE_URL + ADMIN_API + '/getwarehousinglist', {}, 'GET')
