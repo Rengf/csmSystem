@@ -13,7 +13,8 @@
                     </li>
                     <li>
                         <label for="supplieraddress">商家地址：</label>
-                        <input type="text" name="supplieraddress" placeholder="商家地址" v-model="supplier_address">
+                         <v-distpicker :placeholders="placeholders" @selected="onSelected"></v-distpicker>
+                         <input type="text" name="supplieraddress" placeholder="请输入详细地址" v-model="supplier_address">
                     </li>
                     <li>
                         <label for="postcode">邮政编码：</label>
@@ -29,7 +30,7 @@
                     </li>
                     <li>
                         <label for="bank">商家开户行：</label>
-                        <select name="bank" v-model="selected">
+                        <select name="bank" v-model="bank">
                             <option value="请选择开户行" disabled selected="selected">请选择开户行</option>
                             <option value="建设银行" >建设银行</option>
                             <option value="中国邮政存储银行" >中国邮政存储银行</option>
@@ -53,11 +54,11 @@
                             <th width="30">#</th>
                             <th width="100">供应商家名</th>
                             <th width="70">联系人</th>
-                            <th width="300">商家地址</th>
+                            <th width="350">商家地址</th>
                             <th width="50">邮编</th>
                             <th width="80">商家电话</th>
                             <th width="150">商家邮箱</th>
-                            <th width="80">商家银行</th>
+                            <th width="100">商家银行</th>
                             <th width="200">银行账户</th>
                             <th width="200">操作</th>
                         </tr>
@@ -83,6 +84,7 @@
     </div>
 </template>
 <script>
+import VDistpicker from 'v-distpicker'
 import Tips from "@/components/Communal/tips"
 import axios from "axios";
 import {mapGetters} from "vuex"
@@ -96,9 +98,15 @@ export default {
             supplier_tel:'',
             supplier_email:'',
             supplier_account:'',
-            selected:'请选择开户行',
+            bank:'请选择开户行',
             showtips:false,
-            tips:''
+            tips:'',
+            address:'',
+             placeholders: {
+              province: '------- 省 --------',
+              city: '--- 市 ---',
+              area: '--- 区 ---',
+          }
         }
     },
     created() {
@@ -108,20 +116,23 @@ export default {
         ...mapGetters(['supplierlist'])
     },
     methods:{
+        onSelected(data){
+            this.address=data.province.value + data.city.value + data.area.value
+        },
         addsupplier(){
            var data={
             supplier_name:this.supplier_name,
             supplier_contact:this.supplier_contact,
-            supplier_address:this.supplier_address,
+            supplier_address:this.address+this.supplier_address,
             supplier_postcode:this.supplier_postcode,
             supplier_tel:this.supplier_tel,
             supplier_email:this.supplier_email,
-            supplier_bank:this.selected,
+            supplier_bank:this.bank,
             supplier_account:this.supplier_account,
            }
             axios.post('http://localhost:3333/admin/addsupplier',data).then(response=>{
                 if(response.data.code==0){
-                     this.$store.dispatch('getSupplierList');
+                    this.$store.dispatch('getSupplierList');
                     this.tips=response.data.message;
                     this.showtips=true;
                     setTimeout(() => {
@@ -158,7 +169,8 @@ export default {
         }
     },
     components:{
-        Tips
+        Tips,
+        VDistpicker
     }
 }
 </script>
@@ -182,7 +194,6 @@ export default {
 
 .supplierlist table{
     display: block;
-    margin-left: 50px;
 }
 
 

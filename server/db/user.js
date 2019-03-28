@@ -17,7 +17,7 @@ module.exports = {
     //注册
     regist(client, data, callback) {
         var sql = `insert into user
-        (isadmin,user_password,user_name,user_tel,user_email,user_avatar,created_time)
+        (isadmin,user_password,user_name,user_tel,user_email,user_avatar,regist_time)
         values(?,?,?,?,?,?,?);`
         var params = [
             data.isadmin,
@@ -26,7 +26,7 @@ module.exports = {
             data.user_tel,
             data.user_email,
             data.user_avatar,
-            data.created_time
+            data.regist_time
         ];
 
         client.query(sql, params, (err, result) => {
@@ -106,5 +106,21 @@ module.exports = {
             }
             callback(result);
         })
+    },
+
+    //按id查询
+    getaddress(client, data, callback) {
+        var sql = `select *
+                from address
+                inner join user on address.user_id=user.user_id
+                where address.user_id= ?`;
+        var params = [
+            data.user_id,
+        ];
+        client.query(sql, params, (err, result) => {
+            if (err) throw err
+            callback(result);
+        })
+
     },
 }

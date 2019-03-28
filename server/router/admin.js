@@ -121,11 +121,11 @@ router.post('/editadmin', function(req, res, next) {
 router.post('/addcategory', function(req, res, next) {
     var goods_type_name = req.body.goods_type_name;
     var date = new Date();
-    var created_time = date.Format("yyyy-MM-dd HH:mm:ss")
+    var addgoodstype_time = date.Format("yyyy-MM-dd HH:mm:ss")
     var client = mysql_connect.connectServer();
     var data = {
         goods_type_name: goods_type_name,
-        created_time: created_time
+        addgoodstype_time: addgoodstype_time
     }
     Goods.addcategory(client, data, function(result) {
         res.json({
@@ -168,13 +168,13 @@ router.post('/addgoods', multipartMiddleware, function(req, res, next) {
     var goodsdata = req.body;
     var client = mysql_connect.connectServer();
     var date = new Date();
-    var created_time = date.Format("yyyy-MM-dd HH:mm:ss")
+    var addgoods_time = date.Format("yyyy-MM-dd HH:mm:ss")
     var data = {
         goods_name: goodsdata.goods_name,
         goods_price: goodsdata.goods_price,
         goods_type_id: parseInt(goodsdata.goods_type_id),
         goods_description: goodsdata.goods_description,
-        created_time: created_time,
+        addgoods_time: addgoods_time,
         stock: goodsdata.stock
     }
     var filePath = '';
@@ -282,10 +282,16 @@ router.post('/addwarehousing', function(req, res, next) {
     var warehousingdata = req.body;
     var client = mysql_connect.connectServer();
     var data = warehousingdata;
-    Goods.addwarehousing(client, data, function(result) {
-        res.json({
-            code: 0,
-            message: '添加成功',
+    Goods.getgoodsbyid(client, data, function(result) {
+        data.stock = parseInt(result[0].stock) + parseInt(data.warehousing_count);
+        Goods.addwarehousing(client, data, function(result) {
+            Goods.updategoodsstock(client, data, function(result) {
+                res.json({
+                    code: 0,
+                    message: "添加成功",
+                    result: result
+                });
+            })
         })
     })
 })
@@ -316,4 +322,73 @@ router.post('/deletewarehousing', function(req, res, next) {
         })
     })
 })
+
+//获取订单列表
+router.get('/getorderlist', function(req, res, next) {
+    var client = mysql_connect.connectServer();
+    Goods.getorderlist(client, function(result) {
+        res.json({
+            code: 0,
+            message: '查询成功',
+            orderlist: result
+        })
+    })
+})
+
+//按订单id获取订单
+router.post('/getorder', function(req, res, next) {
+    var order_id = req.body.data;
+    var data = {
+        order_id: order_id
+    }
+    var client = mysql_connect.connectServer();
+    Goods.getorder(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '查询成功',
+            order: result[0]
+        })
+    })
+})
+
+
+//删除订单
+router.post('/deleteorder', function(req, res, next) {
+    var order_id = req.body.order_id;
+    var data = {
+        order_id: order_id
+    }
+    var client = mysql_connect.connectServer();
+    Goods.deleteorder(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '删除成功',
+        })
+    })
+})
+
+//发货
+router.post('/delivergoods', function(req, res, next) {
+    var data = req.body;
+    var client = mysql_connect.connectServer();
+    var date = new Date();
+    var delivery_time = date.Format("yyyy-MM-dd HH:mm:ss");
+    var express_no = parseInt(Math.random() * 100000000000000);
+    data.delivery_time = delivery_time;
+    data.order_status = 2;
+    data.express_no = express_no;
+    Goods.addorderlogistics(client, data, function(result) {
+        if (result) {
+            data.order_logistics_id = result.insertId;
+            Goods.delivergoods(client, data, function(result) {
+                res.json({
+                    code: 0,
+                    message: '发货成功',
+                })
+            })
+        }
+    })
+})
+
+
 module.exports = router

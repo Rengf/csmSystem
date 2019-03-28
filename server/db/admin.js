@@ -20,7 +20,7 @@ module.exports = {
     },
     //获取管理员信息
     getadmininfo(client, data, callback) {
-        var sql = `select user_name,user_id,user_avatar,user_tel,user_email,real_name,isadmin,created_time,last_login_time
+        var sql = `select user_name,user_id,user_avatar,user_tel,user_email,real_name,isadmin,regist_time,last_login_time
                    from user where user_id=?`;
         var params = [
             data.user_id,

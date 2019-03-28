@@ -22,3 +22,9 @@ export const RECEIVE_GOODS_LIST = 'receive_goods_list' //商品列表
 export const RECEIVE_SUPPLIER_LIST = 'receive_supplier_list' //供应商列表
 
 export const RECEIVE_WAREHOUSING_LIST = 'receive_warehousing_list' //供应商列表
+
+export const RECEIVE_COUNTER = 'receive_counter' //供应商列表
+
+export const RECEIVE_ORDER_LIST = 'receive_order_list' //订单列表
+
+export const RECEIVE_ORDER = 'receive_order' //订单

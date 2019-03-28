@@ -21,7 +21,7 @@
                 </li>
                 <li>
                     <label for="time">注册时间：</label>
-                    <input type="text" disabled :value="admininfo.created_time">
+                    <input type="text" disabled :value="admininfo.regist_time">
                 </li>
                 <li>
                     <label for="user_type">管理员级别：</label>

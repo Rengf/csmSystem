@@ -25,7 +25,7 @@
                     <td>{{user.isadmin=='1'?'普通管理员':'超级管理员'}}</td>
                     <td>{{user.user_tel}}</td>
                     <td>{{user.user_email}}</td>
-                    <td>{{user.created_time|dateformat('YYYY-MM-DD HH:mm:ss')}}</td>
+                    <td>{{user.regist_time|dateformat('YYYY-MM-DD HH:mm:ss')}}</td>
                     <td>{{user.last_modified_time|dateformat('YYYY-MM-DD HH:mm:ss')}}</td>
                     <td>{{user.statistics}}</td>
                     <td>{{user.last_login_time|dateformat('YYYY-MM-DD HH:mm:ss')}}</td>

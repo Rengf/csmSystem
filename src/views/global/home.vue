@@ -1,11 +1,14 @@
 <template>
     <div>
         <logined-header  v-if="isShow"></logined-header>
+        <goods-category></goods-category>
+        <sider-bar></sider-bar>
     </div>
 </template>
 <script>
 import LoginedHeader from '@/components/global/loginedheader'
-import axios from 'axios'
+import SiderBar from "../../components/global/siderBar";
+import GoodsCategory from "../../components/global/goodsCategory";
 import {mapGetters} from 'vuex'
 export default {
     data(){
@@ -34,6 +37,8 @@ export default {
     },
     components:{
         LoginedHeader,
+        SiderBar,
+        GoodsCategory,
     }
 }
 </script>

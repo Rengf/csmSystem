@@ -63,7 +63,7 @@ export default {
                     {title:'供货商家',icon:'&#xe639;',faup:'&#xe638;',sublists:[{title:'添加商家',icon:'&#xeb0b;',url:'/admin/addsupplier'},
                                                                                 {title:'修改分类',icon:'&#xeb0b;',url:'/admin'},
                                                                                 {title:'删除分类',icon:'&#xeb0b;',url:'/admin'}]},
-                    {title:'订单管理',icon:'&#xe639;',faup:'&#xe638;',sublists:[{title:'添加订单',icon:'&#xeb0b;',url:'/admin/addgoods'},
+                    {title:'订单管理',icon:'&#xe639;',faup:'&#xe638;',sublists:[{title:'添加订单',icon:'&#xeb0b;',url:'/admin/orderlist'},
                                                                                 {title:'管理订单',icon:'&#xeb0b;',url:'/admin'},
                                                                                 {title:'订单列表',icon:'&#xeb0b;',url:'/admin'}]},
                     {title:'物流管理',icon:'&#xe639;',faup:'&#xe638;',sublists:[{title:'添加物流',icon:'&#xeb0b;',url:'/admin/addgoods'},

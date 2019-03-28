@@ -1,10 +1,14 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/views/global/home'
+import GoodsDetail from '@/views/global/goodsdetail'
+import SureOrder from '@/views/global/sureorder'
+import PayFor from '@/views/global/payfor'
 import Login from '@/views/global/login'
 import Regist from '@/views/global/regist'
 
 import AdminHome from '@/views/admin/adminhome'
+import AdminIndex from '@/components/admin/adminhome'
 import UserList from '@/components/admin/adminuserlist'
 import AdminList from '@/components/admin/adminadminlist'
 import UserInfo from '@/components/admin/adminuserinfo'
@@ -13,6 +17,8 @@ import AddCategory from '@/components/admin/addgoodscategory'
 import AddGoods from '@/components/admin/addgoods'
 import WareHousing from '@/components/admin/warehousing'
 import AddSupplier from '@/components/admin/supplier'
+import OrderList from '@/components/admin/orderlist'
+import OrderDetail from '@/components/admin/orderdetail'
 
 Vue.use(Router)
 
@@ -21,6 +27,18 @@ export default new Router({
         path: '/',
         name: 'Home',
         component: Home
+    }, {
+        path: '/goodsdetail',
+        name: 'GoodsDetail',
+        component: GoodsDetail
+    }, {
+        path: '/payfor',
+        name: 'PayFor',
+        component: PayFor
+    }, {
+        path: '/sureorder',
+        name: 'SureOrder',
+        component: SureOrder
     }, {
         path: '/login',
         name: 'Login',
@@ -34,6 +52,10 @@ export default new Router({
         name: 'AdminHome',
         component: AdminHome,
         children: [{
+            path: '/admin',
+            name: 'AdminIndex',
+            component: AdminIndex,
+        }, {
             path: '/admin/userlist',
             name: 'UserList',
             component: UserList,
@@ -65,6 +87,14 @@ export default new Router({
             path: '/admin/addsupplier',
             name: 'AddSupplier',
             component: AddSupplier,
+        }, {
+            path: '/admin/orderlist',
+            name: 'OrderList',
+            component: OrderList,
+        }, {
+            path: '/admin/orderdetail',
+            name: 'OrderDetail',
+            component: OrderDetail,
         }]
     }]
 })

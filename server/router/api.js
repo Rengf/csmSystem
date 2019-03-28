@@ -123,7 +123,7 @@ router.post('/user/regist', function(req, res, next) {
     var user_tel = userdata.username;
     var user_email = userdata.useremail;
     var user_pwd = userdata.password;
-    var created_time = date.Format("yyyy-MM-dd hh:mm:ss")
+    var regist_time = date.Format("yyyy-MM-dd hh:mm:ss")
     if (user_pwd && user_tel && user_email) {
         var client = mysql_connect.connectServer();
         data = {
@@ -132,7 +132,7 @@ router.post('/user/regist', function(req, res, next) {
             user_tel: user_tel,
             user_email: user_email,
             isadmin: 0,
-            created_time: created_time,
+            regist_time: regist_time,
             user_avatar: avatar,
         }
         User.regist(client, data, function(result) {

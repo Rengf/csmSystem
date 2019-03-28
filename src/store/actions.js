@@ -1,6 +1,6 @@
 import {
     RECEIVE_CAPTCHA,
-    RECEIVE_IMAGE,
+    RECEIVE_COUNTER,
 } from './mutations-types'
 
 import {
@@ -14,5 +14,9 @@ export default {
             const captcha = result.result.img;
             commit(RECEIVE_CAPTCHA, captcha)
         }
+    },
+    commitorder({ commit }, data) {
+        const result = data
+        commit(RECEIVE_COUNTER, data)
     },
 }

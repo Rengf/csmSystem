@@ -57,7 +57,7 @@
                             <td>{{goods.goods_price}}</td>
                             <td>{{goods.goods_type_name}}</td>
                             <td>{{goods.goods_description}}</td>
-                            <td>{{goods.created_time|dateformat('YYYY-MM-DD HH:mm:ss')}}</td>
+                            <td>{{goods.addgoods_time|dateformat('YYYY-MM-DD HH:mm:ss')}}</td>
                             <td>{{goods.stock}}</td>
                             <td><button @click="deletegoods(goods.goods_id)">删除</button><button>修改</button></td>
                         </tr>
