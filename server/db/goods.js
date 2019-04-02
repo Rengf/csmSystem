@@ -66,6 +66,17 @@ module.exports = {
         })
     },
 
+    //按销量获取商品列表
+    getgoodslistbysales(client, callback) {
+        var sql = `select goods_name,goods_type_name,sales from goods 
+        inner join goods_type  on goods_type.goods_type_id=goods.goods_type_id
+        order by sales desc limit 10`;
+        client.query(sql, (err, result) => {
+            if (err) throw err
+            callback(result);
+        })
+    },
+
     //获取商品
     getgoodsbyid(client, data, callback) {
         var sql = `select * from goods
@@ -87,6 +98,22 @@ module.exports = {
         where goods_id = ?`;
         var params = [
             data.stock,
+            data.goods_id
+        ]
+        client.query(sql, params, (err, result) => {
+            if (err) throw err
+            callback(result);
+        })
+    },
+
+    //更新商品销量和库存
+    updategoods(client, data, callback) {
+        var sql = `update goods set 
+        stock=?,sales=?
+        where goods_id = ?`;
+        var params = [
+            parseInt(data.stock),
+            parseInt(data.sales),
             data.goods_id
         ]
         client.query(sql, params, (err, result) => {
@@ -322,9 +349,25 @@ module.exports = {
     getorderlist(client, callback) {
         var sql = `select * from \`order\`
                     inner join user on order.user_id=user.user_id
-                    inner join goods on order.goods_id=goods.goods_id
-                    inner join address on order.address_id=address.address_id`
+                    left join goods on order.goods_id=goods.goods_id
+                    left join address on order.address_id=address.address_id`
         client.query(sql, (err, result) => {
+            if (err) throw err
+            callback(result)
+        })
+    },
+
+    //按订单类别获取订单列表
+    getorderstatus(client, data, callback) {
+        var sql = `select * from \`order\`
+                    inner join user on order.user_id=user.user_id
+                    left join goods on order.goods_id=goods.goods_id
+                    left join address on order.address_id=address.address_id
+                    where order_status=?`
+        var params = [
+            parseInt(data.order_status)
+        ]
+        client.query(sql, params, (err, result) => {
             if (err) throw err
             callback(result)
         })

@@ -176,6 +176,7 @@ export default {
 </script>
 <style scoped>
 .supplier{
+    margin-top: 70px;
     position: relative;
     width: 89%;
     left: 11%;

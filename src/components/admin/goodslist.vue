@@ -1,88 +1,78 @@
 <template>
-    <div class="category">
-        <div class="categorybox">
-            <div class="addcategory">
-                <input type="text" placeholder="输入类名" v-model="goods_type_name">
-                <button @click="addcategory">添加</button>
+    <div class="goodsbox">
+        <div class="goodslistbox">
+            <div class="somebtn">
+                <button @click="showaddbox">添加商品</button>
             </div>
-            <div class="categorylist">
+            <div class="goodslist">
                 <table>
                     <thead>
                         <tr>
                             <th width="30">#</th>
-                            <th width="100">商品类名</th>
+                            <th width="100">商品名称</th>
+                            <th width="70">商品图片</th>
+                            <th width="100">商品价格</th>
+                            <th width="100">商品类别</th>
+                            <th width="300">商品描述</th>
                             <th width="200">添加时间</th>
-                            <th width="80">商品种量</th>
+                            <th width="80">商品库存</th>
                             <th width="300">操作</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(category,index) in categorylist" :key="index">
+                        <tr v-for="(goods,index) in goodslist" :key="index">
                             <td>{{index+1}}</td>
-                            <td>{{category.goods_type_name}}</td>
-                            <td>{{category.addgoodstype_time|dateformat('YYYY-MM-DD HH:mm:ss')}}</td>
-                            <td>{{category.goods_type_count}}</td>
-                            <td><button @click="deletecategory(category.goods_type_id)">删除</button><button>修改</button></td>
+                            <td>{{goods.goods_name}}</td>
+                            <td><img :src="goods.goods_picture"/></td>
+                            <td>{{goods.goods_price}}</td>
+                            <td>{{goods.goods_type_name}}</td>
+                            <td>{{goods.goods_description}}</td>
+                            <td>{{goods.addgoods_time|dateformat('YYYY-MM-DD HH:mm:ss')}}</td>
+                            <td>{{goods.stock}}</td>
+                            <td><button @click="deletegoods(goods.goods_id)">删除</button><button>修改</button></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             <Tips v-if="showtips" :tips='tips'></Tips>
+            <add-goods v-if="showaddgoods" @closeaddgoods='close'></add-goods>
+            <Background v-if="showaddgoods"></Background>
         </div>
     </div>
 </template>
 <script>
 import Tips from "@/components/Communal/tips"
+import AddGoods from "@/components/admin/addgoods"
+import Background from "@/components/Communal/background"
 import axios from "axios";
 import {mapGetters} from "vuex"
 export default {
     data(){
         return{
-            goods_type_name:'',
-            showtips:false
+            showaddgoods:false,
+            showtips:false,
+            tips:''
         }
     },
     created() {
-        this.$store.dispatch('getCategoryList');
+        this.$store.dispatch('getGoodsList');
     },
     computed: {
-        ...mapGetters(['categorylist'])
+        ...mapGetters(['categorylist','goodslist'])
     },
     methods:{
-        addcategory(){
-            if(this.goods_type_name==''){
-                this.tips="商品类名不能为空";
-                this.showtips=true;
-                setTimeout(() => {
-                    this.showtips=false
-                }, 2000);
-                return;
-            }
-            axios.post('http://localhost:3333/admin/addcategory',{
-                goods_type_name:this.goods_type_name
-            }).then(response=>{
-                if(response.data.code==0){
-                     this.$store.dispatch('getCategoryList');
-                    this.tips=response.data.message;
-                    this.showtips=true;
-                    setTimeout(() => {
-                        this.showtips=false
-                    }, 2000);
-                }else{
-                    console.log("添加失败")
-                }
-            },
-            response=>{
-                console.log("error:"+response)
-            }
-            )
+         showaddbox(){
+            this.showaddgoods=!this.showaddgoods;
         },
-        deletecategory(id){
-            axios.post('http://localhost:3333/admin/deletecategory',{
-                goods_type_id:id
+        close(){
+            this.showaddgoods=false;
+        },
+        deletegoods(id){
+            axios.post('http://localhost:3333/admin/deletegoods',{
+                goods_id:id
             }).then(response=>{
                 if(response.data.code==0){
-                     this.$store.dispatch('getCategoryList');
+                     this.$store.dispatch('getGoodsList');
                     this.tips=response.data.message;
                     this.showtips=true;
                     setTimeout(() => {
@@ -99,35 +89,52 @@ export default {
         }
     },
     components:{
-        Tips
+        Tips,
+        AddGoods,
+        Background
     }
 }
 </script>
 <style scoped>
-.category{
+.goodsbox{
+    margin-top: 70px;
     position: relative;
     width: 89%;
     left: 11%;
 }
-.addcategory,
-.categorybox{
+.goodslistbox{
     padding: 20px;
     border: 1px solid #ccc;
 }
 
-.categorylist{
+.goodslist{
     margin-top: 30px;
     border: 1px solid #ccc;
     padding: 30px;
 }
 
-.categorylist table{
+.goodslist table{
     display: block;
     margin-left: 50px;
 }
+.somebtn{
+    width: 100%;
+    height: 50px;
+    border: 1px solid #ccc;
+}
+.somebtn button{
+    margin-top: 7px;
+    margin-left: 10px;
+    color: #fff;
+    background: #438EB9!important;
+    border:none;
+    width: 100px;
+    height: 36px;
+    border-radius:3px; 
+    cursor: pointer;
+}
 
-
-.categorylist thead>tr{
+.goodslist thead>tr{
     color: #707070;
     font-weight: normal;
     background: #f2f2f2;
@@ -137,7 +144,7 @@ export default {
     background-image: linear-gradient(to bottom,#f8f8f8 0,#ececec 100%);
     background-repeat: repeat-x;
 }
-.categorylist th{
+.goodslist th{
     height: 29px;
     line-height: 29px;
     padding: 5px 10px;
@@ -147,7 +154,7 @@ export default {
     color: #666;
     text-align: center;
 }
-.categorylist td{
+.goodslist td{
     padding: 5px 30px;
     line-height: 30px;
     vertical-align: middle;
@@ -155,6 +162,10 @@ export default {
     color: #666;
     text-align: center;
     font-size: 12px;
+}
+.goodslist td img{
+    width: 50px;
+    height: 50px;
 }
 tr:hover{
     background: rgb(174, 241, 253);

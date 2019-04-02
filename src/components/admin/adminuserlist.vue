@@ -72,6 +72,7 @@ export default {
 </script>
 <style scoped>
 .userlist{
+    margin-top: 70px;
     box-sizing: border-box;
     border: 1px solid #ddd;
     position: relative;

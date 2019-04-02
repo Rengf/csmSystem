@@ -1,8 +1,7 @@
 <template>
     <div class="addgoods">
         <div class="addgoodsbox">
-            <div class="addaddgoods">
-                <ul>
+                 <ul>
                     <li>
                         <label for="goodsname">商品名称：</label>
                         <input type="text" name="goodsname" placeholder="输入商品名" v-model="goods_name">
@@ -22,6 +21,10 @@
                             <option value="请选择类别" disabled selected="selected">请选择类别</option>
                             <option :value="category.goods_type_id" v-for="(category,index) in categorylist" :key="index">{{category.goods_type_name}}</option>
                         </select>
+                        <div class="somebtn">
+                            <button @click="showaddbox">添加分类</button>
+                            <add-category v-if="showaddcategory" @closeaddcategory="showaddbox()"></add-category>
+                        </div>
                     </li>
                     <li>
                         <label for="goodsdescription">商品描述：</label>
@@ -32,49 +35,19 @@
                         <input type="text" placeholder="输入商品库存" v-model="stock">
                     </li>
                 </ul>
-                <button @click="addgoods">添加</button>
-            </div>
-            <div class="addgoodslist">
-                <table>
-                    <thead>
-                        <tr>
-                            <th width="30">#</th>
-                            <th width="100">商品名称</th>
-                            <th width="70">商品图片</th>
-                            <th width="100">商品价格</th>
-                            <th width="100">商品类别</th>
-                            <th width="300">商品描述</th>
-                            <th width="200">添加时间</th>
-                            <th width="80">商品库存</th>
-                            <th width="300">操作</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(goods,index) in goodslist" :key="index">
-                            <td>{{index+1}}</td>
-                            <td>{{goods.goods_name}}</td>
-                            <td><img :src="goods.goods_picture"/></td>
-                            <td>{{goods.goods_price}}</td>
-                            <td>{{goods.goods_type_name}}</td>
-                            <td>{{goods.goods_description}}</td>
-                            <td>{{goods.addgoods_time|dateformat('YYYY-MM-DD HH:mm:ss')}}</td>
-                            <td>{{goods.stock}}</td>
-                            <td><button @click="deletegoods(goods.goods_id)">删除</button><button>修改</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <Tips v-if="showtips" :tips='tips'></Tips>
+            <button @click="addgoods">添加</button>
         </div>
+        <Tips v-if="showtips" :tips='tips'></Tips>
     </div>
 </template>
 <script>
 import Tips from "@/components/Communal/tips"
-import axios from "axios";
+import AddCategory from "@/components/admin/addcategory"
 import {mapGetters} from "vuex"
+import axios from 'axios'
 export default {
-    data(){
-        return{
+    data() {
+        return {
             goods_name:'',
             goods_price:'',
             selected:'请选择类别',
@@ -82,18 +55,22 @@ export default {
             stock:'',
             files:[],
             goodspicture:'',
-            showtips:false
+            showtips:false,
+            showaddcategory:false,
+            tips:''
         }
     },
     created() {
         this.$store.dispatch('getCategoryList');
-        this.$store.dispatch('getGoodsList');
     },
     computed: {
-        ...mapGetters(['categorylist','goodslist'])
+        ...mapGetters(['categorylist'])
     },
-    methods:{
-         getFile(e){
+    methods: {
+         showaddbox(){
+            this.showaddcategory=!this.showaddcategory;
+        },
+        getFile(e){
            this.files=e.target.files[0]
             var file = e.target.files[0]
 		    var reader = new FileReader()
@@ -113,7 +90,8 @@ export default {
             formData.append('stock',this.stock);
             axios.post('http://localhost:3333/admin/addgoods',formData).then(response=>{
                 if(response.data.code==0){
-                     this.$store.dispatch('getGoodsList');
+                    this.$store.dispatch('getGoodsList');
+                    this.$emit('closeaddgoods')
                     this.tips=response.data.message;
                     this.showtips=true;
                     setTimeout(() => {
@@ -128,101 +106,90 @@ export default {
             }
             )
         },
-        deletegoods(id){
-            axios.post('http://localhost:3333/admin/deletegoods',{
-                goods_id:id
-            }).then(response=>{
-                if(response.data.code==0){
-                     this.$store.dispatch('getGoodsList');
-                    this.tips=response.data.message;
-                    this.showtips=true;
-                    setTimeout(() => {
-                        this.showtips=false
-                    }, 2000);
-                }else{
-                    console.log("删除失败")
-                }
-            },
-            response=>{
-                console.log("error:"+response)
-            }
-            )
-        }
     },
     components:{
-        Tips
+        Tips,
+        AddCategory,
     }
 }
 </script>
 <style scoped>
-.addgoods{
-    position: relative;
-    width: 89%;
-    left: 11%;
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 24px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
-.addaddgoods,
+.addgoods{
+    margin-top: 70px;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    position: relative;
+    left: 11%;
+    width: 89%;
+    background: #fff;
+    padding: 10px 10px;
+}
 .addgoodsbox{
     padding: 20px;
     border: 1px solid #ccc;
 }
 
-.addgoodslist{
-    margin-top: 30px;
-    border: 1px solid #ccc;
-    padding: 30px;
+.addgoodsbox li{
+    line-height: 50px;
+    width: 100%;
+    min-height: 50px;
 }
-
-.addgoodslist table{
-    display: block;
-    margin-left: 50px;
-}
-
-
-.addgoodslist thead>tr{
-    color: #707070;
-    font-weight: normal;
-    background: #f2f2f2;
-    background-image: -webkit-gradient(linear,left 0,left 100%,from(#f8f8f8),to(#ececec));
-    background-image: -webkit-linear-gradient(top,#f8f8f8,0%,#ececec,100%);
-    background-image: -moz-linear-gradient(top,#f8f8f8 0,#ececec 100%);
-    background-image: linear-gradient(to bottom,#f8f8f8 0,#ececec 100%);
-    background-repeat: repeat-x;
-}
-.addgoodslist th{
-    height: 29px;
-    line-height: 29px;
-    padding: 5px 10px;
-    vertical-align: middle;
-    border: 1px solid #ddd;
+.addgoodsbox li input{
+    width: 220px;
+    border-radius: 0!important;
+    color: #666666;
+    background-color: #fff;
+    border: 1px solid #c6c6c6;
+    line-height: 1.2;
     font-size: 14px;
-    color: #666;
-    text-align: center;
+    height: 35px;
+    font-family: inherit;
+    -webkit-box-shadow: none!important;
+    box-shadow: none!important;
+    -webkit-transition-duration: .1s;
+    transition-duration: .1s;
 }
-.addgoodslist td{
-    padding: 5px 30px;
-    line-height: 30px;
-    vertical-align: middle;
-    border: 1px solid #ddd;
-    color: #666;
-    text-align: center;
-    font-size: 12px;
+.addgoodsbox img{
+    display: block;
+    width: 100px;
+    height: 100px;
 }
-.addgoodslist td img{
-    width: 50px;
+.addgoodsbox>button{
+    color: #fff;
+    background: #438EB9!important;
+    border:none;
+    width: 100px;
+    height: 36px;
+    border-radius:3px; 
+    cursor: pointer;
+}
+.close{
+    position: relative;
+    left: 180px;
+    cursor: pointer;
+}
+.somebtn{
+    position: relative;
+    top: -50px;
+    left: 200px;
+    width: 150px;
     height: 50px;
 }
-tr:hover{
-    background: rgb(174, 241, 253);
-}
-button{
-    margin:0 5px;
-    width: 70px;
-    outline: 0;
-    background: #3a8ee6;
-    border: 0px;
+.somebtn button{
+    margin-left: 10px;
     color: #fff;
-}
-button:hover{
+    background: #438EB9!important;
+    border:none;
+    width: 100px;
+    height: 36px;
+    border-radius:3px; 
     cursor: pointer;
 }
 </style>

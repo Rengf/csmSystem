@@ -52,13 +52,13 @@ export default {
                                                                                 {title:'修改文章',icon:'&#xeb0b;',url:'/admin/editorarticle'},
                                                                                 {title:'草稿列表',icon:'&#xeb0b;',url:'/admin/articledraft'}]}, 
                     {title:'商品分类',icon:'&#xe639;',faup:'&#xe638;',sublists:[{title:'添加分类',icon:'&#xeb0b;',url:'/admin/addcategory'},
-                                                                                {title:'修改分类',icon:'&#xeb0b;',url:'/admin'},
+                                                                                {title:'修改分类',icon:'&#xeb0b;',url:'/admin/categorylist'},
                                                                                 {title:'删除分类',icon:'&#xeb0b;',url:'/admin'}]},
                     {title:'商品管理',icon:'&#xe639;',faup:'&#xe638;',sublists:[{title:'添加商品',icon:'&#xeb0b;',url:'/admin/addgoods'},
-                                                                                {title:'修改商品',icon:'&#xeb0b;',url:'/admin'},
+                                                                                {title:'修改商品',icon:'&#xeb0b;',url:'/admin/goodslist'},
                                                                                 {title:'删除商品',icon:'&#xeb0b;',url:'/admin'}]},
-                    {title:'进货管理',icon:'&#xe639;',faup:'&#xe638;',sublists:[{title:'进货列表',icon:'&#xeb0b;',url:'/admin/warehousing'},
-                                                                                {title:'修改进货',icon:'&#xeb0b;',url:'/admin'},
+                    {title:'进货管理',icon:'&#xe639;',faup:'&#xe638;',sublists:[{title:'进货列表',icon:'&#xeb0b;',url:'/admin/warehousinglist'},
+                                                                                {title:'添加进货',icon:'&#xeb0b;',url:'/admin/addwarehousing'},
                                                                                 {title:'删除商品',icon:'&#xeb0b;',url:'/admin'}]},
                     {title:'供货商家',icon:'&#xe639;',faup:'&#xe638;',sublists:[{title:'添加商家',icon:'&#xeb0b;',url:'/admin/addsupplier'},
                                                                                 {title:'修改分类',icon:'&#xeb0b;',url:'/admin'},
@@ -110,6 +110,7 @@ export default {
     min-height: 100%;
     left: 0;
     background-color: #000;
+    margin-top: 70px;
 }
 .switch_style{
     height: 40px;

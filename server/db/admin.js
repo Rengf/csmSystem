@@ -9,6 +9,7 @@ module.exports = {
         })
 
     },
+
     //获取管理员列表
     getadminlist(client, callback) {
         var sql = `select * from user where isadmin>0`;
@@ -18,8 +19,9 @@ module.exports = {
         })
 
     },
+
     //获取管理员信息
-    getadmininfo(client, data, callback) {
+    getuserinfo(client, data, callback) {
         var sql = `select user_name,user_id,user_avatar,user_tel,user_email,real_name,isadmin,regist_time,last_login_time
                    from user where user_id=?`;
         var params = [
@@ -30,6 +32,7 @@ module.exports = {
             callback(result)
         })
     },
+
     //删除用户
     deleteuser(client, data, callback) {
         var sql = `delete from user

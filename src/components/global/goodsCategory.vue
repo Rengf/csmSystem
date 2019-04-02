@@ -31,7 +31,7 @@
                 </div>
             </div>
             <div class="goodsFooter">
-                <div class='goodsListbox' v-for="(goods,index) of goodslist" :key="index" v-if="index<5&&index>0">
+                <div class='goodsListbox' v-for="(goods,index) of goodslist" :key="index" v-if="index>0">
                     <div class=goodsList>
                         <div class='newPhoneImg'>
                             <img :src="goods.goods_picture" alt=''>

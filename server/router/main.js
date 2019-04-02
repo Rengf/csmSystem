@@ -192,19 +192,26 @@ router.post('/updateorder', function(req, res, next) {
         data.payed_time = payed_time;
         data.order_status = 1;
     }
-
-    Goods.updateorder(client, data, function(result) {
+    Goods.getgoodsbyid(client, data, function(result) {
         if (result) {
-            Goods.deletecart(client, data, function(result) {
-                res.json({
-                    code: 0,
-                    message: '修改成功',
-                })
-            })
-        } else {
-            return res.json({
-                code: 1,
-                message: '修改失败',
+            data.stock = parseInt(result[0].stock) - parseInt(data.goods_count);
+            data.sales = parseInt(result[0].sales) + parseInt(data.goods_count);
+            Goods.updateorder(client, data, function(result) {
+                if (result) {
+                    Goods.updategoods(client, data, function(result) {
+                        Goods.deletecart(client, data, function(result) {
+                            res.json({
+                                code: 0,
+                                message: '修改成功',
+                            })
+                        })
+                    })
+                } else {
+                    return res.json({
+                        code: 1,
+                        message: '修改失败',
+                    })
+                }
             })
         }
     })

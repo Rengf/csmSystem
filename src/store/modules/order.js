@@ -22,8 +22,8 @@ const getters = {
     },
 }
 const actions = {
-    async getOrderList({ commit }) {
-        const result = await reqOrderList()
+    async getOrderList({ commit }, status) {
+        const result = await reqOrderList(status)
         if (result.code == 0) {
             const orderlist = result.orderlist;
             commit(RECEIVE_ORDER_LIST, orderlist)

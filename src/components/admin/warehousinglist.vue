@@ -1,45 +1,6 @@
 <template>
     <div class="warehousing">
         <div class="warehousingbox">
-            <div class="addwarehousing">
-                <ul>
-                    <li>
-                        <label for="orderid">订单号：</label>
-                        <input type="text" name="orderid" placeholder="订单号" v-model="warehousing_order_id">
-                    </li>
-                    <li>
-                        <label for="time">入库时间：</label>
-                        <input type="datetime-local" name="time" v-model="warehousing_time">
-                    </li>
-                    <li>
-                        <label for="goodsname">商品名称：</label>
-                         <select name="goodsname" v-model="goods_id">
-                            <option value="请选择商品名" disabled selected="selected">请选择商品名</option>
-                            <option :value="goods.goods_id" v-for="(goods,index) in goodslist" :key="index">{{goods.goods_name}}</option>
-                        </select>
-                    </li>
-                    <li>
-                        <label for="goods_count">进货量：</label>
-                        <input name="goods_count" placeholder="输入进货量"  v-model="warehousing_count">
-                    </li>
-                    <li>
-                        <label for="totalprice">进货支出：</label>
-                        <input type="text" name="totalprice" placeholder="输入总价" v-model="total_price">
-                    </li>
-                     <li>
-                        <label for="warehousingstaff">进货负责人：</label>
-                        <input type="text" name="warehousingstaff" placeholder="输入商品库存" v-model="warehousing_staff">
-                    </li>
-                     <li>
-                        <label for="supplier">供应商：</label>
-                        <select name="supplier" v-model="supplier">
-                            <option value="请选择供应商" disabled selected="selected">请选择供应商</option>
-                            <option :value="supplier.supplier_id" v-for="(supplier,index) in supplierlist" :key="index">{{supplier.supplier_name}}</option>
-                        </select>
-                    </li>
-                </ul>
-                <button @click="addwarehousing">添加</button>
-            </div>
             <div class="warehousinglist">
                 <table>
                     <thead>
@@ -93,42 +54,12 @@ export default {
         }
     },
     created() {
-        this.$store.dispatch('getGoodsList');
-        this.$store.dispatch('getSupplierList');
-        this.$store.dispatch('getWarehousingList');
+         this.$store.dispatch('getWarehousingList');
     },
     computed: {
-        ...mapGetters(['goodslist','supplierlist','warehousinglist'])
+        ...mapGetters(['warehousinglist'])
     },
     methods:{
-        addwarehousing(){
-            var data={
-                 warehousing_order_id:this.warehousing_order_id,
-                warehousing_time:this.warehousing_time,
-                goods_id:this.goods_id,
-                warehousing_count:this.warehousing_count,
-                total_price:this.total_price,
-                warehousing_staff:this.warehousing_staff,
-                supplier:this.supplier,
-            }
-            console.log(data)
-            axios.post('http://localhost:3333/admin/addwarehousing',data).then(response=>{
-                if(response.data.code==0){
-                     this.$store.dispatch('getWarehousingList');
-                    this.tips=response.data.message;
-                    this.showtips=true;
-                    setTimeout(() => {
-                        this.showtips=false
-                    }, 2000);
-                }else{
-                    console.log("添加失败")
-                }
-            },
-            response=>{
-                console.log("error:"+response)
-            }
-            )
-        },
         deletewarehousing(id){
             axios.post('http://localhost:3333/admin/deletewarehousing',{
                 warehousing_id:id
@@ -157,6 +88,7 @@ export default {
 </script>
 <style scoped>
 .warehousing{
+    margin-top: 70px;
     position: relative;
     width: 89%;
     left: 11%;

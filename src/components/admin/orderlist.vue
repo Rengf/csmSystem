@@ -61,10 +61,11 @@ export default {
         return{
             showtips:false,
             tips:'',
+            order_status:this.$route.query.order_status,
         }
     },
     created() {
-       this.$store.dispatch('getOrderList')
+            this.$store.dispatch('getOrderList',this.order_status)
     },
     computed: {
         ...mapGetters(['orderlist'])
@@ -123,6 +124,7 @@ export default {
 </script>
 <style scoped>
 .orderlist{
+    margin-top: 70px;
     box-sizing: border-box;
     border: 1px solid #ddd;
     position: relative;

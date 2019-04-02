@@ -13,9 +13,11 @@ import UserList from '@/components/admin/adminuserlist'
 import AdminList from '@/components/admin/adminadminlist'
 import UserInfo from '@/components/admin/adminuserinfo'
 import EditAdmin from '@/components/admin/admineditadmin'
-import AddCategory from '@/components/admin/addgoodscategory'
+import CategoryList from '@/components/admin/goodscategorylist'
 import AddGoods from '@/components/admin/addgoods'
-import WareHousing from '@/components/admin/warehousing'
+import GoodsList from '@/components/admin/goodslist'
+import AddWareHousing from '@/components/admin/addwarehousing'
+import WareHousingList from '@/components/admin/warehousinglist'
 import AddSupplier from '@/components/admin/supplier'
 import OrderList from '@/components/admin/orderlist'
 import OrderDetail from '@/components/admin/orderdetail'
@@ -72,17 +74,25 @@ export default new Router({
             name: 'EditAdmin',
             component: EditAdmin,
         }, {
-            path: '/admin/addcategory',
-            name: 'AddCategory',
-            component: AddCategory,
+            path: '/admin/categorylist',
+            name: 'CategoryList',
+            component: CategoryList,
         }, {
             path: '/admin/addgoods',
             name: 'AddGoods',
             component: AddGoods,
         }, {
-            path: '/admin/warehousing',
-            name: 'WareHousing',
-            component: WareHousing,
+            path: '/admin/goodslist',
+            name: 'GoodsList',
+            component: GoodsList,
+        }, {
+            path: '/admin/addwarehousing',
+            name: 'AddWareHousing',
+            component: AddWareHousing,
+        }, {
+            path: '/admin/warehousinglist',
+            name: 'WareHousingList',
+            component: WareHousingList,
         }, {
             path: '/admin/addsupplier',
             name: 'AddSupplier',

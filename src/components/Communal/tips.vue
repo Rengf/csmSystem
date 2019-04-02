@@ -25,6 +25,6 @@ export default {
         border-radius: 5px;
         background: rgba(155, 155, 155, 0.5);
         text-align: center;
-        z-index: 99999;
+        z-index: 999999;
     }
 </style>

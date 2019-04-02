@@ -66,7 +66,7 @@ router.post('/user/login', function(req, res, next) {
     var user_password = userdata.password;
     var captcha = userdata.captcha;
     var date = new Date();
-    var login_time = date.Format("yyyy-MM-dd hh:mm:ss")
+    var login_time = date.Format("yyyy-MM-dd HH:mm:ss")
     if (username && user_password && captcha) {
         if (captcha === req.session.captcha) {
             var client = mysql_connect.connectServer();
@@ -123,7 +123,7 @@ router.post('/user/regist', function(req, res, next) {
     var user_tel = userdata.username;
     var user_email = userdata.useremail;
     var user_pwd = userdata.password;
-    var regist_time = date.Format("yyyy-MM-dd hh:mm:ss")
+    var regist_time = date.Format("yyyy-MM-dd HH:mm:ss")
     if (user_pwd && user_tel && user_email) {
         var client = mysql_connect.connectServer();
         data = {
@@ -158,7 +158,7 @@ router.post('/updatepassword', function(req, res, next) {
     var user_password = req.body.user_password;
     var user_id = req.body.user_id;
     var date = new Date();
-    var modified_time = date.Format("yyyy-MM-dd hh:mm:ss")
+    var modified_time = date.Format("yyyy-MM-dd HH:mm:ss")
     if (user_id && user_password && oldpassword) {
         var client = mysql_connect.connectServer();
         var data = {
@@ -217,7 +217,7 @@ router.get("/user/logout", function(req, res) {
 router.post('/updateuserinfo', multipartMiddleware, (req, res, next) => {
     var userdata = req.body;
     var date = new Date();
-    var modified_time = date.Format("yyyy-MM-dd hh:mm:ss");
+    var modified_time = date.Format("yyyy-MM-dd HH:mm:ss");
     var data = {
         user_name: userdata.newuser_name,
         user_email: userdata.newuser_email,

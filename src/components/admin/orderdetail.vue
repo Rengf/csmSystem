@@ -134,6 +134,7 @@ export default {
 </script>
 <style scoped>
 .orderdetail{
+    margin-top: 70px;
     box-sizing: border-box;
     border: 1px solid #ddd;
     position: relative;
@@ -143,8 +144,7 @@ export default {
     padding: 10px 10px;
 }
 
-.orderdetailbox{
-}
+
 
 .orderheader{
     height: 40px;

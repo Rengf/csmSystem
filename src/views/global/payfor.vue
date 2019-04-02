@@ -19,7 +19,9 @@ export default {
             order_id:this.$route.query.order_id,
             invoice_id:'',
             cart_id:'',
-            zhihu:''
+            zhihu:'',
+            goods_count:'',
+            goods_id:''
         }
     },
     created() {
@@ -33,6 +35,8 @@ export default {
                                 if(response.data.code==0){
                                     console.log(response.data)
                                     this.cart_id=response.data.cart[0].cart_id;
+                                    this.goods_count=response.data.cart[0].goods_count;
+                                    this.goods_id=response.data.cart[0].goods_id;
                                 }else{
                                     console.log("获取失败")
                                 }
@@ -57,7 +61,9 @@ export default {
                             invoice_id:this.invoice_id,
                             invoice:'是',
                             cart_id:this.cart_id,
-                            pay_channel:this.zhihu
+                            pay_channel:this.zhihu,
+                            goods_id:this.goods_id,
+                            goods_count:this.goods_count
                         }).then(response=>{
                             if(response.data.code==0){
                                 console.log(response.data.message)
@@ -80,7 +86,9 @@ export default {
                             invoice_id:null,
                             invoice:'否',
                             cart_id:this.cart_id,
-                            pay_channel:this.zhihu
+                            pay_channel:this.zhihu,
+                            goods_count:this.goods_count,
+                            goods_id:this.goods_id
                         }).then(response=>{
                             if(response.data.code==0){
                                 console.log(response.data.message)

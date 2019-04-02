@@ -1,7 +1,7 @@
 <template>
     <div class="header">
         <div class="left_box box">
-            <span class="logo">商品销售后台管理系统{{userinfo}}</span>
+            <span class="logo">商品销售后台管理系统</span>
             <i class="edition">1.0</i>
         </div>
         <div class="right_box box">
@@ -25,7 +25,7 @@
                 </a>
                 <ul class="admin_other" v-show="showadmin">
                         <li @click="close">
-                            <router-link :to="{'path':'/admin/userinfo'}">
+                            <router-link :to="{'path':'/admin/userinfo?user_id='+userinfo.user_id}">
                                 <i class="iconfont icon-ren">&#xe72b;</i>
                                 <span>个人信息</span>
                             </router-link>
@@ -157,6 +157,8 @@ export default {
     width: 100%;
     height: 70px;
     background-color: #000;
+    position: fixed;
+    z-index: 1;
 }
 .box{
     width: 500px;

@@ -132,6 +132,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
 }
 .userlist{
+    margin-top: 70px;
     box-sizing: border-box;
     position: relative;
     left: 11%;

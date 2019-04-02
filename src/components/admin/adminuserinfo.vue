@@ -5,31 +5,31 @@
             <ul class="userMsg">
                 <li>
                     <label for="nickname">用户名:</label>
-                    <input type="text" :disabled="disabled" v-model="newuser_name" :placeholder="admininfo.user_name" :class="{'showborder':noshow}">
+                    <input type="text" :disabled="disabled" v-model="newuser_name" :placeholder="userinfo.user_name" :class="{'showborder':noshow}">
                 </li>
                 <li>
                     <label for="gender">真实姓名：</label>
-                    <input :class="{'showborder':noshow}" v-model="newreal_name" type="text" :disabled="disabled" :placeholder="admininfo.real_name==null?'未实名':admininfo.real_name">
+                    <input :class="{'showborder':noshow}" v-model="newreal_name" type="text" :disabled="disabled" :placeholder="userinfo.real_name==null?'未实名':userinfo.real_name">
                 </li>
                 <li>
                     <label for="tel">电话号码：</label>
-                    <input :class="{'showborder':noshow}" v-model="newuser_tel" type="text" :disabled="disabled" :placeholder="admininfo.user_tel">
+                    <input :class="{'showborder':noshow}" v-model="newuser_tel" type="text" :disabled="disabled" :placeholder="userinfo.user_tel">
                 </li>
                 <li>
                     <label for="email">邮箱地址：</label>
-                    <input :class="{'showborder':noshow}" v-model="newuser_email" type="text" :disabled="disabled" :placeholder="admininfo.user_email">
+                    <input :class="{'showborder':noshow}" v-model="newuser_email" type="text" :disabled="disabled" :placeholder="userinfo.user_email">
                 </li>
                 <li>
                     <label for="time">注册时间：</label>
-                    <input type="text" disabled :value="admininfo.regist_time">
+                    <input type="text" disabled :value="userinfo.regist_time|dateformat('YYYY-MM-DD HH:mm:ss')">
                 </li>
                 <li>
                     <label for="user_type">管理员级别：</label>
-                    <input type="text" disabled :value="admininfo.isadmin==0?'普通管理员':'超级管理员'">
+                    <input type="text" disabled :value="userinfo.isadmin==0?'普通管理员':'超级管理员'">
                 </li>
                 <li>
                     <label for="status">上次登录：</label>
-                    <input type="text" disabled :value="admininfo.last_login_time">
+                    <input type="text" disabled :value="userinfo.last_login_time|dateformat('YYYY-MM-DD HH:mm:ss')">
                 </li>
             </ul>
             <div class="btn">
@@ -40,7 +40,7 @@
        </div>
        <div class="rightBox">
            <div class="avatar">
-               <img :src="admininfo.user_avatar" alt="头像" v-if="editavatar">
+               <img :src="userinfo.user_avatar" alt="头像" v-if="editavatar">
                <img :src="newavatar" alt="新头像" v-else>
            </div>
            <div class="editavatar" v-if="noshow">
@@ -86,7 +86,7 @@ export default {
     name:'infomodify',
     data(){
         return {
-            id:'',
+            id:this.$route.query.user_id,
             disabled:true,
             noshow:false,
             files:[],
@@ -102,21 +102,25 @@ export default {
             showpwd:false,
             oldpassword:'',
             newpassword:'',
-            surepassword:''
+            surepassword:'',
+            userinfo:''
         }
     },
     created(){
-        axios.get("http://localhost:3333/api").then(response=>{
+        axios.post("http://localhost:3333/admin/getuserinfo",{
+            id:this.id
+        }).then(response=>{
             if(response.data.code=='0'){
-                this.id=response.data.user.user_id
-                this.$store.dispatch('getAdminInfo',this.id)
+                this.userinfo=response.data.userinfo
+                }else{
+                    console.log('获取失败')
                 }
         },response=>{
             console.log("error:"+response)
         })
     },
     computed: {
-        ...mapGetters(['admininfo'])
+        ...mapGetters(['userinfo'])
     },
     methods: {
         editsurepwd(){
@@ -172,18 +176,18 @@ export default {
            this.showpwd=true;
       },
       suremodify(){
-          var newavatar=this.admininfo.user_avatar
+          var newavatar=this.userinfo.user_avatar
           if(this.newuser_name==''){
-              this.newuser_name=this.admininfo.user_name
+              this.newuser_name=this.userinfo.user_name
           }
           if(this.newreal_name==''){
-              this.newreal_name=this.admininfo.real_name
+              this.newreal_name=this.userinfo.real_name
           }
           if(this.newuser_tel==''){
-              this.newuser_tel=this.admininfo.user_tel
+              this.newuser_tel=this.userinfo.user_tel
           }
           if(this.newuser_email==''){
-              this.newuser_email=this.admininfo.user_email
+              this.newuser_email=this.userinfo.user_email
           }
           var formData=new FormData();
            if(this.files.length!=0){

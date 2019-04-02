@@ -69,17 +69,17 @@ router.get('/getadminlist', function(req, res, next) {
 
 
 //按编号获取用户个人信息
-router.post('/getadmininfo', function(req, res, next) {
+router.post('/getuserinfo', function(req, res, next) {
     var id = parseInt(req.body.id);
     var client = mysql_connect.connectServer();
     var data = {
         user_id: id
     }
-    Admin.getadmininfo(client, data, function(result) {
+    Admin.getuserinfo(client, data, function(result) {
         res.json({
             code: 0,
             message: '查询成功',
-            admininfo: result[0]
+            userinfo: result[0]
         })
     })
 })
@@ -222,6 +222,18 @@ router.get('/getgoodslist', function(req, res, next) {
     })
 })
 
+//按销量获取商品列表
+router.get('/getgoodslistbysales', function(req, res, next) {
+    var client = mysql_connect.connectServer();
+    Goods.getgoodslistbysales(client, function(result) {
+        res.json({
+            code: 0,
+            message: '查询成功',
+            goodslist: result
+        })
+    })
+})
+
 //删除商品
 router.post('/deletegoods', function(req, res, next) {
     var goods_id = req.body.goods_id;
@@ -325,14 +337,28 @@ router.post('/deletewarehousing', function(req, res, next) {
 
 //获取订单列表
 router.get('/getorderlist', function(req, res, next) {
+    var order_status = req.query.order_status;
     var client = mysql_connect.connectServer();
-    Goods.getorderlist(client, function(result) {
-        res.json({
-            code: 0,
-            message: '查询成功',
-            orderlist: result
+    if (order_status == 'undefined') {
+        Goods.getorderlist(client, function(result) {
+            res.json({
+                code: 0,
+                message: '查询成功',
+                orderlist: result
+            })
         })
-    })
+    } else {
+        var data = {
+            order_status: order_status
+        }
+        Goods.getorderstatus(client, data, function(result) {
+            res.json({
+                code: 0,
+                message: '查询成功',
+                orderlist: result
+            })
+        })
+    }
 })
 
 //按订单id获取订单
