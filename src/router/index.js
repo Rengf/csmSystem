@@ -18,7 +18,8 @@ import AddGoods from '@/components/admin/addgoods'
 import GoodsList from '@/components/admin/goodslist'
 import AddWareHousing from '@/components/admin/addwarehousing'
 import WareHousingList from '@/components/admin/warehousinglist'
-import AddSupplier from '@/components/admin/supplier'
+import AddSupplier from '@/components/admin/addsupplier'
+import SupplierList from '@/components/admin/supplierlist'
 import OrderList from '@/components/admin/orderlist'
 import OrderDetail from '@/components/admin/orderdetail'
 
@@ -97,6 +98,10 @@ export default new Router({
             path: '/admin/addsupplier',
             name: 'AddSupplier',
             component: AddSupplier,
+        }, {
+            path: '/admin/supplierlist',
+            name: 'SupplierList',
+            component: SupplierList,
         }, {
             path: '/admin/orderlist',
             name: 'OrderList',

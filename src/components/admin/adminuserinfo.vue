@@ -234,12 +234,6 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-.infoModify{
-    position: relative;
-    left: 11%;
-    width: 89%;
-    background: #fff;
-}
 .messagebox{
     overflow: hidden;
 }

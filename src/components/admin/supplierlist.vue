@@ -1,39 +1,39 @@
 <template>
-    <div class="warehousing">
-        <div class="warehousingbox">
-            <div class="warehousinglist">
+        <div class="supplierbox">
+            <div class="supplierlist">
                 <table>
                     <thead>
                         <tr>
                             <th width="30">#</th>
-                            <th width="150">进货订单号</th>
-                            <th width="170">入库时间</th>
-                            <th width="150">商品名称</th>
-                            <th width="50">入库数量</th>
-                            <th width="50">商品总价格</th>
-                            <th width="80">入库负责人</th>
-                            <th width="150">供货商家</th>
-                            <th width="300">操作</th>
+                            <th width="100">供应商家名</th>
+                            <th width="70">联系人</th>
+                            <th width="350">商家地址</th>
+                            <th width="50">邮编</th>
+                            <th width="80">商家电话</th>
+                            <th width="150">商家邮箱</th>
+                            <th width="100">商家银行</th>
+                            <th width="200">银行账户</th>
+                            <th width="200">操作</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(warehousing,index) in warehousinglist" :key="index">
+                        <tr v-for="(supplier,index) in supplierlist" :key="index">
                             <td>{{index+1}}</td>
-                            <td>{{warehousing.warehousing_order_id}}</td>
-                            <td>{{warehousing.warehousing_time|dateformat('YYYY-MM-DD HH:mm:ss')}}</td>
-                            <td>{{warehousing.goods_name}}</td>
-                            <td>{{warehousing.warehousing_count}}</td>
-                            <td>{{warehousing.total_price}}</td>
-                            <td>{{warehousing.warehousing_staff}}</td>
-                            <td>{{warehousing.supplier_name}}</td>
-                            <td><button @click="deletewarehousing(warehousing.warehousing_id)">删除</button><button>修改</button></td>
+                            <td>{{supplier.supplier_name}}</td>
+                            <td>{{supplier.supplier_contact}}</td>
+                            <td>{{supplier.supplier_address}}</td>
+                            <td>{{supplier.supplier_postcode}}</td>
+                            <td>{{supplier.supplier_tel}}</td>
+                            <td>{{supplier.supplier_email}}</td>
+                            <td>{{supplier.supplier_bank}}</td>
+                            <td>{{supplier.supplier_account}}</td>
+                            <td><button @click="deletesupplier(supplier.supplier_id)">删除</button><button>修改</button></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             <Tips v-if="showtips" :tips='tips'></Tips>
         </div>
-    </div>
 </template>
 <script>
 import Tips from "@/components/Communal/tips"
@@ -42,30 +42,23 @@ import {mapGetters} from "vuex"
 export default {
     data(){
         return{
-            warehousing_order_id:'',
-            warehousing_time:'',
-            goods_id:'请选择商品名',
-            warehousing_count:'',
-            total_price:'',
-            warehousing_staff:'',
-            supplier:'请选择供应商',
             showtips:false,
-            tips:''
+            tips:'',
         }
     },
     created() {
-         this.$store.dispatch('getWarehousingList');
+        this.$store.dispatch('getSupplierList');
     },
     computed: {
-        ...mapGetters(['warehousinglist'])
+        ...mapGetters(['supplierlist'])
     },
     methods:{
-        deletewarehousing(id){
-            axios.post('http://localhost:3333/admin/deletewarehousing',{
-                warehousing_id:id
+        deletesupplier(id){
+            axios.post('http://localhost:3333/admin/deletesupplier',{
+                supplier_id:id
             }).then(response=>{
                 if(response.data.code==0){
-                     this.$store.dispatch('getWarehousingList');
+                     this.$store.dispatch('getSupplierList');
                     this.tips=response.data.message;
                     this.showtips=true;
                     setTimeout(() => {
@@ -82,29 +75,24 @@ export default {
         }
     },
     components:{
-        Tips
+        Tips,
+        
     }
 }
 </script>
 <style scoped>
-.addwarehousing,
-.warehousingbox{
-    padding: 20px;
-    border: 1px solid #ccc;
-}
-
-.warehousinglist{
+.supplierlist{
     margin-top: 30px;
     border: 1px solid #ccc;
     padding: 30px;
 }
 
-.warehousinglist table{
+.supplierlist table{
     display: block;
 }
 
 
-.warehousinglist thead>tr{
+.supplierlist thead>tr{
     color: #707070;
     font-weight: normal;
     background: #f2f2f2;
@@ -114,7 +102,7 @@ export default {
     background-image: linear-gradient(to bottom,#f8f8f8 0,#ececec 100%);
     background-repeat: repeat-x;
 }
-.warehousinglist th{
+.supplierlist th{
     height: 29px;
     line-height: 29px;
     padding: 5px 10px;
@@ -124,8 +112,8 @@ export default {
     color: #666;
     text-align: center;
 }
-.warehousinglist td{
-    padding: 5px 30px;
+.supplierlist td{
+    padding: 5px 10px;
     line-height: 30px;
     vertical-align: middle;
     border: 1px solid #ddd;
@@ -133,7 +121,7 @@ export default {
     text-align: center;
     font-size: 12px;
 }
-.warehousinglist td img{
+.supplierlist td img{
     width: 50px;
     height: 50px;
 }

@@ -1,7 +1,5 @@
 <template>
-    <div class="supplier">
-        <div class="supplierbox">
-            <div class="addsupplier">
+       <div class="addsupplier">
                 <ul>
                     <li>
                         <label for="suppliername">供应商家名：</label>
@@ -46,51 +44,16 @@
                     </li>
                 </ul>
                 <button @click="addsupplier">添加</button>
-            </div>
-            <div class="supplierlist">
-                <table>
-                    <thead>
-                        <tr>
-                            <th width="30">#</th>
-                            <th width="100">供应商家名</th>
-                            <th width="70">联系人</th>
-                            <th width="350">商家地址</th>
-                            <th width="50">邮编</th>
-                            <th width="80">商家电话</th>
-                            <th width="150">商家邮箱</th>
-                            <th width="100">商家银行</th>
-                            <th width="200">银行账户</th>
-                            <th width="200">操作</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(supplier,index) in supplierlist" :key="index">
-                            <td>{{index+1}}</td>
-                            <td>{{supplier.supplier_name}}</td>
-                            <td>{{supplier.supplier_contact}}</td>
-                            <td>{{supplier.supplier_address}}</td>
-                            <td>{{supplier.supplier_postcode}}</td>
-                            <td>{{supplier.supplier_tel}}</td>
-                            <td>{{supplier.supplier_email}}</td>
-                            <td>{{supplier.supplier_bank}}</td>
-                            <td>{{supplier.supplier_account}}</td>
-                            <td><button @click="deletesupplier(supplier.supplier_id)">删除</button><button>修改</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <Tips v-if="showtips" :tips='tips'></Tips>
-        </div>
-    </div>
+                <Tips v-if="showtips" :tips='tips'></Tips>
+            </div> 
 </template>
 <script>
 import VDistpicker from 'v-distpicker'
 import Tips from "@/components/Communal/tips"
 import axios from "axios";
-import {mapGetters} from "vuex"
 export default {
-    data(){
-        return{
+    data() {
+        return {
             supplier_name:'',
             supplier_contact:'',
             supplier_address:'',
@@ -108,12 +71,6 @@ export default {
               area: '--- 区 ---',
           }
         }
-    },
-    created() {
-        this.$store.dispatch('getSupplierList');
-    },
-    computed: {
-        ...mapGetters(['supplierlist'])
     },
     methods:{
         onSelected(data){
@@ -147,26 +104,6 @@ export default {
             }
             )
         },
-        deletesupplier(id){
-            axios.post('http://localhost:3333/admin/deletesupplier',{
-                supplier_id:id
-            }).then(response=>{
-                if(response.data.code==0){
-                     this.$store.dispatch('getSupplierList');
-                    this.tips=response.data.message;
-                    this.showtips=true;
-                    setTimeout(() => {
-                        this.showtips=false
-                    }, 2000);
-                }else{
-                    console.log("删除失败")
-                }
-            },
-            response=>{
-                console.log("error:"+response)
-            }
-            )
-        }
     },
     components:{
         Tips,
@@ -175,74 +112,38 @@ export default {
 }
 </script>
 <style scoped>
-.supplier{
-    margin-top: 70px;
-    position: relative;
-    width: 89%;
-    left: 11%;
-}
-.addsupplier,
-.supplierbox{
+.addsupplier{
     padding: 20px;
     border: 1px solid #ccc;
 }
-
-.supplierlist{
-    margin-top: 30px;
-    border: 1px solid #ccc;
-    padding: 30px;
+.addsupplier li{
+    line-height: 50px;
+    width: 100%;
+    min-height: 50px;
 }
-
-.supplierlist table{
-    display: block;
-}
-
-
-.supplierlist thead>tr{
-    color: #707070;
-    font-weight: normal;
-    background: #f2f2f2;
-    background-image: -webkit-gradient(linear,left 0,left 100%,from(#f8f8f8),to(#ececec));
-    background-image: -webkit-linear-gradient(top,#f8f8f8,0%,#ececec,100%);
-    background-image: -moz-linear-gradient(top,#f8f8f8 0,#ececec 100%);
-    background-image: linear-gradient(to bottom,#f8f8f8 0,#ececec 100%);
-    background-repeat: repeat-x;
-}
-.supplierlist th{
-    height: 29px;
-    line-height: 29px;
-    padding: 5px 10px;
-    vertical-align: middle;
-    border: 1px solid #ddd;
+.addsupplier li select,
+.addsupplier li input{
+    width: 220px;
+    border-radius: 0!important;
+    color: #666666;
+    background-color: #fff;
+    border: 1px solid #c6c6c6;
+    line-height: 1.2;
     font-size: 14px;
-    color: #666;
-    text-align: center;
+    height: 35px;
+    font-family: inherit;
+    -webkit-box-shadow: none!important;
+    box-shadow: none!important;
+    -webkit-transition-duration: .1s;
+    transition-duration: .1s;
 }
-.supplierlist td{
-    padding: 5px 10px;
-    line-height: 30px;
-    vertical-align: middle;
-    border: 1px solid #ddd;
-    color: #666;
-    text-align: center;
-    font-size: 12px;
-}
-.supplierlist td img{
-    width: 50px;
-    height: 50px;
-}
-tr:hover{
-    background: rgb(174, 241, 253);
-}
-button{
-    margin:0 5px;
-    width: 70px;
-    outline: 0;
-    background: #3a8ee6;
-    border: 0px;
+.addsupplier>button{
     color: #fff;
-}
-button:hover{
+    background: #438EB9!important;
+    border:none;
+    width: 100px;
+    height: 36px;
+    border-radius:3px; 
     cursor: pointer;
 }
 </style>

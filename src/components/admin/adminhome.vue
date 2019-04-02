@@ -342,16 +342,6 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-.home{
-    margin-top: 70px;
-    box-sizing: border-box;
-    border: 1px solid #ddd;
-    position: relative;
-    left: 11%;
-    width: 89%;
-    background: #fff;
-    padding: 10px 10px;
-}
 
 .homebox{
     padding: 20px;

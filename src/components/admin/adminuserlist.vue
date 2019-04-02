@@ -72,23 +72,10 @@ export default {
 </script>
 <style scoped>
 .userlist{
-    margin-top: 70px;
-    box-sizing: border-box;
-    border: 1px solid #ddd;
-    position: relative;
-    left: 11%;
-    width: 89%;
-    background: #fff;
-    padding: 10px 0;
-}
-.userlist table{
-    display: block;
-    margin-left: 50px;
+    padding: 20px;
+    border: 1px solid #ccc;
 }
 
-/* .userlist th:nth-child(1){
-    width: 20px;
-} */
 .userlist thead>tr{
     color: #707070;
     font-weight: normal;

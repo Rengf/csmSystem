@@ -2,7 +2,9 @@
     <div class="home">
         <admin-header></admin-header>
         <admin-menu></admin-menu>
-        <router-view></router-view>
+        <div class="main">
+            <router-view></router-view>
+        </div>
     </div>
 </template>
 <script>
@@ -30,5 +32,15 @@ export default {
 <style scoped>
 .home{
     overflow: hidden;
+}
+.main{
+    margin-top: 70px;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    position: relative;
+    left: 11%;
+    width: 89%;
+    background: #fff;
+    padding: 10px 10px;
 }
 </style>

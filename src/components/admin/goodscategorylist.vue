@@ -82,15 +82,6 @@ export default {
 }
 </script>
 <style scoped>
-.category{
-    margin-top: 70px;
-    padding: 20px;
-    position: relative;
-    width: 89%;
-    left: 11%;
-    border: 1px solid #ccc;
-
-}
 .categorylist{
     margin-top: 30px;
     border: 1px solid #ccc;

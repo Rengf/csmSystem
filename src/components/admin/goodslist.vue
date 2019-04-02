@@ -96,12 +96,6 @@ export default {
 }
 </script>
 <style scoped>
-.goodsbox{
-    margin-top: 70px;
-    position: relative;
-    width: 89%;
-    left: 11%;
-}
 .goodslistbox{
     padding: 20px;
     border: 1px solid #ccc;
@@ -113,10 +107,6 @@ export default {
     padding: 30px;
 }
 
-.goodslist table{
-    display: block;
-    margin-left: 50px;
-}
 .somebtn{
     width: 100%;
     height: 50px;

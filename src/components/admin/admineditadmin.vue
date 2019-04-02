@@ -131,22 +131,9 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-.userlist{
-    margin-top: 70px;
-    box-sizing: border-box;
-    position: relative;
-    left: 11%;
-    width: 89%;
-    background: #fff;
-    padding: 10px 0;
-}
 .userlistbox{
     padding: 20px;
     border: 1px solid #ccc;
-}
-.userlist table{
-    display: block;
-    margin-left: 50px;
 }
 
 /* .userlist th:nth-child(1){

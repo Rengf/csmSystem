@@ -38,6 +38,9 @@
                             <option value="请选择供应商" disabled selected="selected">请选择供应商</option>
                             <option :value="supplier.supplier_id" v-for="(supplier,index) in supplierlist" :key="index">{{supplier.supplier_name}}</option>
                         </select>
+                        <div class="somebtn">
+                            <button @click="showaddsupplier">添加新供货商家</button>
+                        </div>
                     </li>
                 </ul>
                 <button @click="addwarehousing">添加</button>
@@ -46,13 +49,17 @@
         <add-box @closeadd='showaddbox' v-if="showaddgoods">
             <add-goods></add-goods>
         </add-box>
-        <Background v-if="showaddgoods"></Background>
+        <add-box @closeadd='showaddsupplier' v-if="showaddsuppliser">
+            <add-supplier></add-supplier>
+        </add-box>
+        <Background v-if="showbackground"></Background>
     </div>
 </template>
 <script>
 import Tips from "@/components/Communal/tips"
 import AddBox from "@/components/Communal/addbox"
 import AddGoods from "@/components/admin/addgoods"
+import AddSupplier from "@/components/admin/addsupplier"
 import Background from "@/components/Communal/background"
 import axios from "axios";
 import {mapGetters} from "vuex"
@@ -68,7 +75,9 @@ export default {
             supplier:'请选择供应商',
             showtips:false,
             tips:'',
-            showaddgoods:false
+            showaddgoods:false,
+            showaddsuppliser:false,
+            showbackground:false
         }
     },
     created() {
@@ -81,6 +90,11 @@ export default {
     methods:{
          showaddbox(){
             this.showaddgoods=!this.showaddgoods;
+            this.showbackground=!this.showbackground;
+        },
+        showaddsupplier(){
+            this.showaddsuppliser=!this.showaddsuppliser;
+            this.showbackground=!this.showbackground;
         },
         addwarehousing(){
             var data={
@@ -115,21 +129,12 @@ export default {
         Tips,
         AddGoods,
         Background,
-        AddBox
+        AddBox,
+        AddSupplier
     }
 }
 </script>
 <style scoped>
-.addwarehousing{
-    margin-top: 70px;
-    box-sizing: border-box;
-    border: 1px solid #ddd;
-    position: relative;
-    left: 11%;
-    width: 89%;
-    background: #fff;
-    padding: 10px 10px;
-}
 .addwarehousingbox{
     padding: 20px;
     border: 1px solid #ccc;
@@ -167,12 +172,11 @@ export default {
 .somebtn{
     position: relative;
     top: -50px;
-    left: 200px;
+    left: 310px;
     width: 150px;
     height: 50px;
 }
 .somebtn button{
-    margin-left: 110px;
     color: #fff;
     background: #438EB9!important;
     border:none;

@@ -1,5 +1,4 @@
 <template>
-    <div class="addgoods">
         <div class="addgoodsbox">
                  <ul>
                     <li>
@@ -36,9 +35,8 @@
                     </li>
                 </ul>
             <button @click="addgoods">添加</button>
+            <Tips v-if="showtips" :tips='tips'></Tips>
         </div>
-        <Tips v-if="showtips" :tips='tips'></Tips>
-    </div>
 </template>
 <script>
 import Tips from "@/components/Communal/tips"

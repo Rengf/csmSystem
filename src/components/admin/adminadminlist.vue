@@ -77,15 +77,6 @@ export default {
 }
 </script>
 <style scoped>
-.adminlist{
-    margin-top: 70px;
-    box-sizing: border-box;
-    position: relative;
-    left: 11%;
-    width: 89%;
-    background: #fff;
-    padding: 10px 10px;
-}
 .userlistbox{
     padding: 20px;
     border: 1px solid #ccc;

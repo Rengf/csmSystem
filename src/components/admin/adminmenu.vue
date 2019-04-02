@@ -61,7 +61,7 @@ export default {
                                                                                 {title:'添加进货',icon:'&#xeb0b;',url:'/admin/addwarehousing'},
                                                                                 {title:'删除商品',icon:'&#xeb0b;',url:'/admin'}]},
                     {title:'供货商家',icon:'&#xe639;',faup:'&#xe638;',sublists:[{title:'添加商家',icon:'&#xeb0b;',url:'/admin/addsupplier'},
-                                                                                {title:'修改分类',icon:'&#xeb0b;',url:'/admin'},
+                                                                                {title:'商家列表',icon:'&#xeb0b;',url:'/admin/supplierlist'},
                                                                                 {title:'删除分类',icon:'&#xeb0b;',url:'/admin'}]},
                     {title:'订单管理',icon:'&#xe639;',faup:'&#xe638;',sublists:[{title:'添加订单',icon:'&#xeb0b;',url:'/admin/orderlist'},
                                                                                 {title:'管理订单',icon:'&#xeb0b;',url:'/admin'},
