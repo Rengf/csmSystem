@@ -148,6 +148,7 @@ router.post('/addorder', function(req, res, next) {
     var order_no = parseInt(Math.random() * 100000000000000);
     data.addorder_time = addorder_time;
     data.order_no = order_no;
+    data.sales_way = 0
     Goods.addorder(client, data, function(result) {
         res.json({
             code: 0,
@@ -160,7 +161,6 @@ router.post('/addorder', function(req, res, next) {
 //添加发票
 router.post('/addinvoice', function(req, res, next) {
     var data = req.body
-    console.log(data)
     var client = mysql_connect.connectServer();
     var date = new Date();
     var addinvoice_time = date.Format("yyyy-MM-dd HH:mm:ss");
@@ -216,4 +216,44 @@ router.post('/updateorder', function(req, res, next) {
         }
     })
 })
+
+
+//线下购买
+router.post('/offlinesales', function(req, res, next) {
+    var data = req.body;
+    var client = mysql_connect.connectServer();
+    var date = new Date();
+    var payed_time = date.Format("yyyy-MM-dd HH:mm:ss");
+    var addorder_time = date.Format("yyyy-MM-dd HH:mm:ss");
+    var order_no = parseInt(Math.random() * 100000000000000);
+    data.addorder_time = addorder_time;
+    data.order_no = order_no;
+    data.payed_time = payed_time;
+    data.order_status = 2;
+    data.product_count = 1;
+    data.product_amount_total = data.goods_price;
+    data.order_amount_total = data.goods_price;
+    data.logistics = null;
+    data.logistics_fee = null;
+    data.address_id = null;
+    data.pay_channel = "线下支付";
+    data.user_id = null;
+    data.user_remarks = null;
+    data.sales_way = 1
+    Goods.getgoodsbyid(client, data, function(result) {
+        if (result) {
+            data.stock = parseInt(result[0].stock) - 1;
+            data.sales = parseInt(result[0].sales) + 1;
+            Goods.addorder(client, data, function(result) {
+                Goods.updategoods(client, data, function(result) {
+                    res.json({
+                        code: 0,
+                        message: '添加成功',
+                    })
+                })
+            })
+        }
+    })
+})
+
 module.exports = router;

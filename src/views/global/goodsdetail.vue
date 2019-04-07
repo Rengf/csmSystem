@@ -83,6 +83,7 @@ export default {
         this.conter--;
       }
     },
+    
     commitorder(){
       var data=this.conter;
       this.$store.dispatch('commitorder',data);

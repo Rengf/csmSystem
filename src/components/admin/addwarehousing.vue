@@ -21,8 +21,8 @@
                         </div>
                     </li>
                     <li>
-                        <label for="goods_count">进货量：</label>
-                        <input name="goods_count" placeholder="输入进货量"  v-model="warehousing_count">
+                        <label for="goods_count">进货数量：</label>
+                        <input name="goods_count" placeholder="输入进货数量"  v-model="warehousing_count">
                     </li>
                     <li>
                         <label for="totalprice">进货支出：</label>

@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/views/global/home'
 import GoodsDetail from '@/views/global/goodsdetail'
+import OffLineSales from '@/views/global/Offlinesales'
 import SureOrder from '@/views/global/sureorder'
 import PayFor from '@/views/global/payfor'
 import Login from '@/views/global/login'
@@ -30,6 +31,10 @@ export default new Router({
         path: '/',
         name: 'Home',
         component: Home
+    }, {
+        path: '/offlinesales',
+        name: 'OffLineSales',
+        component: OffLineSales
     }, {
         path: '/goodsdetail',
         name: 'GoodsDetail',

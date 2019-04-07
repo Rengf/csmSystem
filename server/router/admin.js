@@ -336,10 +336,11 @@ router.post('/deletewarehousing', function(req, res, next) {
 })
 
 //获取订单列表
-router.get('/getorderlist', function(req, res, next) {
-    var order_status = req.query.order_status;
+router.post('/getorderlist', function(req, res, next) {
+    var condition = req.body.condition;
+    var data = condition;
     var client = mysql_connect.connectServer();
-    if (order_status == 'undefined') {
+    if (JSON.stringify(data) == '{}') {
         Goods.getorderlist(client, function(result) {
             res.json({
                 code: 0,
@@ -348,10 +349,14 @@ router.get('/getorderlist', function(req, res, next) {
             })
         })
     } else {
-        var data = {
-            order_status: order_status
+        if (data.sales_way) {
+            data.way = 'sales_way';
+            data.msg = data.sales_way;
+        } else if (data.order_status) {
+            data.way = 'order_status';
+            data.msg = data.order_status;
         }
-        Goods.getorderstatus(client, data, function(result) {
+        Goods.getordercondition(client, data, function(result) {
             res.json({
                 code: 0,
                 message: '查询成功',

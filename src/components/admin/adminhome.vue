@@ -90,6 +90,9 @@
                          </div>
                      </div>
                  </div>
+                 <div class="shopmsg">
+                     
+                 </div>
                  <div class="loginrecord">
                      <ul>
                          <li>
@@ -180,7 +183,7 @@
                              <ul>
                                  <li>
                                      <span>未付款订单</span>
-                                     <a href="/admin/orderlist?order_status=0">(02)</a>
+                                     <router-link to="/admin/orderlist?order_status=0">(05)</router-link>
                                  </li>
                                  <li>
                                      <span>已完成订单</span>
@@ -439,7 +442,7 @@ export default {
 }
 .nowtime{
     float: left;
-    width: 450px;
+    width: 400px;
     height: 250px;
 }
 .time{
@@ -488,6 +491,13 @@ export default {
     color: #555; 
     font-weight: bold;
     text-align: center;
+}
+.shopmsg{
+    float: left;
+    width: 600px;
+    height: 250px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
 }
 .loginrecord{
     float: left;

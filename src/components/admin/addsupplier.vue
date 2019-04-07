@@ -12,6 +12,7 @@
                     <li>
                         <label for="supplieraddress">商家地址：</label>
                          <v-distpicker :placeholders="placeholders" @selected="onSelected"></v-distpicker>
+                         <label for="supplieraddress">详细地址：</label>
                          <input type="text" name="supplieraddress" placeholder="请输入详细地址" v-model="supplier_address">
                     </li>
                     <li>

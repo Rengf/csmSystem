@@ -286,21 +286,23 @@ module.exports = {
     //添加订单
     addorder(client, data, callback) {
         var sql = `insert into \`order\`
-         (order_no,goods_id,product_count,product_amount_total,order_amount_total,logistics,logistics_fee,address_id,pay_channel,addorder_time,user_id,user_remarks) 
-        values(?,?,?,?,?,?,?,?,?,?,?,?);`
+         (order_no,goods_id,order_status,product_count,product_amount_total,order_amount_total,logistics,logistics_fee,address_id,pay_channel,addorder_time,user_id,user_remarks,sales_way) 
+        values(?,?,?,?,?,?,?,?,?,?,?,?,?,?);`
         var params = [
             data.order_no,
             parseInt(data.goods_id),
+            data.order_status,
             data.product_count,
             data.product_amount_total,
             data.order_amount_total,
             data.logistics,
             data.logistics_fee,
-            parseInt(data.address_id),
+            data.address_id,
             data.pay_channel,
             data.addorder_time,
-            parseInt(data.user_id),
-            data.user_remarks
+            data.user_id,
+            data.user_remarks,
+            data.sales_way,
         ];
         client.query(sql, params, (err, result) => {
             if (err) {
@@ -348,7 +350,7 @@ module.exports = {
     //获取订单列表
     getorderlist(client, callback) {
         var sql = `select * from \`order\`
-                    inner join user on order.user_id=user.user_id
+                    left join user on order.user_id=user.user_id
                     left join goods on order.goods_id=goods.goods_id
                     left join address on order.address_id=address.address_id`
         client.query(sql, (err, result) => {
@@ -357,15 +359,15 @@ module.exports = {
         })
     },
 
-    //按订单类别获取订单列表
-    getorderstatus(client, data, callback) {
+    //按条件获取订单列表
+    getordercondition(client, data, callback) {
         var sql = `select * from \`order\`
-                    inner join user on order.user_id=user.user_id
+                    left join user on order.user_id=user.user_id
                     left join goods on order.goods_id=goods.goods_id
                     left join address on order.address_id=address.address_id
-                    where order_status=?`
+                    where ` + data.way + `=?`
         var params = [
-            parseInt(data.order_status)
+            data.msg
         ]
         client.query(sql, params, (err, result) => {
             if (err) throw err
@@ -376,19 +378,17 @@ module.exports = {
     //按ID获取订单
     getorder(client, data, callback) {
         var sql = `select * from \`order\`
-                    inner join user on order.user_id=user.user_id
+                    left join user on order.user_id=user.user_id
                     inner join goods on order.goods_id=goods.goods_id
-                    inner join address on order.address_id=address.address_id
+                    left join address on order.address_id=address.address_id
                     left join order_invoice on order.invoice_id=order_invoice.invoice_id
                     left join order_logistics on order.order_logistics_id=order_logistics.order_logistics_id
                     where order.order_id= ?`
         var params = [
             parseInt(data.order_id)
         ];
-        console.log(params)
         client.query(sql, params, (err, result) => {
             if (err) throw err
-            console.log(result)
             callback(result)
         })
     },
