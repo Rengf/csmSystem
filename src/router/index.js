@@ -9,6 +9,9 @@ import Login from '@/views/global/login'
 import Regist from '@/views/global/regist'
 
 import AdminHome from '@/views/admin/adminhome'
+import AddArticle from '@/components/admin/addarticle'
+import ArticleDetail from '@/components/admin/articledetail'
+import ArticleList from '@/components/admin/articlelist'
 import AdminIndex from '@/components/admin/adminhome'
 import UserList from '@/components/admin/adminuserlist'
 import AdminList from '@/components/admin/adminadminlist'
@@ -60,61 +63,76 @@ export default new Router({
         name: 'AdminHome',
         component: AdminHome,
         children: [{
-            path: '/admin',
-            name: 'AdminIndex',
-            component: AdminIndex,
-        }, {
-            path: '/admin/userlist',
-            name: 'UserList',
-            component: UserList,
-        }, {
-            path: '/admin/adminlist',
-            name: 'AdminList',
-            component: AdminList,
-        }, {
-            path: '/admin/userinfo',
-            name: 'UserInfo',
-            component: UserInfo,
-        }, {
-            path: '/admin/editadmin',
-            name: 'EditAdmin',
-            component: EditAdmin,
-        }, {
-            path: '/admin/categorylist',
-            name: 'CategoryList',
-            component: CategoryList,
-        }, {
-            path: '/admin/addgoods',
-            name: 'AddGoods',
-            component: AddGoods,
-        }, {
-            path: '/admin/goodslist',
-            name: 'GoodsList',
-            component: GoodsList,
-        }, {
-            path: '/admin/addwarehousing',
-            name: 'AddWareHousing',
-            component: AddWareHousing,
-        }, {
-            path: '/admin/warehousinglist',
-            name: 'WareHousingList',
-            component: WareHousingList,
-        }, {
-            path: '/admin/addsupplier',
-            name: 'AddSupplier',
-            component: AddSupplier,
-        }, {
-            path: '/admin/supplierlist',
-            name: 'SupplierList',
-            component: SupplierList,
-        }, {
-            path: '/admin/orderlist',
-            name: 'OrderList',
-            component: OrderList,
-        }, {
-            path: '/admin/orderdetail',
-            name: 'OrderDetail',
-            component: OrderDetail,
-        }]
+                path: '/admin',
+                name: 'AdminIndex',
+                component: AdminIndex,
+            }, {
+                path: '/admin/userlist',
+                name: 'UserList',
+                component: UserList,
+            }, {
+                path: '/admin/adminlist',
+                name: 'AdminList',
+                component: AdminList,
+            },
+            {
+                path: '/admin/addarticle',
+                name: 'AddArticle',
+                component: AddArticle,
+            },
+            {
+                path: '/admin/articledetail',
+                name: 'ArticleDetail',
+                component: ArticleDetail,
+            }, {
+                path: '/admin/articlelist',
+                name: 'ArticleList',
+                component: ArticleList,
+            }, {
+                path: '/admin/userinfo',
+                name: 'UserInfo',
+                component: UserInfo,
+            }, {
+                path: '/admin/editadmin',
+                name: 'EditAdmin',
+                component: EditAdmin,
+            }, {
+                path: '/admin/categorylist',
+                name: 'CategoryList',
+                component: CategoryList,
+            }, {
+                path: '/admin/addgoods',
+                name: 'AddGoods',
+                component: AddGoods,
+            }, {
+                path: '/admin/goodslist',
+                name: 'GoodsList',
+                component: GoodsList,
+            }, {
+                path: '/admin/addwarehousing',
+                name: 'AddWareHousing',
+                component: AddWareHousing,
+            }, {
+                path: '/admin/warehousinglist',
+                name: 'WareHousingList',
+                component: WareHousingList,
+            }, {
+                path: '/admin/addsupplier',
+                name: 'AddSupplier',
+                component: AddSupplier,
+            }, {
+                path: '/admin/supplierlist',
+                name: 'SupplierList',
+                component: SupplierList,
+            }, {
+                path: '/admin/orderlist',
+                name: 'OrderList',
+                component: OrderList,
+            }, {
+                path: '/admin/orderdetail',
+                name: 'OrderDetail',
+                component: OrderDetail,
+            }
+        ]
     }]
 })

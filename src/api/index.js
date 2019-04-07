@@ -43,5 +43,8 @@ export const reqWarehousingList = () => ajax(BASE_URL + ADMIN_API + '/getwarehou
 //获取订单列表
 export const reqOrderList = (condition) => ajax(BASE_URL + ADMIN_API + '/getorderlist', { condition }, 'POST')
 
-//获取订单列表
+//获取订单
 export const reqOrder = (data) => ajax(BASE_URL + ADMIN_API + '/getorder', { data }, 'POST')
+
+//获取文章列表
+export const reqArticleList = (condition) => ajax(BASE_URL + ADMIN_API + '/getarticlelist', { condition }, 'POST')

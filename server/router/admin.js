@@ -8,6 +8,7 @@ var path = require('path');
 var mysql_connect = require('../db/mysql_connect')
 var Admin = require('../db/admin');
 var Goods = require('../db/goods');
+var Article = require('../db/article');
 
 Date.prototype.Format = function(fmt) {
     var o = {
@@ -421,5 +422,62 @@ router.post('/delivergoods', function(req, res, next) {
     })
 })
 
+//文章发布
+router.post('/addarticle', function(req, res, next) {
+    var data = req.body;
+    var client = mysql_connect.connectServer();
+    var date = new Date();
+    var release_time = date.Format("yyyy-MM-dd HH:mm:ss");
+    data.release_time = release_time;
+    Article.addarticle(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '发货成功',
+        })
+    })
+})
 
+//获取文章列表
+router.post('/getarticlelist', function(req, res, next) {
+    var condition = req.body.condition;
+    var data = condition;
+    var client = mysql_connect.connectServer();
+    if (JSON.stringify(data) == '{}') {
+        Article.getarticlelist(client, function(result) {
+            res.json({
+                code: 0,
+                message: '查询成功',
+                articlelist: result
+            })
+        })
+    } else {
+        if (data.sales_way) {
+            data.way = 'sales_way';
+            data.msg = data.sales_way;
+        } else if (data.order_status) {
+            data.way = 'order_status';
+            data.msg = data.order_status;
+        }
+        Goods.getordercondition(client, data, function(result) {
+            res.json({
+                code: 0,
+                message: '查询成功',
+                orderlist: result
+            })
+        })
+    }
+})
+
+//按id获取文章详情
+router.get('/getarticle', function(req, res, next) {
+    var data = req.query;
+    var client = mysql_connect.connectServer();
+    Article.getarticlebyid(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '获取成功',
+            article: result[0],
+        })
+    })
+})
 module.exports = router

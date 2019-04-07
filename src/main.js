@@ -6,6 +6,10 @@ import router from './router'
 import axios from 'axios'
 import store from './store'
 import moment from 'moment'
+import '../static/ueditor/ueditor.config.js'
+import '../static/ueditor/ueditor.all.min.js'
+import '../static/ueditor/lang/zh-cn/zh-cn.js'
+import '../static/ueditor/ueditor.parse.min.js'
 
 axios.defaults.withCredentials = true
 Vue.prototype.$http = axios
