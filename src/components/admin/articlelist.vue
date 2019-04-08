@@ -3,21 +3,21 @@
         <div class="articlelistbox">
             <div class="somebtn">
                 <button @click="getallarticle()">全部文章</button>
-                <button @click="getarticle('sales_way',1)">已发布</button>
-                <button @click="getarticle('sales_way',0)">草稿</button>
+                <button @click="getarticle('status',1)">已发布</button>
+                <button @click="getarticle('status',0)">草稿</button>
             </div>
             <div class="articlelist">
                 <table>
                     <thead>
                         <tr>
                             <th width="30">#</th>
-                            <th width="300">文章标题</th>
+                            <th width="200">文章标题</th>
                             <th width="500">文章内容</th>
                             <th width="100">作者</th>
                             <th width="100">发布者</th>
                             <th width="180">发布时间</th>
                             <th width="80">发布状态</th>
-                            <th width="200">操作</th>
+                            <th width="250">操作</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -30,8 +30,9 @@
                             <td>{{article.release_time|dateformat('YYYY-MM-DD HH:mm:ss')}}</td>
                             <td>{{article.status==1?'已发布':'未发布'}}</td>
                             <td>
-                                <button @click="delivergoods()">发布</button>
+                                <button @click="releasearticle(article.article_id)" :disabled="article.status==1?true:false">发布</button>
                                 <button @click="articledetail(article.article_id)">详细</button>
+                                <button @click="updatearticle(article.article_id)">修改</button>
                                 <button @click="deletearticle(article.article_id)">删除</button>
                             </td>
                         </tr>
@@ -52,12 +53,20 @@ export default {
         return{
             showtips:false,
             tips:'',
-            condition:'',
+            condition:this.$route.query||'',
         }
     },
     created() {
         this.condition=this.$route.query
         this.$store.dispatch('getArticleList',this.condition)
+    },
+    watch: {
+       $route: {
+            handler(newValue, oldValue) {
+                this.condition=this.$route.query
+                this.$store.dispatch('getArticleList',this.condition)
+            }
+        }
     },
     computed: {
         ...mapGetters({articlelists:'articlelist'}),
@@ -66,16 +75,14 @@ export default {
         getallarticle(){
             this.$router.push('/admin/articlelist');
             this.condition=this.$route.query;
-            this.$store.dispatch('getOrderList',this.condition);
+            this.$store.dispatch('getArticleList',this.condition);
         },
-        delivergoods(id,i){
-            axios.post('http://localhost:3333/admin/delivergoods',{
-                article_id:id,
-                logistics:this.articlelist[i].logistics,
-                logistics_fee:this.articlelist[i].logistics_fee,
+        releasearticle(id){
+            axios.post('http://localhost:3333/admin/releasearticle',{
+                article_id:id
             }).then(response=>{
                 if(response.data.code==0){
-                    this.$store.dispatch('getOrderList',this.article_status)
+                    this.$store.dispatch('getArticleList',this.condition)
                     this.tips=response.data.message;
                     this.showtips=true;
                     setTimeout(() => {
@@ -95,7 +102,7 @@ export default {
            }).then(
                response=>{
                    if(response.data.code==0){
-                       this.$store.dispatch('getOrderList')
+                       this.$store.dispatch('getArticleList',this.condition)
                         this.tips=response.data.message;
                         this.showtips=true;
                         setTimeout(() => {
@@ -113,10 +120,13 @@ export default {
         articledetail(id){
             this.$router.push('/admin/articledetail?article_id='+id)
         },
+        updatearticle(id){
+            this.$router.push('/admin/addarticle?article_id='+id)
+        },
         getarticle(way,data){
             this.$router.push('/admin/articlelist?'+way+'='+data);
             this.condition=this.$route.query;
-            this.$store.dispatch('getOrderList',this.condition);
+            this.$store.dispatch('getArticleList',this.condition);
         }
     },
     components:{
@@ -203,6 +213,9 @@ button:nth-child(2){
 }
 button:nth-child(3){
  background: #d15b47;
+}
+button:nth-child(4){
+ background: #123456;
 }
 button:hover{
     cursor: pointer;

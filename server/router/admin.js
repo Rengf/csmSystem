@@ -422,7 +422,7 @@ router.post('/delivergoods', function(req, res, next) {
     })
 })
 
-//文章发布
+//添加文章
 router.post('/addarticle', function(req, res, next) {
     var data = req.body;
     var client = mysql_connect.connectServer();
@@ -432,7 +432,23 @@ router.post('/addarticle', function(req, res, next) {
     Article.addarticle(client, data, function(result) {
         res.json({
             code: 0,
-            message: '发货成功',
+            message: '添加成功',
+        })
+    })
+})
+
+//文章发布
+router.post('/releasearticle', function(req, res, next) {
+    var data = req.body;
+    var client = mysql_connect.connectServer();
+    var date = new Date();
+    var release_time = date.Format("yyyy-MM-dd HH:mm:ss");
+    data.release_time = release_time;
+    data.status = 1;
+    Article.releasearticle(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '发布成功',
         })
     })
 })
@@ -451,18 +467,15 @@ router.post('/getarticlelist', function(req, res, next) {
             })
         })
     } else {
-        if (data.sales_way) {
-            data.way = 'sales_way';
-            data.msg = data.sales_way;
-        } else if (data.order_status) {
-            data.way = 'order_status';
-            data.msg = data.order_status;
+        if (data.status) {
+            data.way = 'status';
+            data.msg = data.status;
         }
-        Goods.getordercondition(client, data, function(result) {
+        Article.getarticlecondition(client, data, function(result) {
             res.json({
                 code: 0,
                 message: '查询成功',
-                orderlist: result
+                articlelist: result
             })
         })
     }
@@ -477,6 +490,66 @@ router.get('/getarticle', function(req, res, next) {
             code: 0,
             message: '获取成功',
             article: result[0],
+        })
+    })
+})
+
+//按删除文章
+router.post('/deletearticle', function(req, res, next) {
+    var data = req.body;
+    var client = mysql_connect.connectServer();
+    Article.deletearticle(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '删除成功'
+        })
+    })
+})
+
+//按id获取文章详情
+router.post('/updatearticle', function(req, res, next) {
+    var data = req.body;
+    var client = mysql_connect.connectServer();
+    Article.updatearticle(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '修改成功',
+        })
+    })
+})
+
+//查询最近七天销量
+router.get('/searchsales', function(req, res, next) {
+    var data = {};
+    var date = new Date();
+    var date7 = new Date(date.getTime() - 144 * 60 * 60 * 1000);
+    var old7 = date7.Format("yyyy-MM-dd") + " 00:00:00";
+    data.date7 = old7;
+    data.date1 = date.Format("yyyy-MM-dd HH:mm:ss")
+    var client = mysql_connect.connectServer();
+    Goods.searchbysales(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '获取成功',
+            result: result,
+        })
+    })
+})
+
+//查询线上最近七天销量
+router.get('/searchsalesonline', function(req, res, next) {
+    var data = {};
+    var date = new Date();
+    var date7 = new Date(date.getTime() - 144 * 60 * 60 * 1000);
+    var old7 = date7.Format("yyyy-MM-dd") + " 00:00:00";
+    data.date7 = old7;
+    data.date1 = date.Format("yyyy-MM-dd HH:mm:ss")
+    var client = mysql_connect.connectServer();
+    Goods.searchbysalesonline(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '获取成功',
+            result: result,
         })
     })
 })

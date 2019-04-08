@@ -439,6 +439,35 @@ module.exports = {
             if (err) throw err
             callback(result);
         })
+    },
 
+    //总销量查询
+    searchbysales(client, data, callback) {
+        var sql = `select product_count,addorder_time from \`order\`
+        where addorder_time>=? && addorder_time<=? 
+        order by addorder_time desc`
+        var params = [
+            data.date7,
+            data.date1
+        ]
+        client.query(sql, params, (err, result) => {
+            if (err) throw err
+            callback(result);
+        })
+    },
+
+    //线上销量查询
+    searchbysalesonline(client, data, callback) {
+        var sql = `select product_count,addorder_time from \`order\`
+        where addorder_time>=? && addorder_time<=? && sales_way=0
+        order by addorder_time desc`
+        var params = [
+            data.date7,
+            data.date1
+        ]
+        client.query(sql, params, (err, result) => {
+            if (err) throw err
+            callback(result);
+        })
     }
 }

@@ -196,6 +196,9 @@
                              </ul>
                          </div>
                      </div>
+                     <div class="ordercharts">
+                         <div id="chart"></div>
+                     </div>
                  </div>
                  <div class="goodsstate">
                       <div class="goodstateheader">
@@ -241,7 +244,9 @@ export default {
                 minutes:'',
                 seconds:'',
                 day:'',
-                goodslist:''
+                goodslist:'',
+                sales:[],
+                salesonline:[],
             }
         },
         created() {
@@ -250,7 +255,6 @@ export default {
                 response=>{
                     if(response.data.code==0){
                         this.goodslist=response.data.goodslist
-                        console.log(response.data.goodslist)
                     }else{
                         console.log('获取失败')
                     }
@@ -259,6 +263,9 @@ export default {
                     console.log("error:"+response)
                 }
             )
+        this.searchsales();
+        this.searchsalesonline();
+           
         },
         computed: {
             ...mapGetters(['adminlist']),
@@ -286,9 +293,75 @@ export default {
                         return '六'
                         break
                 }
-            }
+            },
+            xiaoliang(){
+                 var date = new Date(),dateArr=[],series=[];
+                 for(var i =0;i<7;i++){
+                     dateArr.push(this.$moment(date).subtract(i,'days').format('YYYY-MM-DD'))
+                 }
+                 dateArr.reverse();
+                 dateArr.map(v=>{
+                     var sum = 0;
+                     this.sales.map(val=>{
+                         val.addorder_time.includes(v)?sum=sum+parseInt(val.product_count):''
+                     })
+                     series.push(sum)
+                 })
+                 return {
+                     xAxis:dateArr,
+                     series:series
+                 }
+            },
+            xiaoliangonline(){
+                 var date = new Date(),dateArr=[],series=[];
+                 for(var i =0;i<7;i++){
+                     dateArr.push(this.$moment(date).subtract(i,'days').format('YYYY-MM-DD'))
+                 }
+                 dateArr.reverse();
+                 dateArr.map(v=>{
+                     var sum = 0;
+                     this.salesonline.map(val=>{
+                         val.addorder_time.includes(v)?sum=sum+parseInt(val.product_count):''
+                     })
+                     series.push(sum)
+                 })
+                 return {
+                     xAxis:dateArr,
+                     series:series
+                 }
+            },
         },
         methods:{
+            searchsales(){
+                 axios.get("http://localhost:3333/admin/searchsales").then(
+                response=>{
+                    if(response.data.code==0){
+                        this.sales=response.data.result;
+                       this.drawPie('chart')
+                    }else{
+                        console.log('获取失败')
+                    }
+                },
+                response=>{
+                    console.log("error:"+response)
+                }
+            )
+            },
+            searchsalesonline(){
+                 axios.get("http://localhost:3333/admin/searchsalesonline").then(
+                response=>{
+                    if(response.data.code==0){
+                        this.salesonline=response.data.result;
+                       this.drawPie('chart')
+                    }else{
+                        console.log('获取失败')
+                    }
+                },
+                response=>{
+                    console.log("error:"+response)
+                }
+            )
+            },
             datetime(){
                 var date=new Date();
                 this.year=date.getFullYear();
@@ -302,35 +375,77 @@ export default {
             drawPie(id){
                this.charts = echarts.init(document.getElementById(id))
                this.charts.setOption({
-                aria: {
-                    show: true
-                },
-                title: {
-                    text: '一周商品（类型）销量',
-                    x: 'center'
-                },
-                series: [
+                   title: {
+                        text: '最近七天销售变化',
+                    },
+                 tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        data:['总销售量','线上销量']
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            dataZoom: {
+                                yAxisIndex: 'none'
+                            },
+                            dataView: {readOnly: false},
+                            magicType: {type: ['line', 'bar','pie']},
+                            restore: {},
+                            saveAsImage: {}
+                        }
+                    },
+                    xAxis:  {
+                        type: 'category',
+                        boundaryGap: false,
+                        data: this.xiaoliang.xAxis
+                    },
+                    yAxis: {
+                        type: 'value',
+                        axisLabel: {
+                            formatter: '{value} '
+                        }
+                    },
+                    series: [
                     {
-                        name: '商品类型',
-                        type: 'pie',
-                        data: [
-                            { value: 335, name: '直接访问' },
-                            { value: 310, name: '邮件营销' },
-                            { value: 234, name: '联盟广告' },
-                            { value: 135, name: '视频广告' },
-                            { value: 1548, name: '搜索引擎' },
-                            { value: 456, name: '购物收拾' }
-                        ]
-                    }
+                        name:'总销售量',
+                        type:'line',
+                        data:this.xiaoliang.series,
+                        markPoint: {
+                            data: [
+                                {type: 'max', name: '最大值'},
+                                {type: 'min', name: '最小值'}
+                            ]
+                        },
+                         markLine: {
+                            data: [
+                                {type: 'average', name: '平均值'}
+                            ]
+                        }       
+                    },
+                    {
+                        name:'线上销量',
+                        type:'line',
+                        data:this.xiaoliangonline.series,
+                        markPoint: {
+                            data: [
+                                {type: 'max', name: '最大值'},
+                                {type: 'min', name: '最小值'}
+                            ]
+                        },
+                         markLine: {
+                            data: [
+                                {type: 'average', name: '平均值'}
+                            ]
+                        }       
+                    },
                 ]
                })
             }
         },
       //调用
         mounted(){
-            this.$nextTick(function() {
-                this.drawPie('main')
-            })
             setInterval(()=>{
                 this.datetime()
             },1000)
@@ -602,5 +717,10 @@ export default {
     background: #ff5757;
     border-radius: 3px;
     color: #fff;
+}
+.ordercharts{
+    height: 278px;
+}.ordercharts>div{
+    height: 278px;
 }
 </style>

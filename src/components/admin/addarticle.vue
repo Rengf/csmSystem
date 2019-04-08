@@ -16,7 +16,7 @@
            <button @click="addArticleDraft">保存草稿</button>
         </div>
         <div class="buttonBox" v-else>
-           <button @click="updateArticle(articleid)">修改</button>
+           <button @click="updateArticle(article_id)">修改</button>
         </div>
     </div>
 </template>
@@ -36,11 +36,12 @@ import {mapGetters} from 'vuex'
             initialFrameHeight: 500
         },
         id: "uel",
-        articleid:'',
+        article_id:'',
         title:"",
         author:"",
         addarticle:true,
-        content:""
+        content:"",
+        article:''
         }
     },
     created() {
@@ -55,8 +56,8 @@ import {mapGetters} from 'vuex'
       this.editor.addListener("ready", function () {
         _this.editor.setContent(_this.defaultMsg); // 确保UE加载完成后，放入内容。
       });
-       this.articleid=this.$route.query.id;
-      if(this.articleid){
+       this.article_id=this.$route.query.article_id;
+      if(this.article_id){
         this.addarticle=false;
         this.getArticleById();
       }
@@ -66,21 +67,17 @@ import {mapGetters} from 'vuex'
     },
     methods:{
       getArticleById(){
-        console.log("editor:"+this.editor)
-            axios.post("http://localhost:3000/admin/articlebyid", {
-                    id:this.articleid,
-                })
-                .then(response => {
+             axios.get("http://localhost:3333/admin/getarticle?article_id="+this.article_id).then(
+                 response => {
                     if (response.data.code == 0) {
+                        this.article=response.data.article;
                        this.title=response.data.article.title;
                        this.author=response.data.article.author;
-                       this.selected=response.data.article.category;
                        this.defaultMsg=response.data.article.content;
                     } else {
-                        alert(response.data.message)
+                        console.log("失败");
                     }
                 },response=>{
-                    console.log("失败");
                 console.log('error:'+response.data.message);
                 });
       },
@@ -105,43 +102,39 @@ import {mapGetters} from 'vuex'
       },
         addArticleDraft(){
           var data=this.editor.getContent()
-            axios.post("http://localhost:3000/admin/addarticle", {
-                    contetn:data,
+            axios.post("http://localhost:3333/admin/addarticle", {
+                    content:data,
                     title:this.title,
                     author:this.author,
+                    user_id:this.userinfo.user_id,
                     status:0
-                })
-                .then(response => {
+                }).then(response => {
                     if (response.data.code == 0) {
                        alert("chenggong")
                     } else {
-                        alert(response.data.message)
+                        alert("失败")
                     }
                 },response=>{
                     console.log("失败")
-                console.log('error:'+response.data.message);
+                console.log('error:'+response);
                 });
         },
         updateArticle(id){
           var data=this.editor.getContent()
-          var article={
+           axios.post("http://localhost:3333/admin/updatearticle",{
                 content:data,
-                id:id,
                 title:this.title,
                 author:this.author,
-                category:this.selected,
-                status:1,
-          }
-           axios.post("http://localhost:3000/admin/updatearticle",article).then(
+                article_id:id
+               }).then(
                  response => {
                         if (response.data.code == 0) {
                             alert('修改成功')
                         } else {
-                            console.log(response.data.message)
+                            console.log("失败")
                         }
                     },
                 response=>{
-                        console.log("失败")
                         console.log('error:'+response);
                 })
         }

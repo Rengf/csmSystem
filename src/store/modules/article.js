@@ -18,7 +18,6 @@ const getters = {
 const actions = {
     async getArticleList({ commit }, condition) {
         const result = await reqArticleList(condition)
-        console.log(result)
         if (result.code == 0) {
             const articlelist = result.articlelist;
             commit(RECEIVE_ARTICLE_LIST, articlelist)

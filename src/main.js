@@ -15,7 +15,7 @@ axios.defaults.withCredentials = true
 Vue.prototype.$http = axios
 
 Vue.config.productionTip = false
-
+Vue.prototype.$moment = moment;
 
 Vue.filter('dateformat', function(dataStr, pattern = 'YYYY-MM-DD HH:mm:ss') {  
     return moment(dataStr).format(pattern)
