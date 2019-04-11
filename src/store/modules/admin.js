@@ -43,8 +43,8 @@ const actions = {
             commit(RECEIVE_USER_LIST, userlist)
         }
     },
-    async getAdminlist({ commit }) {
-        const result = await reqAdminList()
+    async getAdminlist({ commit }, condition) {
+        const result = await reqAdminList(condition)
         if (result.code == 0) {
             const adminlist = result.adminlist;
             commit(RECEIVE_ADMIN_LIST, adminlist)

@@ -469,5 +469,37 @@ module.exports = {
             if (err) throw err
             callback(result);
         })
-    }
+    },
+
+
+    //查询商品
+    searchgoods(client, data, callback) {
+        var sql = `select * from goods
+        inner join goods_type on goods.goods_type_id=goods_type.goods_type_id
+        where goods_name like '%` + data.searchmsg + `\%' 
+        or goods_type_name like '%` + data.searchmsg + `\%'`
+        client.query(sql, (err, result) => {
+            if (err) throw err
+            callback(result);
+        })
+    },
+
+    //查询订单
+    searchorder(client, data, callback) {
+        var sql = `select * from \`order\`
+        left join user on order.user_id=user.user_id
+        inner join goods on order.goods_id=goods.goods_id
+        left join address on order.address_id=address.address_id
+        left join order_invoice on order.invoice_id=order_invoice.invoice_id
+        left join order_logistics on order.order_logistics_id=order_logistics.order_logistics_id
+        where order_no like '%` + data.searchmsg + `\%' 
+        or pay_channel like '%` + data.searchmsg + `\%'
+        or goods_name like '%` + data.searchmsg + `\%'
+        or order.logistics like '%` + data.searchmsg + `\%'
+        or user_name like '%` + data.searchmsg + `\%'`
+        client.query(sql, (err, result) => {
+            if (err) throw err
+            callback(result);
+        })
+    },
 }

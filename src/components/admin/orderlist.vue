@@ -6,6 +6,7 @@
                 <button @click="getorder('sales_way',1)">线下订单</button>
                 <button @click="getorder('sales_way',0)">线上订单</button>
                 <button @click="getorder">退货订单</button>
+                <search-box @searchmsg="searchorder"></search-box>
             </div>
             <div class="orderlist">
                 <table>
@@ -34,16 +35,16 @@
                         <tr v-for="(order,index) in orderlists" :key="index">
                             <td>{{index+1}}</td>
                             <td>{{order.order_no}}</td>
-                            <td>{{order.user_name||'线下客户'}}</td>
+                            <td>{{order.user_name || '线下客户'}}</td>
                             <td>{{order.order_status=='0'?'未付款':(order.order_status=='1'?'已付款':(order.order_status==2?'已发货':'其他'))}}</td>
                             <td>{{order.sales_way=='0'?'线上购买':'线下购买'}}</td>
                             <td>{{order.goods_name}}</td>
                             <td>{{order.product_count}}</td>
                             <td>{{order.product_amount_total}}</td>
                             <td>{{order.order_amount_total}}</td>
-                            <td>{{order.logistics||'自取'}}</td>
+                            <td>{{order.logistics || '自取'}}</td>
                             <td>{{order.logistics_fee||0}}</td>
-                            <td>{{order.invoice||'否'}}</td>
+                            <td>{{order.invoice || '否'}}</td>
                             <td>{{order.province+order.city+order.area+order.street}}</td>
                             <td>{{order.pay_channel}}</td>
                             <td>{{order.addorder_time|dateformat('YYYY-MM-DD HH:mm:ss')}}</td>
@@ -62,9 +63,11 @@
     </div>
 </template>
 <script>
+import SearchBox from "@/components/Communal/searchbox"
 import axios from 'axios'
 import Tips from "@/components/Communal/tips"
 import {mapActions,mapGetters} from 'vuex'
+import {RECEIVE_ORDER_LIST} from '@/store/mutations-types'
 export default {
     name:'orderlist',
     data(){
@@ -136,10 +139,31 @@ export default {
             this.$router.push('/admin/orderlist?'+way+'='+data);
             this.condition=this.$route.query;
             this.$store.dispatch('getOrderList',this.condition);
+        },
+         searchorder(searchmsg){
+            axios.post('http://localhost:3333/admin/searchorder',{
+                searchmsg:searchmsg
+            }).then(response=>{
+                if(response.data.code==0){
+                    this.$store.commit(RECEIVE_ORDER_LIST,response.data.orderlist);
+                    this.tips=response.data.message;
+                    this.showtips=true;
+                    setTimeout(() => {
+                        this.showtips=false
+                    }, 2000);
+                }else{
+                    console.log("查询失败")
+                }
+            },
+            response=>{
+                console.log("error:"+response)
+            }
+            )
         }
     },
     components:{
-        Tips
+        Tips,
+        SearchBox
     }
 }
 </script>

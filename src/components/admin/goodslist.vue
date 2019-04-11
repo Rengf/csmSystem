@@ -3,6 +3,7 @@
         <div class="goodslistbox">
             <div class="somebtn">
                 <button @click="showaddbox">添加商品</button>
+                <search-box @searchmsg="searchgoods"></search-box>
             </div>
             <div class="goodslist">
                 <table>
@@ -35,23 +36,28 @@
                 </table>
             </div>
             <Tips v-if="showtips" :tips='tips'></Tips>
-            <add-goods v-if="showaddgoods" @closeaddgoods='close'></add-goods>
+            <add-box @closeadd='showaddbox' v-if="showaddgoods">
+                <add-goods></add-goods>
+            </add-box>
             <Background v-if="showaddgoods"></Background>
         </div>
     </div>
 </template>
 <script>
+import SearchBox from "@/components/Communal/searchbox"
 import Tips from "@/components/Communal/tips"
+import AddBox from "@/components/Communal/addbox"
 import AddGoods from "@/components/admin/addgoods"
 import Background from "@/components/Communal/background"
 import axios from "axios";
 import {mapGetters} from "vuex"
+import {RECEIVE_GOODS_LIST} from '@/store/mutations-types'
 export default {
     data(){
         return{
             showaddgoods:false,
             showtips:false,
-            tips:''
+            tips:'',
         }
     },
     created() {
@@ -86,12 +92,35 @@ export default {
                 console.log("error:"+response)
             }
             )
+        },
+        searchgoods(searchmsg){
+            axios.post('http://localhost:3333/admin/searchgoods',{
+                searchmsg:searchmsg
+            }).then(response=>{
+                if(response.data.code==0){
+                    console.log(response.data.goodslist);
+                    this.$store.commit(RECEIVE_GOODS_LIST,response.data.goodslist);
+                    this.tips=response.data.message;
+                    this.showtips=true;
+                    setTimeout(() => {
+                        this.showtips=false
+                    }, 2000);
+                }else{
+                    console.log("查询失败")
+                }
+            },
+            response=>{
+                console.log("error:"+response)
+            }
+            )
         }
     },
     components:{
         Tips,
         AddGoods,
-        Background
+        AddBox,
+        Background,
+        SearchBox
     }
 }
 </script>
@@ -167,8 +196,6 @@ button{
     background: #3a8ee6;
     border: 0px;
     color: #fff;
-}
-button:hover{
     cursor: pointer;
 }
 </style>

@@ -23,7 +23,7 @@ export const userLogout = () => ajax(BASE_URL + USER_API + '/user/logout', {}, '
 export const reqUserList = () => ajax(BASE_URL + ADMIN_API + '/getuserlist', {}, 'GET')
 
 //获取管理员列表
-export const reqAdminList = () => ajax(BASE_URL + ADMIN_API + '/getadminlist', {}, 'GET')
+export const reqAdminList = (condition) => ajax(BASE_URL + ADMIN_API + '/getadminlist', { condition }, 'POST')
 
 //按id获取个人全部列表
 export const reqAdminInfo = (id) => ajax(BASE_URL + ADMIN_API + '/getadmininfo', { id }, 'POST')

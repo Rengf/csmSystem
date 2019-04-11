@@ -57,15 +57,30 @@ router.get('/getuserlist', function(req, res, next) {
 })
 
 //获取管理员列表
-router.get('/getadminlist', function(req, res, next) {
+router.post('/getadminlist', function(req, res, next) {
+    var data = req.body.condition
     var client = mysql_connect.connectServer();
-    Admin.getadminlist(client, function(result) {
-        res.json({
-            code: 0,
-            message: '查询成功',
-            adminlist: result
+    if (JSON.stringify(data) == '{}') {
+        Admin.getadminlist(client, function(result) {
+            res.json({
+                code: 0,
+                message: '查询成功',
+                adminlist: result
+            })
         })
-    })
+    } else {
+        if (data.isadmin) {
+            data.way = 'isadmin';
+            data.msg = data.isadmin;
+        }
+        Admin.getadmincondition(client, data, function(result) {
+            res.json({
+                code: 0,
+                message: '查询成功',
+                adminlist: result
+            })
+        })
+    }
 })
 
 
@@ -338,8 +353,7 @@ router.post('/deletewarehousing', function(req, res, next) {
 
 //获取订单列表
 router.post('/getorderlist', function(req, res, next) {
-    var condition = req.body.condition;
-    var data = condition;
+    var data = req.body.condition;
     var client = mysql_connect.connectServer();
     if (JSON.stringify(data) == '{}') {
         Goods.getorderlist(client, function(result) {
@@ -550,6 +564,45 @@ router.get('/searchsalesonline', function(req, res, next) {
             code: 0,
             message: '获取成功',
             result: result,
+        })
+    })
+})
+
+//查询商品
+router.post('/searchgoods', function(req, res, next) {
+    var data = req.body;
+    var client = mysql_connect.connectServer();
+    Goods.searchgoods(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '查询成功',
+            goodslist: result,
+        })
+    })
+})
+
+//查询订单
+router.post('/searchorder', function(req, res, next) {
+    var data = req.body;
+    var client = mysql_connect.connectServer();
+    Goods.searchorder(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '查询成功',
+            orderlist: result,
+        })
+    })
+})
+
+//查询用户
+router.post('/searchadmin', function(req, res, next) {
+    var data = req.body;
+    var client = mysql_connect.connectServer();
+    Admin.searchadmin(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '查询成功',
+            adminlist: result,
         })
     })
 })
