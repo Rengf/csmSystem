@@ -91,7 +91,9 @@
                      </div>
                  </div>
                  <div class="shopmsg">
-                     
+                     <div class="shoplogo">
+                         <img src="../../assets/images/login.jpg" alt="">
+                     </div>
                  </div>
                  <div class="loginrecord">
                      <ul>
@@ -247,10 +249,11 @@ export default {
                 goodslist:'',
                 sales:[],
                 salesonline:[],
+                condition:{}
             }
         },
         created() {
-            this.$store.dispatch('getAdminlist');
+            this.$store.dispatch('getAdminlist',this.condition);
             axios.get("http://localhost:3333/admin/getgoodslistbysales").then(
                 response=>{
                     if(response.data.code==0){
@@ -613,6 +616,14 @@ export default {
     height: 250px;
     margin-right: 10px;
     border: 1px solid #ccc;
+}
+.shoplogo{
+    width: 600px;
+    height: 250px;
+}
+.shoplogo img{
+    width: 600px;
+    height: 250px;
 }
 .loginrecord{
     float: left;

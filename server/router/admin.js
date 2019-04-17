@@ -8,6 +8,7 @@ var path = require('path');
 var mysql_connect = require('../db/mysql_connect')
 var Admin = require('../db/admin');
 var Goods = require('../db/goods');
+var User = require('../db/user');
 var Article = require('../db/article');
 
 Date.prototype.Format = function(fmt) {
@@ -58,7 +59,7 @@ router.get('/getuserlist', function(req, res, next) {
 
 //获取管理员列表
 router.post('/getadminlist', function(req, res, next) {
-    var data = req.body.condition
+    var data = req.body.condition;
     var client = mysql_connect.connectServer();
     if (JSON.stringify(data) == '{}') {
         Admin.getadminlist(client, function(result) {
@@ -594,7 +595,7 @@ router.post('/searchorder', function(req, res, next) {
     })
 })
 
-//查询用户
+//查询管理员
 router.post('/searchadmin', function(req, res, next) {
     var data = req.body;
     var client = mysql_connect.connectServer();
@@ -603,6 +604,19 @@ router.post('/searchadmin', function(req, res, next) {
             code: 0,
             message: '查询成功',
             adminlist: result,
+        })
+    })
+})
+
+//查询用户
+router.post('/searchuser', function(req, res, next) {
+    var data = req.body;
+    var client = mysql_connect.connectServer();
+    User.searchauser(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '查询成功',
+            userlist: result,
         })
     })
 })

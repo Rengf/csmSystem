@@ -409,7 +409,7 @@ module.exports = {
     //添加物流
     addorderlogistics(client, data, callback) {
         var sql = `insert into order_logistics
-        ( order_id,express_no,logistics,logistics_fee,delivery_time)
+        ( order_id,express_no,order_logistics,logistics_fee,delivery_time)
         values(?,?,?,?,?);`
         var params = [
             data.order_id,

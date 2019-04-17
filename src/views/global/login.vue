@@ -117,10 +117,7 @@ export default {
         this.$store.dispatch('login',data).then(
           res=>{
             if(this.$store.getters.result.code==0){
-               window.mirrorCommandQueue = {
-                    system: 'aaaa',
-                    user: this.username||''
-                }
+                localStorage.setItem('token',true)
                 localStorage.setItem('username',this.username)
                 localStorage.setItem('password',this.password)
                 this.warning=this.$store.getters.result.message+',即将跳转到前一页';

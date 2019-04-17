@@ -93,11 +93,12 @@ export default {
         delivergoods(id,i){
             axios.post('http://localhost:3333/admin/delivergoods',{
                 order_id:id,
-                logistics:this.orderlist[i].logistics,
-                logistics_fee:this.orderlist[i].logistics_fee,
+                logistics:this.orderlists[i].logistics,
+                logistics_fee:this.orderlists[i].logistics_fee,
             }).then(response=>{
                 if(response.data.code==0){
-                    this.$store.dispatch('getOrderList',this.order_status)
+                    this.condition=this.$route.query;
+                    this.$store.dispatch('getOrderList', this.condition)
                     this.tips=response.data.message;
                     this.showtips=true;
                     setTimeout(() => {

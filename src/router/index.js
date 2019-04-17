@@ -29,7 +29,7 @@ import OrderDetail from '@/components/admin/orderdetail'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
     routes: [{
         path: '/',
         name: 'Home',
@@ -45,11 +45,17 @@ export default new Router({
     }, {
         path: '/payfor',
         name: 'PayFor',
-        component: PayFor
+        component: PayFor,
+        meta: {
+            requireAuth: true,
+        },
     }, {
         path: '/sureorder',
         name: 'SureOrder',
-        component: SureOrder
+        component: SureOrder,
+        meta: {
+            requireAuth: true,
+        }
     }, {
         path: '/login',
         name: 'Login',
@@ -62,6 +68,9 @@ export default new Router({
         path: '/admin',
         name: 'AdminHome',
         component: AdminHome,
+        meta: {
+            requireAuth: true,
+        },
         children: [{
                 path: '/admin',
                 name: 'AdminIndex',
@@ -136,3 +145,20 @@ export default new Router({
         ]
     }]
 })
+
+// router.beforeEach((to, from, next) => {
+//     if (to.matched.some(r => r.meta.requireAuth)) {
+//         if (localStorage.token) {
+//             next();
+//         } else {
+//             next({
+//                 path: '/login',
+//                 query: { redirect: to.fullPath }
+//             })
+//         }
+//     } else {
+//         next();
+//     }
+// })
+
+export default router

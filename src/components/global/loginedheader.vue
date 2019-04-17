@@ -31,10 +31,7 @@ export default {
   methods: {
     logout() {
         this.$store.dispatch('logout');
-         window.mirrorCommandQueue = {
-          system: 'aaaa',
-          user: ''
-      }
+        localStorage.removeItem('token')
     }
   }
 };

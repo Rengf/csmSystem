@@ -75,7 +75,7 @@ module.exports = {
         })
     },
 
-    //查询用户
+    //查询管理员
     searchadmin(client, data, callback) {
         var sql = `select * from user
         where isadmin>0 and

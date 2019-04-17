@@ -1,6 +1,10 @@
 <template>
     <div class="warehousing">
         <div class="warehousingbox">
+            <div class="somebtn">
+                <button @click="getallwarehousing">全部进货</button>
+                <search-box @searchmsg="searchwarehousing"></search-box>
+            </div>
             <div class="warehousinglist">
                 <table>
                     <thead>
@@ -36,6 +40,7 @@
     </div>
 </template>
 <script>
+import SearchBox from "@/components/Communal/searchbox"
 import Tips from "@/components/Communal/tips"
 import axios from "axios";
 import {mapGetters} from "vuex"
@@ -79,10 +84,17 @@ export default {
                 console.log("error:"+response)
             }
             )
+        },
+        searchwarehousing(){
+
+        },
+        getallwarehousing(){
+
         }
     },
     components:{
-        Tips
+        Tips,
+        SearchBox
     }
 }
 </script>
@@ -103,6 +115,22 @@ export default {
     display: block;
 }
 
+.somebtn{
+    width: 100%;
+    height: 50px;
+    border: 1px solid #ccc;
+}
+.somebtn button{
+    margin-top: 7px;
+    margin-left: 10px;
+    color: #fff;
+    background: #438EB9!important;
+    border:none;
+    width: 100px;
+    height: 36px;
+    border-radius:3px; 
+    cursor: pointer;
+}
 
 .warehousinglist thead>tr{
     color: #707070;

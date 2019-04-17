@@ -123,4 +123,17 @@ module.exports = {
         })
 
     },
+
+    //查询用户
+    searchauser(client, data, callback) {
+        var sql = `select * from user
+        where  (user_name like '%` + data.searchmsg + `\%' 
+        or user_tel like '%` + data.searchmsg + `\%'
+        or user_email like '%` + data.searchmsg + `\%'
+        or real_name like '%` + data.searchmsg + `\%')`
+        client.query(sql, (err, result) => {
+            if (err) throw err
+            callback(result);
+        })
+    },
 }

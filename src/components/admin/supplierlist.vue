@@ -1,5 +1,10 @@
 <template>
+    <div class="supplier">
         <div class="supplierbox">
+            <div class="somebtn">
+                <button @click="getallsupplier">全部商家</button>
+                <search-box @searchmsg="searchsupplier"></search-box>
+            </div>
             <div class="supplierlist">
                 <table>
                     <thead>
@@ -34,8 +39,10 @@
             </div>
             <Tips v-if="showtips" :tips='tips'></Tips>
         </div>
+    </div>
 </template>
 <script>
+import SearchBox from "@/components/Communal/searchbox"
 import Tips from "@/components/Communal/tips"
 import axios from "axios";
 import {mapGetters} from "vuex"
@@ -72,10 +79,17 @@ export default {
                 console.log("error:"+response)
             }
             )
+        },
+        getallsupplier(){
+
+        },
+        searchsupplier(){
+
         }
     },
     components:{
         Tips,
+        SearchBox
         
     }
 }
@@ -91,7 +105,22 @@ export default {
     display: block;
 }
 
-
+.somebtn{
+    width: 100%;
+    height: 50px;
+    border: 1px solid #ccc;
+}
+.somebtn button{
+    margin-top: 7px;
+    margin-left: 10px;
+    color: #fff;
+    background: #438EB9!important;
+    border:none;
+    width: 100px;
+    height: 36px;
+    border-radius:3px; 
+    cursor: pointer;
+}
 .supplierlist thead>tr{
     color: #707070;
     font-weight: normal;
