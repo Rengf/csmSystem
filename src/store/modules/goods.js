@@ -13,8 +13,8 @@ import {
 } from './../../api/index'
 
 const state = {
-    categorylist: {},
-    goodslist: {},
+    categorylist: [],
+    goodslist: [],
     supplierlist: {},
     warehousinglist: {}
 }
@@ -41,11 +41,16 @@ const actions = {
             commit(RECEIVE_CATEGORY_LIST, categorylist)
         }
     },
-    async getGoodsList({ commit }) {
-        const result = await reqGoodsList()
+    async getGoodsList({ commit }, [params, condition]) {
+        const result = await reqGoodsList(condition)
         if (result.code == 0) {
             const goodslist = result.goodslist;
-            commit(RECEIVE_GOODS_LIST, goodslist)
+            const goodListObj = {};
+            goodslist.map((value, index) => {
+                goodListObj[value.goods_type_name] ? goodListObj[value.goods_type_name].push(value) : goodListObj[value.goods_type_name] = [value];
+            })
+
+            params ? commit(RECEIVE_GOODS_LIST, goodListObj) : commit(RECEIVE_GOODS_LIST, goodslist)
         }
     },
     async getSupplierList({ commit }) {

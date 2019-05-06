@@ -31,7 +31,7 @@ export default {
   methods: {
     logout() {
         this.$store.dispatch('logout');
-        localStorage.removeItem('token')
+        localStorage.removeItem('token');
     }
   }
 };
@@ -49,6 +49,7 @@ export default {
     background: -o-linear-gradient(#fff, #ddd); 
     background: -moz-linear-gradient(#fff, #ddd); 
     background: linear-gradient(#fff, #ddd); 
+    z-index: 999;
 }
 .headerBox{
     width: 1200px;

@@ -15,10 +15,10 @@
           </a>
         </li>
         <li class="car">
-          <router-link :to="{path:'/shopcar'}">
+          <router-link :to="{path:'/index/shopcar'}">
             <span></span>
             <p>购物车</p>
-            <i>0</i>
+            <i>{{this.cartlist.length}}</i>
           </router-link>
         </li>
         <li>
@@ -62,10 +62,20 @@ export default {
     };
   },
   created() {
-    this.$store.dispatch('getUserInfo')
+    this.$store.dispatch('getUserInfo');
+    axios.get("http://localhost:3333/api").then(response=>{
+            if(response.data.code==0){
+                this.user_id=response.data.user.user_id;
+                this.$store.dispatch('getCartList',this.user_id);
+                }else{
+                    console.log('获取失败')
+                }
+        },response=>{
+            console.log("error:"+response)
+        })
   },
   computed: {
-      ...mapGetters(['userinfo'])
+      ...mapGetters(['userinfo','cartlist'])
   },
   methods: {
     showmessage() {

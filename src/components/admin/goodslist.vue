@@ -58,10 +58,12 @@ export default {
             showaddgoods:false,
             showtips:false,
             tips:'',
+            condition:''
         }
     },
     created() {
-        this.$store.dispatch('getGoodsList');
+        this.condition=this.$route.query;
+        this.$store.dispatch('getGoodsList',[,this.condition]);
     },
     computed: {
         ...mapGetters(['categorylist','goodslist'])
@@ -78,7 +80,7 @@ export default {
                 goods_id:id
             }).then(response=>{
                 if(response.data.code==0){
-                     this.$store.dispatch('getGoodsList');
+                     this.$store.dispatch('getGoodsList',[,this.condition]);
                     this.tips=response.data.message;
                     this.showtips=true;
                     setTimeout(() => {

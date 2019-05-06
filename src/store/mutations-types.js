@@ -30,3 +30,5 @@ export const RECEIVE_ORDER_LIST = 'receive_order_list' //订单列表
 export const RECEIVE_ORDER = 'receive_order' //订单
 
 export const RECEIVE_ARTICLE_LIST = 'receive_article_list' //文章
+
+export const RECEIVE_CART_LIST = 'receive_cart_list' //文章

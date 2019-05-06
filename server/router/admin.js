@@ -226,18 +226,42 @@ router.post('/addgoods', multipartMiddleware, function(req, res, next) {
     }
 })
 
-
 //获取商品列表
-router.get('/getgoodslist', function(req, res, next) {
+router.post('/getgoodslist', function(req, res, next) {
+    var data = req.body.condition;
     var client = mysql_connect.connectServer();
-    Goods.getgoodslist(client, function(result) {
-        res.json({
-            code: 0,
-            message: '查询成功',
-            goodslist: result
+    if (JSON.stringify(data) == '{}') {
+        Goods.getgoodslist(client, function(result) {
+            res.json({
+                code: 0,
+                message: '查询成功',
+                goodslist: result
+            })
         })
-    })
+    } else {
+        if (data.goods_type_id) {
+            data.way = 'goods.goods_type_id';
+            data.msg = data.goods_type_id;
+            Goods.getgoodslistcondition(client, data, function(result) {
+                res.json({
+                    code: 0,
+                    message: '查询成功',
+                    goodslist: result
+                })
+            })
+        } else if (data.searchgoods) {
+            data.searchmsg = data.searchgoods;
+            Goods.searchgoods(client, data, function(result) {
+                res.json({
+                    code: 0,
+                    message: '查询成功',
+                    goodslist: result
+                })
+            })
+        }
+    }
 })
+
 
 //按销量获取商品列表
 router.get('/getgoodslistbysales', function(req, res, next) {

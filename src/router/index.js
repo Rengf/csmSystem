@@ -1,7 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/views/global/home'
+import Global from '@/views/global/global'
 import GoodsDetail from '@/views/global/goodsdetail'
+import Goods from '@/views/global/goodslist'
+import ShopCar from '@/views/global/shopcar'
 import OffLineSales from '@/views/global/Offlinesales'
 import SureOrder from '@/views/global/sureorder'
 import PayFor from '@/views/global/payfor'
@@ -33,15 +36,39 @@ const router = new Router({
     routes: [{
         path: '/',
         name: 'Home',
-        component: Home
+        component: Home,
+    }, {
+        path: '/index',
+        name: 'Global',
+        component: Global,
+        children: [{
+            path: '/index/goodsdetail',
+            name: 'GoodsDetail',
+            component: GoodsDetail
+        }, {
+            path: '/index/goodslist',
+            name: 'Goods',
+            component: Goods
+        }, {
+            path: '/index/shopcar',
+            name: 'ShopCar',
+            component: ShopCar,
+            meta: {
+                requireAuth: true,
+            },
+        }, {
+            path: '/index/sureorder',
+            name: 'SureOrder',
+            component: SureOrder,
+            meta: {
+                requireAuth: true,
+            }
+        }, ]
+
     }, {
         path: '/offlinesales',
         name: 'OffLineSales',
         component: OffLineSales
-    }, {
-        path: '/goodsdetail',
-        name: 'GoodsDetail',
-        component: GoodsDetail
     }, {
         path: '/payfor',
         name: 'PayFor',
@@ -49,13 +76,6 @@ const router = new Router({
         meta: {
             requireAuth: true,
         },
-    }, {
-        path: '/sureorder',
-        name: 'SureOrder',
-        component: SureOrder,
-        meta: {
-            requireAuth: true,
-        }
     }, {
         path: '/login',
         name: 'Login',
@@ -146,19 +166,19 @@ const router = new Router({
     }]
 })
 
-// router.beforeEach((to, from, next) => {
-//     if (to.matched.some(r => r.meta.requireAuth)) {
-//         if (localStorage.token) {
-//             next();
-//         } else {
-//             next({
-//                 path: '/login',
-//                 query: { redirect: to.fullPath }
-//             })
-//         }
-//     } else {
-//         next();
-//     }
-// })
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(r => r.meta.requireAuth)) {
+        if (localStorage.token) {
+            next();
+        } else {
+            next({
+                path: '/login',
+                query: { redirect: to.fullPath }
+            })
+        }
+    } else {
+        next();
+    }
+})
 
 export default router

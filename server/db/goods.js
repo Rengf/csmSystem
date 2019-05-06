@@ -66,10 +66,35 @@ module.exports = {
         })
     },
 
+    //按条件获取商品列表
+    getgoodslistcondition(client, data, callback) {
+        var sql = `select * from goods 
+        inner join goods_type on goods.goods_type_id=goods_type.goods_type_id
+        where  ` + data.way + `=` + data.msg + ``;
+        client.query(sql, (err, result) => {
+            if (err) throw err
+            callback(result);
+        })
+    },
+
+    //搜索商品
+    searchgoods(client, data, callback) {
+        var sql = `select * from goods
+        inner join goods_type on goods.goods_type_id=goods_type.goods_type_id
+        where goods_name like '%` + data.searchmsg + `\%' 
+        or goods_type_name like '%` + data.searchmsg + `\%'
+        or goods_description like '%` + data.searchmsg + `\%'
+        or goods_price like '%` + data.searchmsg + `\%'`
+        client.query(sql, (err, result) => {
+            if (err) throw err
+            callback(result);
+        })
+    },
+
     //按销量获取商品列表
     getgoodslistbysales(client, callback) {
         var sql = `select goods_name,goods_type_name,sales from goods 
-        inner join goods_type  on goods_type.goods_type_id=goods.goods_type_id
+        inner join goods_type on goods.goods_type_id=goods_type.goods_type_id
         order by sales desc limit 10`;
         client.query(sql, (err, result) => {
             if (err) throw err
@@ -254,16 +279,31 @@ module.exports = {
     },
 
     //按ID获取购物车
-    getcart(client, data, callback) {
+    getcartlist(client, data, callback) {
         var sql = `select *
         from cart
         inner join user on cart.user_id=user.user_id
-        inner join goods on cart.goods_id=goods.goods_id
+        left join goods on cart.goods_id=goods.goods_id
         where cart.user_id= ?`
         var params = [
-            data.user_id
+            data.data
         ];
+        client.query(sql, params, (err, result) => {
+            if (err) throw err
+            callback(result)
+        })
+    },
 
+
+    //更新购物车
+    updatecart(client, data, callback) {
+        var sql = `update cart set
+        goods_count=?
+        where cart_id= ?`
+        var params = [
+            data.goods_count,
+            data.cart_id
+        ];
         client.query(sql, params, (err, result) => {
             if (err) throw err
             callback(result)
@@ -286,8 +326,8 @@ module.exports = {
     //添加订单
     addorder(client, data, callback) {
         var sql = `insert into \`order\`
-         (order_no,goods_id,order_status,product_count,product_amount_total,order_amount_total,logistics,logistics_fee,address_id,pay_channel,addorder_time,user_id,user_remarks,sales_way) 
-        values(?,?,?,?,?,?,?,?,?,?,?,?,?,?);`
+         (order_no,goods_id,order_status,product_count,product_amount_total,order_amount_total,logistics,logistics_fee,invoice,address_id,pay_channel,addorder_time,user_id,user_remarks,sales_way) 
+        values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`
         var params = [
             data.order_no,
             parseInt(data.goods_id),
@@ -297,6 +337,7 @@ module.exports = {
             data.order_amount_total,
             data.logistics,
             data.logistics_fee,
+            data.invoice,
             data.address_id,
             data.pay_channel,
             data.addorder_time,
@@ -304,6 +345,7 @@ module.exports = {
             data.user_remarks,
             data.sales_way,
         ];
+        console.log(params)
         client.query(sql, params, (err, result) => {
             if (err) {
                 throw err
@@ -321,6 +363,21 @@ module.exports = {
             data.invoice_id,
             data.addinvoice_time,
             parseInt(data.order_id)
+        ];
+        client.query(sql, params, (err, result) => {
+            if (err) throw err
+            callback(result);
+        })
+    },
+
+    //添加发票ID到订单
+    updateorderinvoice(client, data, callback) {
+        var sql = `update \`order\` set 
+        invoice_id=?
+        where order_id = ?`
+        var params = [
+            data.invoice_id,
+            parseInt(data.order_id),
         ];
         client.query(sql, params, (err, result) => {
             if (err) throw err
@@ -472,18 +529,6 @@ module.exports = {
     },
 
 
-    //查询商品
-    searchgoods(client, data, callback) {
-        var sql = `select * from goods
-        inner join goods_type on goods.goods_type_id=goods_type.goods_type_id
-        where goods_name like '%` + data.searchmsg + `\%' 
-        or goods_type_name like '%` + data.searchmsg + `\%'`
-        client.query(sql, (err, result) => {
-            if (err) throw err
-            callback(result);
-        })
-    },
-
     //查询订单
     searchorder(client, data, callback) {
         var sql = `select * from \`order\`
@@ -498,6 +543,104 @@ module.exports = {
         or order.logistics like '%` + data.searchmsg + `\%'
         or user_name like '%` + data.searchmsg + `\%'`
         client.query(sql, (err, result) => {
+            if (err) throw err
+            callback(result);
+        })
+    },
+
+    //评价商品
+    goodscomment(client, data, callback) {
+        var sql = `insert into comment
+        ( goods_id,user_id,content,comment_time)
+        values(?,?,?,?);`
+        var params = [
+            data.goods_id,
+            data.user_id,
+            data.content,
+            data.comment_time
+        ];
+        console.log(params)
+        client.query(sql, params, (err, result) => {
+            if (err) throw err
+            callback(result);
+        })
+    },
+
+    //按商品id获取商品评价
+    getcommentlist(client, data, callback) {
+        var sql = `select * from comment
+        left join goods on goods.goods_id=comment.comment_id
+        left join user on user.user_id=comment.user_id
+        where comment.goods_id =?`
+        var params = [
+            data.goods_id
+        ]
+        client.query(sql, params, (err, result) => {
+            if (err) throw err
+            callback(result);
+        })
+    },
+
+    //添加地址
+    addaddress(client, data, callback) {
+        var sql = `insert into address
+        ( user_id,addressee,tel,tel2,country,province,city,area,street,zip_code,addressee_time)
+        values(?,?,?,?,?,?,?,?,?,?,?);`
+        var params = [
+            data.user_id,
+            data.addressee,
+            data.tel,
+            data.tel2,
+            data.country,
+            data.province,
+            data.city,
+            data.area,
+            data.street,
+            data.zip_code,
+            data.addressee_time
+        ];
+        client.query(sql, params, (err, result) => {
+            if (err) throw err
+            callback(result);
+        })
+    },
+
+    //删除地址
+    deleteaddress(client, data, callback) {
+        var sql = `delete from address
+        where address_id=?`
+        var params = [
+            data.address_id
+        ];
+        client.query(sql, params, (err, result) => {
+            if (err) throw err
+            callback(result)
+        })
+    },
+
+    //查询默认地址
+    searchdefault(client, data, callback) {
+        var sql = `select * from address
+        where is_default_address=1 && user_id=?`
+        var params = [
+            data.user_id
+        ]
+        client.query(sql, params, (err, result) => {
+            if (err) throw err
+            callback(result)
+        })
+    },
+
+    //设置默认地址
+    setdefault(client, data, callback) {
+        var sql = `update address set
+        is_default_address=?
+        where address_id = ?`
+        var params = [
+            data.is_default_address,
+            data.address_id,
+        ]
+        client.query(sql, params, (err, result) => {
             if (err) throw err
             callback(result);
         })

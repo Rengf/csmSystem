@@ -16,7 +16,6 @@ export default {
         }
     },
     commitorder({ commit }, data) {
-        const result = data
         commit(RECEIVE_COUNTER, data)
     },
 }

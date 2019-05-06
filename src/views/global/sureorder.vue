@@ -5,36 +5,38 @@
                 <span>收货人信息</span>
             </div>
             <div class="addressbody">
-                <div class="address">
+                <div class="address" v-for="(address,index) in addresslist" :key="index">
                     <div class="setup">
                         <ul>
-                            <li><span>设为默认</span></li>
-                            <li><i class="iconfont icon-ren subicon">&#xe622;</i></li>
-                            <li><i class="iconfont icon-ren subicon">&#xe617;</i></li>
+                            <li><span @click="setdefault(address.address_id)" v-if="address.is_default_address==0">设为默认</span></li>
+                            <li><i class="iconfont icon-ren subicon" @click="editaddress(address.address_id)">&#xe622;</i></li>
+                            <li><i class="iconfont icon-ren subicon" @click="deleteaddress(address.address_id)">&#xe617;</i></li>
                         </ul>
                     </div>
                     <ul>
                         <li>
                             <p>
                                 <i class="iconfont icon-ren subicon">&#xe63c;</i>
-                                <span>{{user_name}}</span>
+                                <span>{{address.addressee}}</span>
                             </p>
                         </li>
                         <li>
                              <p>
-                                <i class="iconfont icon-ren subicon">&#xe63c;</i>
-                                <span>{{tel}}</span>
+                                <i class="iconfont icon-ren subicon">&#xe61a;</i>
+                                <span>{{address.tel}}</span>
                             </p>
                         </li>
                         <li class="lastli">
                             <p>
-                                <i class="iconfont icon-ren subicon">&#xe63c;</i>
-                                <span>{{address}}</span>
+                                <i class="iconfont icon-ren subicon">&#xe6fe;</i>
+                                <span>{{address.province+address.city+address.area+address.street}}</span>
                             </p>
                         </li>
                     </ul>
                 </div>
-                <div class="address"></div>
+                <div class="addaddress">
+                    <span @click="addaddress">添加新地址</span>
+                </div>
             </div>
         </div>
         <div class="peisong">
@@ -73,6 +75,15 @@
         </div>
         <div class="peisong">
             <div class="peisongheader">
+                <span>发票</span>
+            </div>
+            <div class="peisongbody">
+                是否需要发票：<input type="radio" name="radio" value="1" v-model="isinvoice">是
+                        <input type="radio" name="radio" value="0" checked="checked" v-model="isinvoice">否
+            </div> 
+        </div>
+        <div class="peisong">
+            <div class="peisongheader">
                 <span>购物清单</span>
             </div>
             <div class="peisongbody">
@@ -85,18 +96,22 @@
                     </ul>
                 </div>
                 <div class="listbody">
-                    <ul class="shoplist">
-                        <li class="name">
-                            <div class="shopimg">
-                                <img :src="goods.goods_picture" alt="">
-                            </div>
-                            <div class="shopname">
-                                <router-link :to="{path:'/goodsdetail',query:{}}"> {{goods.goods_name}} </router-link>
-                            </div>
+                    <ul>
+                        <li v-for="(goods,index) in goodslist" :key="index">
+                            <ul class="shoplist">
+                                <li class="name">
+                                    <div class="shopimg">
+                                        <img :src="goods.goods_picture" alt="">
+                                    </div>
+                                    <div class="shopname">
+                                        <router-link :to="{path:'/goodsdetail',query:{}}"> {{goods.goods_name}} </router-link>
+                                    </div>
+                                </li>
+                                <li class="like">{{goods.goods_price}}</li>
+                                <li class="like buyNumber">{{counter}}</li>
+                                <li class="like">{{goods.goods_price*counter}}</li>
+                            </ul>
                         </li>
-                        <li class="like">{{goods.goods_price}}</li>
-                        <li class="like buyNumber">{{goods.goods_count}}</li>
-                        <li class="like">{{goods.goods_price*goods.goods_count}}</li>
                     </ul>
                 </div>
             </div> 
@@ -109,7 +124,7 @@
            <div class="footerbox">
                 <div class="checktotal">
                     <span>商品金额：</span>
-                    <span class="totalnumber">￥{{goods.goods_price*goods.goods_count}}</span>
+                    <span class="totalnumber">￥</span>
                 </div>
                 <div class="checktotal">
                     <span>运费：</span>
@@ -117,37 +132,50 @@
                 </div>
                 <div class="checktotal">
                     <span>应付总金额：</span>
-                    <span class="totalnumber">￥{{goods.goods_price*goods.goods_count+logistics_fee}}</span>
+                    <span class="totalnumber">￥{{logistics_fee}}</span>
                 </div>
                 <div class="surebtn">
                     <button @click="placeorder">提交订单</button>
                 </div>
            </div>
         </div>
+        <add-box @closeadd='showaddbox' v-if="showadd">
+            <add-address :id="user_id"></add-address>
+        </add-box>
+        <Background v-if="showbackground"></Background>
     </div>
 </template>
 <script>
 import axios from 'axios'
 import { mapState, mapGetters } from "vuex";
 import { reqShopCar } from "../../api";
+import CarList from "@/components/global/cart";
+import BMap from "@/components/global/bmap"
+import AddBox from "@/components/Communal/addbox"
+import AddAddress from "@/components/global/addaddress"
+import Background from "@/components/Communal/background"
 export default {
     data(){
         return{
-            goods:{},
-            address:'',
+            goodslist:{},
+            counter:'',
+            addresslist:'',
+            isinvoice:0,
+            invoice_id:'',
             tel:'',
             user_name:'',
-            goods_id:this.$route.query.goods_id,
             user_id:'',
             peisong:'',
             zhihu:'',
             address_id:'',
             user_remarks:'',
-            logistics:''
+            logistics:'',
+            showadd:false,
+            showbackground:false
         }
     },
     computed: {
-        ...mapGetters(['counter','userinfo']),
+        ...mapGetters(['buydata','userinfo']),
         logistics_fee(){
             if(this.peisong=="EMS"){
                 return 0;
@@ -165,49 +193,105 @@ export default {
         }
     },
     created() {
-         axios.get("http://localhost:3333/api").then(response=>{
+        console.log(this.$router)
+        var buydata=JSON.parse(sessionStorage.getItem('buydata'));
+        this.counter=buydata.counter;
+        this.goods_id=buydata.goods_id;
+        axios.post('http://localhost:3333/main/getgoodsdetail',{
+            goods_id:buydata.goods_id
+            }).then(response=>{
+                if(response.data.code==0){
+                    this.goodslist=response.data.goods;
+                }else{
+                    console.log("获取失败")
+                }
+            },response=>{
+                console.log("error:"+response)
+        })
+        axios.get("http://localhost:3333/api").then(response=>{
                     if(response.data.code=='0'){
-                        this.user_id=response.data.user.user_id
+                        this.user_id=response.data.user.user_id;
                         this.getaddress();
-                        this.getcart();
                         }
                 },response=>{
                     console.log("error:"+response)
                 })
     },
+    watch: {
+       $route: {
+            handler(newValue, oldValue) {
+                sessionStorage.removeItem("buydata")
+            }
+        }
+    },
     methods:{
-        placeorder(){
-            localStorage.setItem('zhihu',this.zhihu);
-            axios.post('http://localhost:3333/main/addorder',{
-                goods_id:this.goods_id,
+        showaddbox(){
+            this.showadd=!this.showadd;
+            this.showbackground=!this.showbackground;
+        },
+        addaddress(){
+            this.showadd=!this.showadd;
+            this.showbackground=!this.showbackground;
+        },
+        deleteaddress(id){
+             axios.post('http://localhost:3333/main/deleteaddress',{
+                address_id:id
+                }).then(response=>{
+                    if(response.data.code==0){
+                        this.getaddress();
+                    }else{
+                        console.log("删除失败")
+                    }
+                },response=>{
+                    console.log("error:"+response)
+                })
+        },
+        setdefault(id){
+            axios.post('http://localhost:3333/main/setdefault',{
                 user_id:this.user_id,
-                address_id:this.address_id,
-                product_count:this.goods.goods_count,
-                product_amount_total:this.goods.goods_count*this.goods.goods_price,
-                order_amount_total:this.goods.goods_count*this.goods.goods_price+this.logistics_fee,
-                pay_channel:this.zhihu,
-                user_remarks:this.user_remarks,
-                logistics:this.peisong,
-                logistics_fee:this.logistics_fee,
+                address_id:id
             }).then(response=>{
                 if(response.data.code==0){
-                   this.$router.push('/payfor?order_id='+response.data.order_id)
+                    this.getaddress();
                 }else{
-                    console.log("添加失败")
+                    console.log("设置失败")
                 }
             },response=>{
                 console.log("error:"+response)
             })
+        },
+        editaddress(id){
+
+        },
+        placeorder(){
+            axios.post('http://localhost:3333/main/addorder',{
+                            goods_id:this.goods_id,
+                            user_id:this.user_id,
+                            address_id:this.addresslist[0].address_id,
+                            product_count:this.counter,
+                            product_amount_total:this.counter*this.goodslist[0].goods_price,
+                            order_amount_total:this.counter*this.goodslist[0].goods_price+this.logistics_fee,
+                            pay_channel:this.zhihu,
+                            user_remarks:this.user_remarks,
+                            logistics:this.peisong,
+                            logistics_fee:this.logistics_fee,
+                            isinvoice:this.isinvoice,
+                        }).then(response=>{
+                            if(response.data.code==0){
+                            this.$router.push('/payfor?order_id='+response.data.order_id)
+                            }else{
+                                console.log("添加失败")
+                            }
+                        },response=>{
+                            console.log("error:"+response)
+                        })
         },
         getaddress(){
             axios.post('http://localhost:3333/main/getaddress',{
             user_id:this.user_id
             }).then(response=>{
                 if(response.data.code==0){
-                    this.address=response.data.address[0].province+response.data.address[0].city+response.data.address[0].area+response.data.address[0].street;
-                    this.tel=response.data.address[0].tel;
-                    this.user_name=response.data.address[0].user_name;
-                    this.address_id=response.data.address[0].address_id;
+                    this.addresslist=response.data.address;
                 }else{
                     console.log("获取失败")
                 }
@@ -215,20 +299,12 @@ export default {
                 console.log("error:"+response)
             })
         },
-        getcart(){
-             axios.post('http://localhost:3333/main/getcart',{
-                user_id:this.user_id,
-                }).then(response=>{
-                    if(response.data.code==0){
-                        this.goods=response.data.cart[0];
-                    console.log(this.goods)
-                    }else{
-                        console.log("获取失败")
-                    }
-                },response=>{
-                    console.log("error:"+response)
-            })
-        }
+    },
+    components:{
+        BMap,
+        AddAddress,
+        AddBox,
+        Background
     }
 }
 </script>
@@ -262,6 +338,7 @@ export default {
     width: 100%;
     overflow: hidden;
 }
+.addaddress,
 .address{
     float: left;
     position: relative;
@@ -275,6 +352,14 @@ export default {
     font-size: 14px;
     font-family: "微软雅黑";
     color: #333;
+}
+.addaddress span{
+    display: block;
+    width: 100%;
+    height: 100%;
+    line-height: 212px;
+    font-size: 20px;
+    text-align: center;
 }
 .address>ul>li{
     margin: auto;
@@ -294,6 +379,10 @@ export default {
 .address:hover .setup{
     display: block;
 }
+.address:hover{
+    border: 1px solid #076ce0;
+}
+
 .setup{
     position: absolute;
     right: 0px;
@@ -371,7 +460,7 @@ export default {
 .shoplist:hover a {
   cursor: pointer;
 }
-.listbody li {
+.shoplist li {
   display: block;
   float: left;
   height: 90px;

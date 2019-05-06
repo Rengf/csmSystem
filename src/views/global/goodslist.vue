@@ -1,39 +1,17 @@
 <template>
     <div class="category">
-        <div class="goods">
+        <div class="goods" v-for="(value,category) in goodslist" :key="category">
             <div class="goodsHeader">
                 <div class="line"></div>
                 <div class="goodsCategory">
-                    <h3>全部商品</h3>
+                    <h3>{{category}}类</h3>
                     <span>新品上市，强势进入</span>
                 </div>
             </div>
-            <div class="goodsBody">
-                <div class="goodsMessage">
-                    <div class="goodsMsgImg"><img src="../../assets/images/phone.jpg" alt=""></div>
-                    <div class="goodsMsg">
-                        <h3>智能手机</h3>
-                        <i></i>
-                        <p>智能手机（Smartgoods），是指像个人电脑一样，具有独立的操作系统，大多数是大屏机，而且是触摸电容屏，也有部分是电阻屏，功能强大实用性高</p>
-                    </div>
-                </div>
-                <div class='newPhone' v-for="(goods,index) of goodslist" :key="index" v-if="index==0">
-                    <div class='newPhoneImg'>
-                        <img :src="goods.goods_picture" alt="">
-                    </div>
-                    <div class='goodsName'>
-                        <span>{{goods.goods_name}}</span>
-                    </div>
-                    <div class='buttonBuy'>
-                        <span> {{goods.goods_price}}</span>
-                        <router-link :to="{path:'/index/goodsdetail',query:{goods_id:goods.goods_id,goods_type_id:goods.goods_type_id}}"> 购买 </router-link>
-                    </div>
-                </div>
-            </div>
             <div class="goodsFooter">
-                <div class='goodsListbox' v-for="(goods,index) of goodslist" :key="index" v-if="index>0">
+                <div class='goodsListbox' v-for="(goods,index) in goodslist[category]" :key="index" >
                     <div class=goodsList>
-                        <div class='newPhoneImg'>
+                        <div class='goodsimg'>
                             <img :src="goods.goods_picture" alt=''>
                         </div>
                         <div class='goodsName'>
@@ -47,7 +25,7 @@
                 </div>
             </div>
         </div>
-          </div>
+    </div>
 </template>
 <script>
 import {mapGetters} from 'vuex'
@@ -55,15 +33,24 @@ export default {
   name: "GoodsCategory",
   data() {
     return {
-       condition:''
+       condition:this.$route.query||''
     };
   },
   mounted() {
-    this.condition=this.$route.query;
-      this.$store.dispatch('getGoodsList',[,this.condition]);
+      this.condition=this.$route.query;
+      this.$store.dispatch("getCategoryList");
+      this.$store.dispatch('getGoodsList',['goodslist',this.condition]);
   },
+  watch: {
+       $route: {
+            handler(newValue, oldValue) {
+                this.condition=this.$route.query
+                this.$store.dispatch('getGoodsList',['goodslist',this.condition])
+            }
+        }
+    },
    computed: {
-      ...mapGetters(['goodslist']),
+      ...mapGetters(['goodslist','categorylist']),
     },
     components: {
       
@@ -72,7 +59,6 @@ export default {
 </script>
 <style scoped>
 .category {
-  top: -500px;
   position: relative;
   width: 63%;
   margin: auto;
@@ -80,7 +66,6 @@ export default {
 
 .goods {
   clear: both;
-  height: 830px;
   width: 100%;
 }
 
@@ -175,8 +160,8 @@ export default {
   right: -900px;
 }
 
-.newPhoneImg img,
-.newPhoneImg {
+.goodsimg img,
+.goodsimg {
   width: 200px;
   height: 200px;
 }
@@ -223,7 +208,6 @@ export default {
 .goodsFooter {
   position: relative;
   clear: both;
-  top: -350px;
   width: 100%;
   height: 350px;
 }

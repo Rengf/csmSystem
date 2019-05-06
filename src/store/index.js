@@ -9,6 +9,7 @@ import admin from './modules/admin'
 import goods from './modules/goods'
 import order from './modules/order'
 import article from './modules/article'
+import cart from './modules/cart'
 
 Vue.use(Vuex)
 
@@ -22,6 +23,7 @@ export default new Vuex.Store({
         admin,
         goods,
         order,
-        article
+        article,
+        cart
     }
 })

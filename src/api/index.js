@@ -32,7 +32,7 @@ export const reqAdminInfo = (id) => ajax(BASE_URL + ADMIN_API + '/getadmininfo',
 export const reqCategoryList = () => ajax(BASE_URL + ADMIN_API + '/getcategorylist', {}, 'GET')
 
 //获取商品列表
-export const reqGoodsList = () => ajax(BASE_URL + ADMIN_API + '/getgoodslist', {}, 'GET')
+export const reqGoodsList = (condition) => ajax(BASE_URL + ADMIN_API + '/getgoodslist', { condition }, 'POST')
 
 //获取供应商列表
 export const reqSupplierList = () => ajax(BASE_URL + ADMIN_API + '/getsupplierlist', {}, 'GET')
@@ -48,3 +48,6 @@ export const reqOrder = (data) => ajax(BASE_URL + ADMIN_API + '/getorder', { dat
 
 //获取文章列表
 export const reqArticleList = (condition) => ajax(BASE_URL + ADMIN_API + '/getarticlelist', { condition }, 'POST')
+
+//获取购物车列表
+export const reqCartList = (data) => ajax(BASE_URL + MAIN_API + '/getcartlist', { data }, 'POST')

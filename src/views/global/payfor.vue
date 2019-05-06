@@ -1,10 +1,6 @@
 <template>
     <div class="payfor">
         <div>
-            是否需要发票：<input type="radio" name="radio" value="1" v-model="isinvoice">是
-                        <input type="radio" name="radio" value="0" checked="checked" v-model="isinvoice">否
-        </div>
-        <div>
             <button @click="surepayfor">确定付款</button>
         </div>
 
@@ -15,34 +11,13 @@ import axios  from 'axios'
 export default {
     data() {
         return {
-            isinvoice:0,
             order_id:this.$route.query.order_id,
-            invoice_id:'',
-            cart_id:'',
-            zhihu:'',
-            goods_count:'',
-            goods_id:''
         }
     },
     created() {
-        this.zhihu=localStorage.getItem('zhihu')
          axios.get("http://localhost:3333/api").then(response=>{
                     if(response.data.code=='0'){
                         this.user_id=response.data.user.user_id
-                        axios.post('http://localhost:3333/main/getcart',{
-                            user_id:this.user_id,
-                            }).then(response=>{
-                                if(response.data.code==0){
-                                    console.log(response.data)
-                                    this.cart_id=response.data.cart[0].cart_id;
-                                    this.goods_count=response.data.cart[0].goods_count;
-                                    this.goods_id=response.data.cart[0].goods_id;
-                                }else{
-                                    console.log("获取失败")
-                                }
-                            },response=>{
-                                console.log("error:"+response)
-                        })
                         }
                 },response=>{
                     console.log("error:"+response)

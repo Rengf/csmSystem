@@ -76,21 +76,6 @@ router.post('/getgoodsdetail', function(req, res, next) {
     })
 })
 
-//按用户id获取商品列表
-router.post('/getaddress', function(req, res, next) {
-    var user_id = req.body.user_id;
-    var client = mysql_connect.connectServer();
-    var data = {
-        user_id: user_id
-    }
-    User.getaddress(client, data, function(result) {
-        res.json({
-            code: 0,
-            message: '查询成功',
-            address: result
-        })
-    })
-})
 
 //添加购物车
 router.post('/addcart', function(req, res, next) {
@@ -109,27 +94,33 @@ router.post('/addcart', function(req, res, next) {
 })
 
 //按id获取购物车列表
-router.post('/getcart', function(req, res, next) {
-    var user_id = req.body.user_id;
+router.post('/getcartlist', function(req, res, next) {
+    var data = req.body;
     var client = mysql_connect.connectServer();
-    var data = {
-        user_id: user_id
-    }
-    Goods.getcart(client, data, function(result) {
+    Goods.getcartlist(client, data, function(result) {
         res.json({
             code: 0,
             message: '查询成功',
-            cart: result
+            cartlist: result
+        })
+    })
+})
+
+//更新购物车
+router.post('/updatecart', function(req, res, next) {
+    var data = req.body;
+    var client = mysql_connect.connectServer();
+    Goods.updatecart(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '更新成功'
         })
     })
 })
 
 //删除购物车
 router.post('/deletecart', function(req, res, next) {
-    var cart_id = req.body.cart_id;
-    var data = {
-        cart_id: cart_id
-    }
+    var data = req.body;
     var client = mysql_connect.connectServer();
     Goods.deletecart(client, data, function(result) {
         res.json({
@@ -148,33 +139,38 @@ router.post('/addorder', function(req, res, next) {
     var order_no = parseInt(Math.random() * 100000000000000);
     data.addorder_time = addorder_time;
     data.order_no = order_no;
-    data.sales_way = 0
-    Goods.addorder(client, data, function(result) {
-        res.json({
-            code: 0,
-            message: '添加成功',
-            order_id: result.insertId
+    data.sales_way = 0;
+    data.order_status = 0;
+    if (data.isinvoice == 1) {
+        data.invoice = '是';
+        Goods.addorder(client, data, function(result) {
+            data.order_id = result.insertId
+            var date = new Date();
+            var addinvoice_time = date.Format("yyyy-MM-dd HH:mm:ss");
+            var invoice_no = parseInt(Math.random() * 100000000000000);
+            data.addinvoice_time = addinvoice_time;
+            data.invoice_no = invoice_no;
+            Goods.addinvoice(client, data, function(result) {
+                data.invoice_id = result.insertId
+                Goods.updateorderinvoice(client, data, function(result) {
+                    res.json({
+                        code: 0,
+                        message: '下单成功',
+                    })
+                })
+            })
         })
-    })
+    } else {
+        data.invoice = '否'
+        Goods.addorder(client, data, function(result) {
+            res.json({
+                code: 0,
+                message: '添加成功',
+            })
+        })
+    }
 })
 
-//添加发票
-router.post('/addinvoice', function(req, res, next) {
-    var data = req.body
-    var client = mysql_connect.connectServer();
-    var date = new Date();
-    var addinvoice_time = date.Format("yyyy-MM-dd HH:mm:ss");
-    var invoice_no = parseInt(Math.random() * 100000000000000);
-    data.addinvoice_time = addinvoice_time;
-    data.invoice_no = invoice_no;
-    Goods.addinvoice(client, data, function(result) {
-        res.json({
-            code: 0,
-            message: '添加成功',
-            invoice_id: result.insertId
-        })
-    })
-})
 
 //付款更新订单
 router.post('/updateorder', function(req, res, next) {
@@ -217,6 +213,108 @@ router.post('/updateorder', function(req, res, next) {
     })
 })
 
+//评价商品
+router.post('/goodscomment', function(req, res, next) {
+    var data = req.body;
+    var client = mysql_connect.connectServer();
+    var date = new Date();
+    var comment_time = date.Format("yyyy-MM-dd HH:mm:ss");
+    data.comment_time = comment_time;
+    Goods.goodscomment(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '评论成功',
+        })
+    })
+})
+
+//按id获取评价列表
+router.post('/getcommentlist', function(req, res, next) {
+    var data = req.body;
+    var client = mysql_connect.connectServer();
+    Goods.getcommentlist(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '查询成功',
+            commentlist: result
+        })
+    })
+})
+
+//添加地址信息
+router.post('/addaddress', function(req, res, next) {
+    var data = req.body
+    var client = mysql_connect.connectServer();
+    var date = new Date();
+    var addressee_time = date.Format("yyyy-MM-dd HH:mm:ss");
+    data.addressee_time = addressee_time;
+    Goods.addaddress(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '添加成功',
+        })
+    })
+})
+
+//按用户id获取地址
+router.post('/getaddress', function(req, res, next) {
+    var user_id = req.body.user_id;
+    var client = mysql_connect.connectServer();
+    var data = {
+        user_id: user_id
+    }
+    User.getaddress(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '查询成功',
+            address: result
+        })
+    })
+})
+
+//删除地址
+router.post('/deleteaddress', function(req, res, next) {
+    var data = req.body;
+    var client = mysql_connect.connectServer();
+    Goods.deleteaddress(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '删除成功',
+        })
+    })
+})
+
+//设置默认地址
+router.post('/setdefault', function(req, res, next) {
+    var data = {}
+    data.address_id = req.body.address_id;
+    data.user_id = req.body.user_id;
+    var client = mysql_connect.connectServer();
+    Goods.searchdefault(client, data, function(result) {
+        if (result.length == 0) {
+            data.is_default_address = 1;
+            Goods.setdefault(client, data, function(result) {
+                res.json({
+                    code: 0,
+                    message: '设置成功',
+                })
+            })
+        } else {
+            data.is_default_address = 0;
+            data.address_id = result[0].address_id
+            Goods.setdefault(client, data, function(result) {
+                data.address_id = req.body.address_id
+                data.is_default_address = 1;
+                Goods.setdefault(client, data, function(result) {
+                    res.json({
+                        code: 0,
+                        message: '设置成功',
+                    })
+                })
+            })
+        }
+    })
+})
 
 //线下购买
 router.post('/offlinesales', function(req, res, next) {

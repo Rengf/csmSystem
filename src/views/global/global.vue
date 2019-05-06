@@ -1,20 +1,15 @@
 <template>
-    <div>
+    <div class="globalbox">
         <logined-header  v-if="isShow"></logined-header>
         <my-header></my-header>
-        <sider-menu></sider-menu>
-        <rolling-img></rolling-img>
-        <goods-category></goods-category>
+        <router-view></router-view>
         <sider-bar></sider-bar>
     </div>
 </template>
 <script>
 import MyHeader from '@/components/global/header'
 import LoginedHeader from '@/components/global/loginedheader'
-import GoodsCategory from '@/components/global/goodsCategory'
-import RollingImg from '@/components/global/rollingImg'
-import SiderMenu from "../../components/global/siderMenu";
-import SiderBar from "../../components/global/siderBar";
+import SiderBar from "@/components/global/siderBar";
 import {mapGetters} from 'vuex'
 export default {
     data(){
@@ -45,9 +40,6 @@ export default {
         LoginedHeader,
         MyHeader,
         SiderBar,
-        GoodsCategory,
-        RollingImg,
-        SiderMenu
     }
 }
 </script>

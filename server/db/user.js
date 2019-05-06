@@ -113,7 +113,8 @@ module.exports = {
         var sql = `select *
                 from address
                 inner join user on address.user_id=user.user_id
-                where address.user_id= ?`;
+                where address.user_id= ?
+                order by is_default_address desc`;
         var params = [
             data.user_id,
         ];
@@ -121,7 +122,6 @@ module.exports = {
             if (err) throw err
             callback(result);
         })
-
     },
 
     //查询用户

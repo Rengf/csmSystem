@@ -6,6 +6,8 @@ import router from './router'
 import axios from 'axios'
 import store from './store'
 import moment from 'moment'
+import BaiduMap from 'vue-baidu-map'
+
 import '../static/ueditor/ueditor.config.js'
 import '../static/ueditor/ueditor.all.min.js'
 import '../static/ueditor/lang/zh-cn/zh-cn.js'
@@ -22,7 +24,11 @@ Vue.filter('dateformat', function(dataStr, pattern = 'YYYY-MM-DD HH:mm:ss') { �
 
 })
 
-/* eslint-disable no-new */
+Vue.use(BaiduMap, {
+        // ak 是在百度地图开发者平台申请的密钥 详见 http://lbsyun.baidu.com/apiconsole/key */
+        ak: '2nF9PWizKTHtHVqr2GpLdHlY9y9KN25C'
+    })
+    /* eslint-disable no-new */
 new Vue({
     el: '#app',
     router,
