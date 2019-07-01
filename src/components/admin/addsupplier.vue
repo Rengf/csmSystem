@@ -44,7 +44,7 @@
                         <input type="text" name="account" placeholder="输入银行账户" v-model="supplier_account">
                     </li>
                 </ul>
-                <button @click="addsupplier">添加</button>
+                <button @click="addsupplier">修改</button>
                 <Tips v-if="showtips" :tips='tips'></Tips>
             </div> 
 </template>

@@ -229,6 +229,7 @@ router.post('/addgoods', multipartMiddleware, function(req, res, next) {
 //获取商品列表
 router.post('/getgoodslist', function(req, res, next) {
     var data = req.body.condition;
+    console.log(JSON.stringify(data))
     var client = mysql_connect.connectServer();
     if (JSON.stringify(data) == '{}') {
         Goods.getgoodslist(client, function(result) {
@@ -557,14 +558,22 @@ router.post('/updatearticle', function(req, res, next) {
     })
 })
 
-//查询最近七天销量
+//分类获取订单数量
+router.get('/orderbystatuscount', function(req, res, next) {
+    var client = mysql_connect.connectServer();
+    Goods.orderbystatuscount(client, function(result) {
+        res.json({
+            code: 0,
+            message: '获取成功',
+            result: result,
+        })
+    })
+})
+
+//查询最近七天订单
 router.get('/searchsales', function(req, res, next) {
     var data = {};
-    var date = new Date();
-    var date7 = new Date(date.getTime() - 144 * 60 * 60 * 1000);
-    var old7 = date7.Format("yyyy-MM-dd") + " 00:00:00";
-    data.date7 = old7;
-    data.date1 = date.Format("yyyy-MM-dd HH:mm:ss")
+    data.condition = ""
     var client = mysql_connect.connectServer();
     Goods.searchbysales(client, data, function(result) {
         res.json({
@@ -575,16 +584,13 @@ router.get('/searchsales', function(req, res, next) {
     })
 })
 
-//查询线上最近七天销量
-router.get('/searchsalesonline', function(req, res, next) {
+
+//查询最近七天线下订单呢
+router.get('/searchsalesoffline', function(req, res, next) {
     var data = {};
-    var date = new Date();
-    var date7 = new Date(date.getTime() - 144 * 60 * 60 * 1000);
-    var old7 = date7.Format("yyyy-MM-dd") + " 00:00:00";
-    data.date7 = old7;
-    data.date1 = date.Format("yyyy-MM-dd HH:mm:ss")
+    data.condition = "and sales_way=1"
     var client = mysql_connect.connectServer();
-    Goods.searchbysalesonline(client, data, function(result) {
+    Goods.searchbysales(client, data, function(result) {
         res.json({
             code: 0,
             message: '获取成功',
@@ -593,7 +599,75 @@ router.get('/searchsalesonline', function(req, res, next) {
     })
 })
 
-//查询商品
+
+//查询最近七天线上订单
+router.get('/searchsalesonline', function(req, res, next) {
+    var data = {};
+    data.condition = "and sales_way=0"
+    var client = mysql_connect.connectServer();
+    Goods.searchbysales(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '获取成功',
+            result: result,
+        })
+    })
+})
+
+//查询最近七天商品销量
+router.post('/goodssales', function(req, res, next) {
+    var data = req.body;
+    data.condition = "and goods_id=" + data.goods_id
+    var client = mysql_connect.connectServer();
+    Goods.goodssales(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '获取成功',
+            result: result,
+        })
+    })
+})
+
+//查询最近七天在线商品销量
+router.post('/goodsonlinesales', function(req, res, next) {
+    var data = req.body;
+    data.condition = "and goods_id=" + data.goods_id + " and sales_way=0"
+    var client = mysql_connect.connectServer();
+    Goods.goodssales(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '获取成功',
+            result: result,
+        })
+    })
+})
+
+//查询最近七天在线商品销量
+router.post('/goodsofflinesales', function(req, res, next) {
+    var data = req.body;
+    data.condition = "and goods_id=" + data.goods_id + " and sales_way=1"
+    var client = mysql_connect.connectServer();
+    Goods.goodssales(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '获取成功',
+            result: result,
+        })
+    })
+})
+
+//查询最近七天所有商品销量
+router.get('/allgoodssales', function(req, res, next) {
+        var client = mysql_connect.connectServer();
+        Goods.allgoodssales(client, function(result) {
+            res.json({
+                code: 0,
+                message: '获取成功',
+                result: result,
+            })
+        })
+    })
+    //查询商品
 router.post('/searchgoods', function(req, res, next) {
     var data = req.body;
     var client = mysql_connect.connectServer();
@@ -615,6 +689,31 @@ router.post('/searchorder', function(req, res, next) {
             code: 0,
             message: '查询成功',
             orderlist: result,
+        })
+    })
+})
+
+
+//查询退单
+router.get('/getreturnorderlist', function(req, res, next) {
+    var client = mysql_connect.connectServer();
+    Goods.getreturnorderlist(client, function(result) {
+        res.json({
+            code: 0,
+            message: '查询成功',
+            returnorderlist: result,
+        })
+    })
+})
+
+//查询评论
+router.get('/getcommentlist', function(req, res, next) {
+    var client = mysql_connect.connectServer();
+    Goods.getallcommentlist(client, function(result) {
+        res.json({
+            code: 0,
+            message: '查询成功',
+            commentlist: result,
         })
     })
 })

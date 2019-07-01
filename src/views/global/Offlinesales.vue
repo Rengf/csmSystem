@@ -56,11 +56,12 @@ export default {
   name: "GoodsCategory",
   data() {
     return {
-       
+       condition:''
     };
   },
   mounted() {
-      this.$store.dispatch('getGoodsList');
+      this.condition=this.$route.query;
+      this.$store.dispatch('getGoodsList',[,this.condition]);
   },
    computed: {
       ...mapGetters(['goodslist']),

@@ -12,70 +12,52 @@ export default {
     data() {
         return {
             order_id:this.$route.query.order_id,
+            goods_id:'',
+            user_id:'',
+            goods_count:''
         }
     },
     created() {
          axios.get("http://localhost:3333/api").then(response=>{
-                    if(response.data.code=='0'){
-                        this.user_id=response.data.user.user_id
-                        }
-                },response=>{
+            if(response.data.code==0){
+                this.user_id=response.data.user.user_id;
+                axios.post("http://localhost:3333/main/getorderdetail",{
+                    user_id:this.user_id,
+                    order_id:this.order_id,
+                }).then(response=>{
+                            if(response.data.code=='0'){
+                                this.goods_id=response.data.order.goods_id;
+                                this.goods_count=response.data.order.product_count
+                                }
+                        },response=>{
+                            console.log("error:"+response)
+                        })
+                }else{
+                    console.log('获取失败')
+                }},
+                response=>{
                     console.log("error:"+response)
                 })
+         
     },
     methods:{
-        surepayfor(){
-            if(this.isinvoice==1){
-                axios.post("http://localhost:3333/main/addinvoice",{
-                    order_id:this.order_id
-                }).then(response=>{
-                    if(response.data.code==0){
-                        this.invoice_id=response.data.invoice_id;
-                        axios.post("http://localhost:3333/main/updateorder",{
+        surepayfor(){ 
+                 axios.post("http://localhost:3333/main/updateorder",{
                             order_id:this.order_id,
-                            invoice_id:this.invoice_id,
-                            invoice:'是',
-                            cart_id:this.cart_id,
-                            pay_channel:this.zhihu,
                             goods_id:this.goods_id,
                             goods_count:this.goods_count
                         }).then(response=>{
                             if(response.data.code==0){
-                                console.log(response.data.message)
+                                console.log(response.data.message);
+                                this.$router.push('/index/orderdetail?order_id='+this.order_id)
                             }else{
-                                console.log("失败")
-                            }
-                        },response=>{
-                            console.log("error:"+response)
-                        })
-                    }else{
-                        console.log("失败")
-                    }
-                },
-                response=>{
-                    console.log("error:"+response)
-                })
-            }else{
-                 axios.post("http://localhost:3333/main/updateorder",{
-                            order_id:this.order_id,
-                            invoice_id:null,
-                            invoice:'否',
-                            cart_id:this.cart_id,
-                            pay_channel:this.zhihu,
-                            goods_count:this.goods_count,
-                            goods_id:this.goods_id
-                        }).then(response=>{
-                            if(response.data.code==0){
-                                console.log(response.data.message)
-                            }else{
-                                console.log("失败")
+                                console.log("支付失败")
                             }
                         },response=>{
                             console.log("error:"+response)
                         })
             }
         }
-    }
 }
 </script>
 <style scoped>

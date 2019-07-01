@@ -7,6 +7,8 @@ import Goods from '@/views/global/goodslist'
 import ShopCar from '@/views/global/shopcar'
 import OffLineSales from '@/views/global/Offlinesales'
 import SureOrder from '@/views/global/sureorder'
+import UserOrderDetail from '@/views/global/orderdetail'
+import UserOrderList from '@/views/global/orderlist'
 import PayFor from '@/views/global/payfor'
 import Login from '@/views/global/login'
 import Regist from '@/views/global/regist'
@@ -28,7 +30,10 @@ import WareHousingList from '@/components/admin/warehousinglist'
 import AddSupplier from '@/components/admin/addsupplier'
 import SupplierList from '@/components/admin/supplierlist'
 import OrderList from '@/components/admin/orderlist'
+import ReturnOrderList from '@/components/admin/returnorderlist'
 import OrderDetail from '@/components/admin/orderdetail'
+import CommentList from '@/components/admin/commentlist'
+import Report from '@/components/admin/report'
 
 Vue.use(Router)
 
@@ -42,28 +47,44 @@ const router = new Router({
         name: 'Global',
         component: Global,
         children: [{
-            path: '/index/goodsdetail',
-            name: 'GoodsDetail',
-            component: GoodsDetail
-        }, {
-            path: '/index/goodslist',
-            name: 'Goods',
-            component: Goods
-        }, {
-            path: '/index/shopcar',
-            name: 'ShopCar',
-            component: ShopCar,
-            meta: {
-                requireAuth: true,
+                path: '/index/goodsdetail',
+                name: 'GoodsDetail',
+                component: GoodsDetail
+            }, {
+                path: '/index/goodslist',
+                name: 'Goods',
+                component: Goods
+            }, {
+                path: '/index/shopcar',
+                name: 'ShopCar',
+                component: ShopCar,
+                meta: {
+                    requireAuth: true,
+                },
+            }, {
+                path: '/index/sureorder',
+                name: 'SureOrder',
+                component: SureOrder,
+                meta: {
+                    requireAuth: true,
+                }
+            }, {
+                path: '/index/orderdetail',
+                name: 'UserOrderDetail',
+                component: UserOrderDetail,
+                meta: {
+                    requireAuth: true,
+                }
             },
-        }, {
-            path: '/index/sureorder',
-            name: 'SureOrder',
-            component: SureOrder,
-            meta: {
-                requireAuth: true,
-            }
-        }, ]
+            {
+                path: '/index/orderlist',
+                name: 'UserOrderList',
+                component: UserOrderList,
+                meta: {
+                    requireAuth: true,
+                }
+            },
+        ]
 
     }, {
         path: '/offlinesales',
@@ -157,10 +178,24 @@ const router = new Router({
                 path: '/admin/orderlist',
                 name: 'OrderList',
                 component: OrderList,
+            },
+            {
+                path: '/admin/commentlist',
+                name: 'CommentList',
+                component: CommentList,
+            }, {
+                path: '/admin/returnorderlist',
+                name: 'ReturnOrderList',
+                component: ReturnOrderList,
             }, {
                 path: '/admin/orderdetail',
                 name: 'OrderDetail',
                 component: OrderDetail,
+            },
+            {
+                path: '/admin/report',
+                name: 'Report',
+                component: Report,
             }
         ]
     }]

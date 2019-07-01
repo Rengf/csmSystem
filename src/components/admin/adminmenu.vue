@@ -41,7 +41,7 @@ export default {
     data(){
         return {
             lists:[ {title:'系统首页',icon:'&#xe6ac;',faup:'&#xe638;',sublists:[{title:'首页',icon:'&#xeb0b;',url:'/admin'}]},
-                    {title:'报表管理',icon:'&#xe636;',faup:'&#xe638;',sublists:[{title:'访问统计',icon:'&#xeb0b;',url:'/admin'}]},
+                    {title:'报表管理',icon:'&#xe636;',faup:'&#xe638;',sublists:[{title:'访问统计',icon:'&#xeb0b;',url:'/admin/report'}]},
                     {title:'用户管理',icon:'&#xe63c;',faup:'&#xe638;',sublists:[{title:'用户列表',icon:'&#xeb0b;',url:'/admin/userlist'},
                                                                               {title:'管理员列表',icon:'&#xeb0b;',url:'/admin/adminlist'},
                                                                               {title:'权限设置',icon:'&#xeb0b',url:'/admin/editadmin'}]},
@@ -66,9 +66,7 @@ export default {
                     {title:'物流管理',icon:'&#xe614;',faup:'&#xe638;',sublists:[{title:'添加物流',icon:'&#xeb0b;',url:'/admin/addgoods'},
                                                                                {title:'修改物流',icon:'&#xeb0b;',url:'/admin'},
                                                                                {title:'物流列表',icon:'&#xeb0b;',url:'/admin'}]},
-                    {title:'退单管理',icon:'&#xe641;',faup:'&#xe638;',sublists:[{title:'添加退单',icon:'&#xeb0b;',url:'/admin/addgoods'},
-                                                                               {title:'修改退单',icon:'&#xeb0b;',url:'/admin'},
-                                                                               {title:'退单列表',icon:'&#xeb0b;',url:'/admin'}]},
+                    {title:'退单管理',icon:'&#xe641;',faup:'&#xe638;',sublists:[{title:'退单列表',icon:'&#xeb0b;',url:'/admin/returnorderlist'}]},
                     {title:'留言管理',icon:'&#xe606;',faup:'&#xe638;',sublists:[{title:'留言反馈',icon:'&#xeb0b;',url:'/admin'},
                                                                                 {title:'消息通知',icon:'&#xeb0b;',url:'/admin'}]},
                     {title:'评论管理',icon:'&#xe64c;',faup:'&#xe638;',sublists:[{title:'评论列表',icon:'&#xeb0b;',url:'/admin/commentlist'},

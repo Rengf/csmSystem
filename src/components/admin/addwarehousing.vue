@@ -77,12 +77,14 @@ export default {
             tips:'',
             showaddgoods:false,
             showaddsuppliser:false,
-            showbackground:false
+            showbackground:false,
+            condition:''
         }
     },
     created() {
+        this.condition=this.$route.query;
         this.$store.dispatch('getSupplierList');
-        this.$store.dispatch('getGoodsList');
+        this.$store.dispatch('getGoodsList',[,this.condition]);
     },
     computed: {
         ...mapGetters(['goodslist','supplierlist'])

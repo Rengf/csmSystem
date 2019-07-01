@@ -128,11 +128,11 @@
                              <ul>
                                  <li>
                                      <span>待发货订单</span>
-                                     <router-link to="/admin/orderlist?order_status=1">(02)</router-link>
+                                     <router-link to="/admin/orderlist?order_status=1">({{ordercount[1]}})</router-link>
                                  </li>
                                  <li>
                                      <span>已发货订单</span>
-                                     <router-link to="/admin/orderlist?order_status=2">(05)</router-link>
+                                     <router-link to="/admin/orderlist?order_status=2">({{ordercount[2]}})</router-link>
                                  </li>
                                  <li>
                                      <span>未完成订单</span>
@@ -166,7 +166,7 @@
                              <ul>
                                  <li>
                                      <span>待发货订单</span>
-                                     <a href="#">(02)</a>
+                                     <a href="#">({{ordercount[1]}})</a>
                                  </li>
                                  <li>
                                      <span>已完成订单</span>
@@ -185,14 +185,14 @@
                              <ul>
                                  <li>
                                      <span>未付款订单</span>
-                                     <router-link to="/admin/orderlist?order_status=0">(05)</router-link>
+                                     <router-link to="/admin/orderlist?order_status=0">({{ordercount[0]}})</router-link>
+                                 </li>
+                                 <li>
+                                     <span>已付款订单</span>
+                                     <a href="#">({{ordercount[1]}})</a>
                                  </li>
                                  <li>
                                      <span>已完成订单</span>
-                                     <a href="#">(05)</a>
-                                 </li>
-                                 <li>
-                                     <span>未完成订单</span>
                                      <a href="#">(15)</a>
                                  </li>
                              </ul>
@@ -249,7 +249,8 @@ export default {
                 goodslist:'',
                 sales:[],
                 salesonline:[],
-                condition:{}
+                condition:{},
+                orderstatuscount:[]
             }
         },
         created() {
@@ -268,7 +269,7 @@ export default {
             )
         this.searchsales();
         this.searchsalesonline();
-           
+        this.orderbystatuscount();
         },
         computed: {
             ...mapGetters(['adminlist']),
@@ -297,18 +298,20 @@ export default {
                         break
                 }
             },
-            xiaoliang(){
+             xiaoliang(){
                  var date = new Date(),dateArr=[],series=[];
                  for(var i =0;i<7;i++){
                      dateArr.push(this.$moment(date).subtract(i,'days').format('YYYY-MM-DD'))
                  }
                  dateArr.reverse();
                  dateArr.map(v=>{
-                     var sum = 0;
+                     var sum=0;
                      this.sales.map(val=>{
-                         val.addorder_time.includes(v)?sum=sum+parseInt(val.product_count):''
+                         if(v==val.days){
+                            sum=val.count
+                         }
                      })
-                     series.push(sum)
+                series.push(sum)
                  })
                  return {
                      xAxis:dateArr,
@@ -324,7 +327,9 @@ export default {
                  dateArr.map(v=>{
                      var sum = 0;
                      this.salesonline.map(val=>{
-                         val.addorder_time.includes(v)?sum=sum+parseInt(val.product_count):''
+                         if(v==val.days){
+                           sum=val.count;
+                         }
                      })
                      series.push(sum)
                  })
@@ -333,6 +338,27 @@ export default {
                      series:series
                  }
             },
+            ordercount(){
+                var data=[]
+                this.orderstatuscount.map(val=>{
+                    if(val.order_status==0){
+                        data[0]=val.count
+                    }else if(val.order_status==1){
+                        data[1]=val.count
+                    } if(val.order_status==2){
+                        data[2]=val.count
+                    } if(val.order_status==3){
+                        data[3]=val.count
+                    } if(val.order_status==4){
+                        data[4]=val.count
+                    } if(val.order_status==1){
+                        data[1]=val.count
+                    }else{
+                        data[6]=val.count
+                    }
+                })
+                return data;
+            }
         },
         methods:{
             searchsales(){
@@ -356,6 +382,21 @@ export default {
                     if(response.data.code==0){
                         this.salesonline=response.data.result;
                        this.drawPie('chart')
+                    }else{
+                        console.log('获取失败')
+                    }
+                },
+                response=>{
+                    console.log("error:"+response)
+                }
+            )
+            },
+            orderbystatuscount(){
+                axios.get("http://localhost:3333/admin/orderbystatuscount").then(
+                response=>{
+                    if(response.data.code==0){
+                        this.orderstatuscount=response.data.result;
+                        this.ordercount();
                     }else{
                         console.log('获取失败')
                     }
@@ -731,7 +772,8 @@ export default {
 }
 .ordercharts{
     height: 278px;
-}.ordercharts>div{
+}
+.ordercharts>div{
     height: 278px;
 }
 </style>

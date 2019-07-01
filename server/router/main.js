@@ -156,6 +156,7 @@ router.post('/addorder', function(req, res, next) {
                     res.json({
                         code: 0,
                         message: '下单成功',
+                        order_id: data.order_id
                     })
                 })
             })
@@ -163,9 +164,11 @@ router.post('/addorder', function(req, res, next) {
     } else {
         data.invoice = '否'
         Goods.addorder(client, data, function(result) {
+            data.order_id = result.insertId
             res.json({
                 code: 0,
                 message: '添加成功',
+                order_id: data.order_id
             })
         })
     }
@@ -179,15 +182,9 @@ router.post('/updateorder', function(req, res, next) {
     var out_trade_no = parseInt(Math.random() * 100000000000000);
     var date = new Date();
     var payed_time = date.Format("yyyy-MM-dd HH:mm:ss");
-    if (data.pay_channel == '货到付款') {
-        data.out_trade_no = null;
-        data.payed_time = null;
-        data.order_status = 0;
-    } else {
-        data.out_trade_no = out_trade_no;
-        data.payed_time = payed_time;
-        data.order_status = 1;
-    }
+    data.out_trade_no = out_trade_no;
+    data.payed_time = payed_time;
+    data.order_status = 1;
     Goods.getgoodsbyid(client, data, function(result) {
         if (result) {
             data.stock = parseInt(result[0].stock) - parseInt(data.goods_count);
@@ -195,11 +192,9 @@ router.post('/updateorder', function(req, res, next) {
             Goods.updateorder(client, data, function(result) {
                 if (result) {
                     Goods.updategoods(client, data, function(result) {
-                        Goods.deletecart(client, data, function(result) {
-                            res.json({
-                                code: 0,
-                                message: '修改成功',
-                            })
+                        res.json({
+                            code: 0,
+                            message: '修改成功',
                         })
                     })
                 } else {
@@ -313,6 +308,61 @@ router.post('/setdefault', function(req, res, next) {
                 })
             })
         }
+    })
+})
+
+
+//按id获取订单详情
+router.post('/getorderdetail', function(req, res, next) {
+    var data = req.body;
+    var client = mysql_connect.connectServer();
+    Goods.getorderdetail(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '查询成功',
+            order: result[0]
+        })
+    })
+})
+
+//按用户ID和订单状态获取订单
+router.post('/getorderlist', function(req, res, next) {
+    var data = req.body;
+    var client = mysql_connect.connectServer();
+    if (data.status == undefined) {
+        data.sql = 'order.user_id=' + data.user_id;
+        data.sql1 = '';
+    } else {
+        data.sql = 'order.user_id=' + data.user_id;
+        data.sql1 = 'and order_status=' + data.status;
+    }
+    Goods.getuserorder(client, data, function(result) {
+        res.json({
+            code: 0,
+            message: '查询成功',
+            orderlist: result
+        })
+    })
+})
+
+
+//退单
+router.post('/returnorder', function(req, res, next) {
+    var data = req.body;
+    var client = mysql_connect.connectServer();
+    var date = new Date();
+    var return_time = date.Format("yyyy-MM-dd HH:mm:ss");
+    var returns_no = parseInt(Math.random() * 100000000000000);
+    data.return_time = return_time;
+    data.returns_no = returns_no;
+    Goods.updateorderstatus(client, data, function(result) {
+        Goods.addreturnorder(client, data, function(result) {
+            res.json({
+                code: 0,
+                message: '查询成功',
+                orderlist: result
+            })
+        })
     })
 })
 

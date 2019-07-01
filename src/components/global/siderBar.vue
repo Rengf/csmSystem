@@ -25,10 +25,10 @@
           <a href=""></a>
         </li>
         <li class="likeList">
-          <a href="order.jsp">
+          <router-link :to="{path:'/index/orderlist'}">
             <span>我的订单</span>
             <i></i>
-          </a>
+          </router-link>
         </li>
         <li class="likeList">
           <a href="">

@@ -19,7 +19,7 @@
                             <th width="150">注册邮箱</th>
                             <th width="180">注册时间</th>
                             <th width="180">上次登录</th>
-                            <th width="100">操作</th>
+                            <th width="200">操作</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -32,7 +32,9 @@
                             <td>{{user.user_email}}</td>
                             <td>{{user.regist_time|dateformat('YYYY-MM-DD HH:mm:ss')}}</td>
                             <td>{{user.last_login_time|dateformat('YYYY-MM-DD HH:mm:ss')}}</td>
-                            <td><button @click="deleteuser(user.user_id)">删除</button></td>
+                            <td><button @click="deleteuser(user.user_id)">删除</button>
+                                <button @click="deleteuser(user.user_id)">编辑</button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

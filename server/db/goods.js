@@ -345,7 +345,6 @@ module.exports = {
             data.user_remarks,
             data.sales_way,
         ];
-        console.log(params)
         client.query(sql, params, (err, result) => {
             if (err) {
                 throw err
@@ -388,15 +387,45 @@ module.exports = {
     //确定支付
     updateorder(client, data, callback) {
         var sql = `update \`order\` set 
-        invoice=?,invoice_id=?,out_trade_no=?,payed_time=?,order_status=?
+        out_trade_no=?,payed_time=?,order_status=?
         where order_id = ?`
         var params = [
-            data.invoice,
-            data.invoice_id,
             data.out_trade_no,
             data.payed_time,
             data.order_status,
             parseInt(data.order_id),
+        ];
+        client.query(sql, params, (err, result) => {
+            if (err) throw err
+            callback(result);
+        })
+    },
+
+
+    //更新订单状态
+    updateorderstatus(client, data, callback) {
+        var sql = `update \`order\` set 
+        order_status=4
+        where order_id = ?`
+        var params = [
+            parseInt(data.order_id),
+        ];
+        client.query(sql, params, (err, result) => {
+            if (err) throw err
+            callback(result);
+        })
+    },
+
+    //添加退单
+    addreturnorder(client, data, callback) {
+        var sql = `insert into order_returns
+        ( returns_no,order_id,return_reason,return_time)
+        values(?,?,?,?);`
+        var params = [
+            data.returns_no,
+            data.order_id,
+            data.return_reason,
+            data.return_time
         ];
         client.query(sql, params, (err, result) => {
             if (err) throw err
@@ -432,6 +461,30 @@ module.exports = {
         })
     },
 
+
+    //按条件获取退单列表
+    getreturnorderlist(client, callback) {
+        var sql = `select * from \`order_returns\`
+        left join \`order\` on order.order_id=order_returns.order_id`
+        client.query(sql, (err, result) => {
+            if (err) throw err
+            callback(result)
+        })
+    },
+
+    //按用户ID和状态获取订单列表
+    getuserorder(client, data, callback) {
+        var sql = `select * from \`order\`
+                    left join user on order.user_id=user.user_id
+                    left join goods on order.goods_id=goods.goods_id
+                    left join address on order.address_id=address.address_id
+                    where  ` + data.sql + ` ` + data.sql1 + ` order by addorder_time desc`
+        client.query(sql, (err, result) => {
+            if (err) throw err
+            callback(result)
+        })
+    },
+
     //按ID获取订单
     getorder(client, data, callback) {
         var sql = `select * from \`order\`
@@ -443,6 +496,25 @@ module.exports = {
                     where order.order_id= ?`
         var params = [
             parseInt(data.order_id)
+        ];
+        client.query(sql, params, (err, result) => {
+            if (err) throw err
+            callback(result)
+        })
+    },
+
+    //按用户ID和订单ID获取订单
+    getorderdetail(client, data, callback) {
+        var sql = `select * from \`order\`
+                    left join user on order.user_id=user.user_id
+                    inner join goods on order.goods_id=goods.goods_id
+                    left join address on order.address_id=address.address_id
+                    left join order_invoice on order.invoice_id=order_invoice.invoice_id
+                    left join order_logistics on order.order_logistics_id=order_logistics.order_logistics_id
+                    where order.order_id= ? and order.user_id=?`
+        var params = [
+            parseInt(data.order_id),
+            data.user_id
         ];
         client.query(sql, params, (err, result) => {
             if (err) throw err
@@ -498,36 +570,75 @@ module.exports = {
         })
     },
 
-    //总销量查询
+
+    // //总销量查询
+    // searchbysales(client, data, callback) {
+    //     var sql = `select product_count,addorder_time from \`order\`
+    //     where addorder_time>=? && addorder_time<=? 
+    //     order by addorder_time desc`
+    //     var params = [
+    //         data.date7,
+    //         data.date1
+    //     ]
+    //     client.query(sql, params, (err, result) => {
+    //         if (err) throw err
+    //         callback(result);
+    //     })
+    // },
+
+    //订单量查询
     searchbysales(client, data, callback) {
-        var sql = `select product_count,addorder_time from \`order\`
-        where addorder_time>=? && addorder_time<=? 
-        order by addorder_time desc`
-        var params = [
-            data.date7,
-            data.date1
-        ]
-        client.query(sql, params, (err, result) => {
+        var sql = `SELECT
+        DATE_FORMAT( addorder_time, '%Y-%m-%d' ) days,
+        count(*) count FROM   
+        ( SELECT * FROM \`order\` WHERE DATE_SUB( CURDATE( ), INTERVAL 7 DAY ) <= date( addorder_time) ` + data.condition + `) as abcc
+        GROUP BY days`
+        client.query(sql, (err, result) => {
             if (err) throw err
             callback(result);
         })
     },
 
-    //线上销量查询
-    searchbysalesonline(client, data, callback) {
-        var sql = `select product_count,addorder_time from \`order\`
-        where addorder_time>=? && addorder_time<=? && sales_way=0
-        order by addorder_time desc`
-        var params = [
-            data.date7,
-            data.date1
-        ]
-        client.query(sql, params, (err, result) => {
+    //订单分类查询
+    orderbystatuscount(client, callback) {
+        var sql = `SELECT order_status,
+        count(*) as count
+        from  \`order\`
+        GROUP BY  order_status`
+        client.query(sql, (err, result) => {
             if (err) throw err
             callback(result);
         })
     },
 
+    //商品销量查询
+    goodssales(client, data, callback) {
+        var sql = `SELECT 
+        DATE_FORMAT( addorder_time, '%Y-%m-%d' ) days,
+        SUM(product_count) as count from 
+        (SELECT * FROM \`order\` where DATE_SUB( CURDATE( ), INTERVAL 7 DAY ) <= date( addorder_time) ` + data.condition + `) as sdhfjas
+        GROUP BY days`
+        client.query(sql, (err, result) => {
+            if (err) throw err
+            callback(result);
+        })
+    },
+
+    //所有商品销量查询
+    allgoodssales(client, callback) {
+        var sql = `SELECT
+        goods_name,
+        SUM(product_count) as count
+        from 
+        (SELECT \`order\`.*,goods.goods_name FROM \`order\`
+        left join goods  on order.goods_id=goods.goods_id 
+        where DATE_SUB( CURDATE( ), INTERVAL 7 DAY ) <= date( addorder_time) ) as dfkaks
+        GROUP BY  goods_id`
+        client.query(sql, (err, result) => {
+            if (err) throw err
+            callback(result);
+        })
+    },
 
     //查询订单
     searchorder(client, data, callback) {
@@ -548,6 +659,7 @@ module.exports = {
         })
     },
 
+
     //评价商品
     goodscomment(client, data, callback) {
         var sql = `insert into comment
@@ -559,7 +671,6 @@ module.exports = {
             data.content,
             data.comment_time
         ];
-        console.log(params)
         client.query(sql, params, (err, result) => {
             if (err) throw err
             callback(result);
@@ -576,6 +687,17 @@ module.exports = {
             data.goods_id
         ]
         client.query(sql, params, (err, result) => {
+            if (err) throw err
+            callback(result);
+        })
+    },
+
+    //获取全部评价
+    getallcommentlist(client, callback) {
+        var sql = `select * from comment
+        left join goods on goods.goods_id=comment.comment_id
+        left join user on user.user_id=comment.user_id`
+        client.query(sql, (err, result) => {
             if (err) throw err
             callback(result);
         })

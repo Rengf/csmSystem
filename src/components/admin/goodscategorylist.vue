@@ -22,7 +22,9 @@
                             <td>{{category.goods_type_name}}</td>
                             <td>{{category.addgoodstype_time|dateformat('YYYY-MM-DD HH:mm:ss')}}</td>
                             <td>{{category.goods_type_count}}</td>
-                            <td><button @click="deletecategory(category.goods_type_id)">删除</button><button>修改</button></td>
+                            <td><button @click="deletecategory(category.goods_type_id)">删除</button>
+                                <button>修改</button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
