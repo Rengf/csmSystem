@@ -42,6 +42,7 @@ const router = new Router({
         path: '/',
         name: 'Home',
         component: Home,
+        meta: { title: "首页" }
     }, {
         path: '/index',
         name: 'Global',
@@ -49,17 +50,20 @@ const router = new Router({
         children: [{
                 path: '/index/goodsdetail',
                 name: 'GoodsDetail',
-                component: GoodsDetail
+                component: GoodsDetail,
+                meta: { title: "商品详情" }
             }, {
                 path: '/index/goodslist',
                 name: 'Goods',
-                component: Goods
+                component: Goods,
+                meta: { title: "商品列表" }
             }, {
                 path: '/index/shopcar',
                 name: 'ShopCar',
                 component: ShopCar,
                 meta: {
                     requireAuth: true,
+                    title: "购物车"
                 },
             }, {
                 path: '/index/sureorder',
@@ -67,6 +71,7 @@ const router = new Router({
                 component: SureOrder,
                 meta: {
                     requireAuth: true,
+                    title: "确定订单"
                 }
             }, {
                 path: '/index/orderdetail',
@@ -74,6 +79,7 @@ const router = new Router({
                 component: UserOrderDetail,
                 meta: {
                     requireAuth: true,
+                    title: "订单详情"
                 }
             },
             {
@@ -82,6 +88,7 @@ const router = new Router({
                 component: UserOrderList,
                 meta: {
                     requireAuth: true,
+                    title: "订单列表"
                 }
             },
         ]
@@ -89,22 +96,26 @@ const router = new Router({
     }, {
         path: '/offlinesales',
         name: 'OffLineSales',
-        component: OffLineSales
+        component: OffLineSales,
+        meta: { title: "模拟线下购物" }
     }, {
         path: '/payfor',
         name: 'PayFor',
         component: PayFor,
         meta: {
             requireAuth: true,
+            title: "支付订单"
         },
     }, {
         path: '/login',
         name: 'Login',
-        component: Login
+        component: Login,
+        meta: { title: "登录" }
     }, {
         path: '/regist',
         name: 'Regist',
-        component: Regist
+        component: Regist,
+        meta: { title: "注册" }
     }, {
         path: '/admin',
         name: 'AdminHome',
@@ -116,86 +127,106 @@ const router = new Router({
                 path: '/admin',
                 name: 'AdminIndex',
                 component: AdminIndex,
+                meta: { title: "后台首页" }
             }, {
                 path: '/admin/userlist',
                 name: 'UserList',
                 component: UserList,
+                meta: { title: "用户列表" }
             }, {
                 path: '/admin/adminlist',
                 name: 'AdminList',
                 component: AdminList,
+                meta: { title: "管理员列表" }
             },
             {
                 path: '/admin/addarticle',
                 name: 'AddArticle',
                 component: AddArticle,
+                meta: { title: "添加文章" }
             },
             {
                 path: '/admin/articledetail',
                 name: 'ArticleDetail',
                 component: ArticleDetail,
+                meta: { title: "文章详情" }
             }, {
                 path: '/admin/articlelist',
                 name: 'ArticleList',
                 component: ArticleList,
+                meta: { title: "文章列表" }
             }, {
                 path: '/admin/userinfo',
                 name: 'UserInfo',
                 component: UserInfo,
+                meta: { title: "用户信息" }
             }, {
                 path: '/admin/editadmin',
                 name: 'EditAdmin',
                 component: EditAdmin,
+                meta: { title: "修改管理员信息" }
             }, {
                 path: '/admin/categorylist',
                 name: 'CategoryList',
                 component: CategoryList,
+                meta: { title: "分类列表" }
             }, {
                 path: '/admin/addgoods',
                 name: 'AddGoods',
                 component: AddGoods,
+                meta: { title: "添加商品" }
             }, {
                 path: '/admin/goodslist',
                 name: 'GoodsList',
                 component: GoodsList,
+                meta: { title: "商品列表" }
             }, {
                 path: '/admin/addwarehousing',
                 name: 'AddWareHousing',
                 component: AddWareHousing,
+                meta: { title: "添加进货" }
             }, {
                 path: '/admin/warehousinglist',
                 name: 'WareHousingList',
                 component: WareHousingList,
+                meta: { title: "进货列表" }
             }, {
                 path: '/admin/addsupplier',
                 name: 'AddSupplier',
                 component: AddSupplier,
+                meta: { title: "添加供货商" }
             }, {
                 path: '/admin/supplierlist',
                 name: 'SupplierList',
                 component: SupplierList,
+                meta: { title: "供货商列表" }
             }, {
                 path: '/admin/orderlist',
                 name: 'OrderList',
                 component: OrderList,
+                meta: { title: "订单列表" }
             },
             {
                 path: '/admin/commentlist',
                 name: 'CommentList',
                 component: CommentList,
+                meta: { title: "评论列表" }
             }, {
                 path: '/admin/returnorderlist',
                 name: 'ReturnOrderList',
                 component: ReturnOrderList,
+                meta: { title: "退单列表" }
             }, {
                 path: '/admin/orderdetail',
                 name: 'OrderDetail',
                 component: OrderDetail,
+                meta: { title: "订单详情" }
             },
             {
                 path: '/admin/report',
                 name: 'Report',
                 component: Report,
+                meta: { title: "数据报表" }
             }
         ]
     }]

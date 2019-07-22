@@ -24,6 +24,14 @@ Vue.filter('dateformat', function(dataStr, pattern = 'YYYY-MM-DD HH:mm:ss') { �
 
 })
 
+router.beforeEach((to, from, next) => {
+    // to and from are both route objects. must call `next`.
+    if (to.meta.title) {
+        document.title = to.meta.title;
+    }
+    next()
+})
+
 Vue.use(BaiduMap, {
         // ak 是在百度地图开发者平台申请的密钥 详见 http://lbsyun.baidu.com/apiconsole/key */
         ak: '2nF9PWizKTHtHVqr2GpLdHlY9y9KN25C'
