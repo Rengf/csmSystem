@@ -85,7 +85,7 @@
                              <span>{{year}}年{{month}}月</span>
                          </div>
                          <div class="datebody">
-                             <span>{{date}}</span>
+                             <span>{{date}}日</span>
                              <span>星期{{xingqi}}</span>
                          </div>
                      </div>
