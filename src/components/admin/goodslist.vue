@@ -112,6 +112,7 @@ export default {
     },
     sortgoods(mode, theicon) {
       if (theicon == "theicon1") {
+        this.theicon2 = "#icon-shangxiajiantou";
         if (this.theicon1 == "#icon-shengxu") {
           this.theicon1 = "#icon-jiangxu";
           this.goodslist.reverse(this.goodslist.sort(this.compare(mode)));
@@ -123,6 +124,7 @@ export default {
           this.$store.dispatch("getGoodsList", [, this.condition]);
         }
       } else {
+        this.theicon1 = "#icon-shangxiajiantou";
         if (this.theicon2 == "#icon-shengxu") {
           this.theicon2 = "#icon-jiangxu";
           this.goodslist.reverse(this.goodslist.sort(this.compare(mode)));

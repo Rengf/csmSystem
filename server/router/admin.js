@@ -371,10 +371,22 @@ router.post('/addwarehousing', function (req, res, next) {
   })
 })
 
-//获取供应商列表
+//获取进货列表
 router.get('/getwarehousinglist', function (req, res, next) {
 
   Goods.getwarehousinglist(client, function (result) {
+    res.json({
+      code: 0,
+      message: '查询成功',
+      warehousinglist: result
+    })
+  })
+})
+
+//搜索进货列表
+router.post('/searchwarehousing', function (req, res, next) {
+  var data = req.body;
+  Goods.searchwarehousing(client, data, function (result) {
     res.json({
       code: 0,
       message: '查询成功',

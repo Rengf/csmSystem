@@ -245,6 +245,21 @@ module.exports = {
     })
   },
 
+  //搜素进货单
+  searchwarehousing(client, data, callback) {
+    var sql = `select * from warehousing
+        inner join goods on warehousing.goods_id=goods.goods_id
+        inner join supplier on warehousing.supplier=supplier.supplier_id
+      where goods.goods_name like '%` + data.searchmsg + `\%'
+      or warehousing.warehousing_order_id like '%` + data.searchmsg + `\%'
+      or warehousing.warehousing_staff like '%` + data.searchmsg + `\%'
+      or supplier.supplier_name like '%` + data.searchmsg + `\%'`;
+    client.query(sql, (err, result) => {
+      if (err) throw err
+      callback(result);
+    })
+  },
+
   //删除进货单
   deletewarehousing(client, data, callback) {
     var sql = `delete from warehousing
