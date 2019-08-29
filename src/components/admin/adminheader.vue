@@ -158,7 +158,7 @@ export default {
     height: 70px;
     background-color: #000;
     position: fixed;
-    z-index: 1;
+    z-index: 999;
 }
 .box{
     width: 500px;

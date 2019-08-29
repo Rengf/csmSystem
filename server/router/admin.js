@@ -70,8 +70,8 @@ router.post('/getuserlist', function (req, res, next) {
 //获取管理员列表
 router.post('/getadminlist', function (req, res, next) {
   var data = req.body.condition;
-
-  if (JSON.stringify(data) == '{}') {
+  var datas={};
+  if (data == '') {
     Admin.getadminlist(client, function (result) {
       res.json({
         code: 0,
@@ -80,11 +80,11 @@ router.post('/getadminlist', function (req, res, next) {
       })
     })
   } else {
-    if (data.isadmin) {
-      data.way = 'isadmin';
-      data.msg = data.isadmin;
+    if (data) {
+      datas.way = 'isadmin';
+      datas.msg = data;
     }
-    Admin.getadmincondition(client, data, function (result) {
+    Admin.getadmincondition(client, datas, function (result) {
       res.json({
         code: 0,
         message: '查询成功',

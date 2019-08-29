@@ -2,9 +2,9 @@
   <div class="admin">
     <div class="userlistbox">
       <div class="somebtn">
-        <button @click="getalladmin()">全部管理员</button>
-        <button @click="getadmin('isadmin',1)">普通管理员</button>
-        <button @click="getadmin('isadmin',2)">超级管理员</button>
+        <button @click="getadmin('')">全部管理员</button>
+        <button @click="getadmin(1)">普通管理员</button>
+        <button @click="getadmin(2)">超级管理员</button>
         <search-box @searchmsg="searchuser"></search-box>
       </div>
       <div class="adminlist">
@@ -65,16 +65,14 @@ export default {
     };
   },
   created() {
-    this.condition = this.$route.query;
     this.$store.dispatch("getAdminlist", this.condition);
   },
   computed: {
     ...mapGetters(["adminlist"])
   },
   methods: {
-    getadmin(way, data) {
-      this.$router.push("/admin/adminlist?" + way + "=" + data);
-      this.condition = this.$route.query;
+    getadmin(data) {
+      this.condition = data;
       this.$store.dispatch("getAdminlist", this.condition);
     },
     deleteuser(id) {

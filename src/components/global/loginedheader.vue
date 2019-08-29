@@ -49,7 +49,7 @@ export default {
     background: -o-linear-gradient(#fff, #ddd); 
     background: -moz-linear-gradient(#fff, #ddd); 
     background: linear-gradient(#fff, #ddd); 
-    z-index: 999;
+    z-index: 9999;
 }
 .headerBox{
     width: 1200px;

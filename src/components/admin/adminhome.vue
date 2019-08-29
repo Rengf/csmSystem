@@ -396,7 +396,6 @@ export default {
                 response=>{
                     if(response.data.code==0){
                         this.orderstatuscount=response.data.result;
-                        this.ordercount();
                     }else{
                         console.log('获取失败')
                     }

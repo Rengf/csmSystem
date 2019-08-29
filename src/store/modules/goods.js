@@ -34,14 +34,18 @@ const getters = {
     },
 }
 const actions = {
-    async getCategoryList({ commit }) {
+    async getCategoryList({
+        commit
+    }) {
         const result = await reqCategoryList()
         if (result.code == 0) {
             const categorylist = result.categorylist;
             commit(RECEIVE_CATEGORY_LIST, categorylist)
         }
     },
-    async getGoodsList({ commit }, [params, condition]) {
+    async getGoodsList({
+        commit
+    }, [params, condition]) {
         const result = await reqGoodsList(condition)
         if (result.code == 0) {
             const goodslist = result.goodslist;
@@ -53,14 +57,18 @@ const actions = {
             params ? commit(RECEIVE_GOODS_LIST, goodListObj) : commit(RECEIVE_GOODS_LIST, goodslist)
         }
     },
-    async getSupplierList({ commit }) {
+    async getSupplierList({
+        commit
+    }) {
         const result = await reqSupplierList()
         if (result.code == 0) {
             const supplierlist = result.supplierlist;
             commit(RECEIVE_SUPPLIER_LIST, supplierlist)
         }
     },
-    async getWarehousingList({ commit }) {
+    async getWarehousingList({
+        commit
+    }) {
         const result = await reqWarehousingList()
         if (result.code == 0) {
             const warehousinglist = result.warehousinglist;
