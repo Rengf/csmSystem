@@ -684,7 +684,11 @@ module.exports = {
         or user_name like '%` + data.searchmsg + `\%'`
         client.query(sql, (err, result) => {
             if (err) throw err
-            callback(result);
+            var resdata = {
+                count: result.length,
+                data: result
+            }
+            callback(resdata);
         })
     },
 

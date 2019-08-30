@@ -157,7 +157,6 @@ export default {
       this.condition.limit = 10;
       this.condition.pages = this.condition.limit * pages;
       this.$store.dispatch("getOrderList", this.condition);
-      console.log(this.orderlists);
     },
     getorder(way, data) {
       this.$router.push("/admin/orderlist?" + way + "=" + data);
@@ -170,6 +169,7 @@ export default {
         })
         .then(
           response => {
+            console.log(response);
             if (response.data.code == 0) {
               this.$store.commit(RECEIVE_ORDER_LIST, response.data.orderlist);
               this.tips = response.data.message;
