@@ -48,11 +48,6 @@ export default {
       type: Number,
       default: 5
     },
-    current: {
-      // 当前页码
-      type: Number,
-      default: 1
-    },
     pagegroup: {
       // 分页条数 -- 奇数
       type: Number,
@@ -62,6 +57,11 @@ export default {
         return v % 2 === 1 ? v : v + 1;
       }
     }
+  },
+  data() {
+    return {
+      current: 0
+    };
   },
   computed: {
     page() {
@@ -108,7 +108,7 @@ export default {
     setCurrent(index) {
       if (this.current != index && index > 0 && index < this.page + 1) {
         this.current = index;
-        this.$emit("pagechange", this.current);
+        this.$emit("pagechange", this.current - 1, this.display);
       }
     }
   }

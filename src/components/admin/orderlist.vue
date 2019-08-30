@@ -32,7 +32,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(order,index) in orderlists" :key="index">
+            <tr v-for="(order,index) in orderlists.data" :key="index">
               <td>{{index+1}}</td>
               <td>{{order.order_no}}</td>
               <td>{{order.user_name || '线下客户'}}</td>
@@ -60,7 +60,7 @@
             </tr>
           </tbody>
         </table>
-        <Pages :total="orderlists.length" @pagechange="pagechange"></Pages>
+        <Pages :total="orderlists.count" :display="10" @pagechange="getpagesorder"></Pages>
       </div>
     </div>
     <Tips v-if="showtips" :tips="tips"></Tips>
@@ -79,12 +79,14 @@ export default {
     return {
       showtips: false,
       tips: "",
-      condition: "",
+      condition: {},
       total: 0
     };
   },
   created() {
     this.condition = this.$route.query;
+    this.condition.limit = 10;
+    this.condition.pages = 0;
     this.$store.dispatch("getOrderList", this.condition);
   },
   computed: {
@@ -94,6 +96,8 @@ export default {
     getallorder() {
       this.$router.push("/admin/orderlist");
       this.condition = this.$route.query;
+      this.condition.limit = 10;
+      this.condition.pages = 0;
       this.$store.dispatch("getOrderList", this.condition);
     },
     delivergoods(id, i) {
@@ -148,11 +152,16 @@ export default {
     orderdetail(id) {
       this.$router.push("/admin/orderdetail?order_id=" + id);
     },
+    getpagesorder(pages) {
+      this.condition = this.$route.query;
+      this.condition.limit = 10;
+      this.condition.pages = this.condition.limit * pages;
+      this.$store.dispatch("getOrderList", this.condition);
+      console.log(this.orderlists);
+    },
     getorder(way, data) {
       this.$router.push("/admin/orderlist?" + way + "=" + data);
-      this.condition = this.$route.query;
-      console.log(this.condition)
-      this.$store.dispatch("getOrderList", this.condition);
+      this.getpagesorder(1);
     },
     searchorder(searchmsg) {
       axios
