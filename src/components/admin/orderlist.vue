@@ -26,7 +26,12 @@
               <th width="30">发票</th>
               <th width="180">收货地址</th>
               <th width="80">支付渠道</th>
-              <th width="160">下单时间</th>
+              <th width="160">
+                下单时间
+                <svg class="icon">
+                  <use :xlink:href="theicon1" @click="sortOrder('addorder_time','theicon1')" />
+                </svg>
+              </th>
               <th width="150">备注</th>
               <th width="200">操作</th>
             </tr>
@@ -81,7 +86,8 @@ export default {
       tips: "",
       condition: {},
       total: 0,
-      currents: 1
+      currents: 1,
+      theicon1: "#icon-shangxiajiantou"
     };
   },
   created() {
@@ -94,6 +100,36 @@ export default {
     ...mapGetters({ orderlists: "orderlist" })
   },
   methods: {
+    compare(prop) {
+      return function(obj1, obj2) {
+        var val1 = parseInt(obj1[prop]);
+        var val2 = parseInt(obj2[prop]);
+        if (val1 < val2) {
+          return -1;
+        } else if (val1 > val2) {
+          return 1;
+        } else {
+          return 0;
+        }
+      };
+    },
+    sortOrder(mode, theicon) {
+      if (this.theicon1 == "#icon-shengxu") {
+        this.theicon1 = "#icon-jiangxu";
+        this.orderlists.data.reverse(
+          this.orderlists.data.sort(this.compare(mode))
+        );
+      } else if (this.theicon1 == "#icon-shangxiajiantou") {
+        this.theicon1 = "#icon-shengxu";
+        this.orderlists.data.sort(this.compare(mode));
+      } else {
+        this.theicon1 = "#icon-shangxiajiantou";
+        this.condition = this.$route.query;
+        this.condition.limit = 10;
+        this.condition.pages = 0;
+        this.$store.dispatch("getOrderList", this.condition);
+      }
+    },
     getallorder() {
       this.$router.push("/admin/orderlist");
       this.condition = this.$route.query;
@@ -196,6 +232,13 @@ export default {
 };
 </script>
 <style scoped>
+.icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
 .orderlist table {
   display: block;
 }
