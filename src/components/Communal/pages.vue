@@ -8,25 +8,39 @@
         <li :class="{'disabled': current == 1}">
           <span @click="setCurrent(current - 1)">上一页</span>
         </li>
-        <li v-for="(p,index) in grouplist" :class="{'active': current == p.val}" :key="index">
-          <span @click="setCurrent(p.val)">{{ p.text }}</span>
+        <li
+          v-for="(page,index) in grouplist"
+          :class="{'active': current == page.page}"
+          :key="index"
+        >
+          <span @click="setCurrent(page.page)">{{page.val}}</span>
         </li>
-        <li :class="{'disabled': current == page}">
+        <li :class="{'disabled': current == pageTotal}">
           <span @click="setCurrent(current + 1)">下一页</span>
         </li>
-        <li :class="{'disabled': current == page}">
-          <span @click="setCurrent(page)">尾页</span>
+        <li :class="{'disabled': current == pageTotal}">
+          <span @click="setCurrent(pageTotal)">尾页</span>
+        </li>
+        <li>
+          <span>
+            跳到第
+            <input type="text" v-model="jumpPage" />页
+            <button @click="setCurrent(jumpPage)">跳转</button>
+          </span>
         </li>
       </ul>
       <ul class="pagination pull-right">
         <li>
-          <p>共 {{ total }} 条数据</p>
+          <p>共 {{ dataTotal }} 条数据</p>
         </li>
         <li>
-          <p>每页显示 {{ display }} 条数据</p>
+          <p>
+            每页显示
+            <input v-model="display" @input="setDisplay()" />条数据
+          </p>
         </li>
         <li>
-          <p>共 {{ page }} 页</p>
+          <p>共 {{ pageTotal }} 页</p>
         </li>
         <li>
           <p>当前第 {{ current }} 页</p>
@@ -38,77 +52,107 @@
 <script>
 export default {
   props: {
-    total: {
-      // 数据总条数
+    dataTotal: {
+      //总的数据条数
       type: Number,
       default: 89
-    },
-    display: {
-      // 每页显示条数
-      type: Number,
-      default: 5
-    },
-    pagegroup: {
-      // 分页条数 -- 奇数
-      type: Number,
-      default: 5,
-      coerce(v) {
-        v = v > 0 ? v : 5;
-        return v % 2 === 1 ? v : v + 1;
-      }
     }
   },
   data() {
     return {
-      current: 1
+      current: 1, //当前在第几页
+      display: 10, //显示数据条数
+      jumpPage: 1, //输入的跳转页码
+      pageGroup: 5 //分页页码显示条数
     };
   },
+  watch: {
+    $route: {
+      handler(newValue, oldValue) {
+        this.current = 1;
+        this.display = 10;
+      }
+    }
+  },
   computed: {
-    page() {
+    pageTotal() {
       // 总页数
-      return Math.ceil(this.total / this.display);
+      if (this.display == "") {
+        return Math.ceil(this.dataTotal / 10);
+      }
+      return Math.ceil(this.dataTotal / this.display);
     },
     grouplist() {
-      // 获取分页页码
-      var len = this.page,
-        temp = [],
-        list = [],
-        count = Math.floor(this.pagegroup / 2),
-        center = this.current;
-      if (len <= this.pagegroup) {
-        while (len--) {
-          temp.push({ text: this.page - len, val: this.page - len });
+      var len = this.pageTotal;
+      var pageGroupList = [];
+      var centerPage = parseInt(this.current);
+      var pageCount = Math.floor(this.pageGroup / 2);
+      if (len <= this.pageGroup) {
+        for (let index = 0; index < len; index++) {
+          pageGroupList.push({
+            val: index + 1,
+            page: index + 1
+          });
         }
-        return temp;
+      } else {
+        var pageGroupListStart = centerPage - pageCount;
+        var pageGroupListEnd = centerPage + pageCount;
+        if (pageGroupListStart <= 1) {
+          for (let index = 0; index < this.pageGroup; index++) {
+            pageGroupList.push({
+              val: index + 1,
+              page: index + 1
+            });
+          }
+          pageGroupList.push({
+            val: "...",
+            page: centerPage + 5 < len ? centerPage + 5 : len - pageCount
+          });
+        } else if (len - pageGroupListEnd > 0) {
+          pageGroupList.push({
+            val: "...",
+            page: centerPage - 5 > 0 ? centerPage - 5 : pageCount + 1
+          });
+          for (let index = 0; index < this.pageGroup; index++) {
+            pageGroupList.push({
+              val: pageGroupListStart + index,
+              page: pageGroupListStart + index
+            });
+          }
+          pageGroupList.push({
+            val: "...",
+            page: centerPage + 5 < len ? centerPage + 5 : len - pageCount
+          });
+        } else {
+          for (let index = 0; index < this.pageGroup; index++) {
+            pageGroupList.push({
+              val: len - index,
+              page: len - index
+            });
+          }
+          pageGroupList.push({
+            val: "...",
+            page: centerPage - 5 > 0 ? centerPage - 5 : pageCount + 1
+          });
+          pageGroupList.reverse();
+        }
       }
-      while (len--) {
-        temp.push(this.page - len);
-      }
-      var index = temp.indexOf(center);
-      index < count && (center = center + count - index);
-      this.current > this.page - count && (center = this.page - count);
-      temp = temp.splice(center - count - 1, this.pagegroup);
-      do {
-        var t = temp.shift();
-        list.push({
-          text: t,
-          val: t
-        });
-      } while (temp.length);
-      if (this.page > this.pagegroup) {
-        this.current > count + 1 &&
-          list.unshift({ text: "...", val: list[0].val - 1 });
-        this.current < this.page - count &&
-          list.push({ text: "...", val: list[list.length - 1].val + 1 });
-      }
-      return list;
+      return pageGroupList;
     }
   },
   methods: {
     setCurrent(index) {
-      if (this.current != index && index > 0 && index < this.page + 1) {
+      if (this.current != index && index > 0 && index < this.pageTotal + 1) {
         this.current = index;
-        this.$emit("pagechange", this.current - 1, this.display);
+        this.$emit("pagechange", this.current - 1, parseInt(this.display));
+      }
+    },
+    setDisplay() {
+      this.current = 1;
+      if (this.display == "") {
+        this.$emit("pagechange", 0, 10);
+      } else {
+        this.$emit("pagechange", 0, parseInt(this.display));
       }
     }
   }
@@ -142,5 +186,9 @@ export default {
 .pull-right p {
   padding: 10px;
   color: #333;
+}
+.pagination input {
+  width: 30px;
+  height: 20px;
 }
 </style>

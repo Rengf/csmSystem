@@ -60,7 +60,7 @@
             </tr>
           </tbody>
         </table>
-        <Pages :total="orderlists.count" :display="10" @pagechange="getpagesorder"></Pages>
+        <Pages :dataTotal="orderlists.count" @pagechange="getpagesorder"></Pages>
       </div>
     </div>
     <Tips v-if="showtips" :tips="tips"></Tips>
@@ -80,7 +80,8 @@ export default {
       showtips: false,
       tips: "",
       condition: {},
-      total: 0
+      total: 0,
+      currents: 1
     };
   },
   created() {
@@ -152,15 +153,15 @@ export default {
     orderdetail(id) {
       this.$router.push("/admin/orderdetail?order_id=" + id);
     },
-    getpagesorder(pages) {
+    getpagesorder(pages, limit) {
       this.condition = this.$route.query;
-      this.condition.limit = 10;
+      this.condition.limit = limit;
       this.condition.pages = this.condition.limit * pages;
       this.$store.dispatch("getOrderList", this.condition);
     },
     getorder(way, data) {
       this.$router.push("/admin/orderlist?" + way + "=" + data);
-      this.getpagesorder(1);
+      this.getpagesorder(1, 10);
     },
     searchorder(searchmsg) {
       axios
