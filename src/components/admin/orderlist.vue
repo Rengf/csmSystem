@@ -15,9 +15,35 @@
               <th width="30">#</th>
               <th width="100">订单号</th>
               <th width="100">客户</th>
-              <th width="80">订单状态</th>
+              <th width="80">
+                <select
+                  name="eidtadmin"
+                  v-model="selectedState"
+                  @change="getorder('order_status',selectedState)"
+                >
+                  <option value="订单状态" selected="selected">订单状态</option>
+                  <option value="0">未付款</option>
+                  <option value="1">已付款</option>
+                  <option value="2">已发货</option>
+                  <option value="3">已完成</option>
+                  <option value="4">其他</option>
+                </select>
+              </th>
               <th width="80">销售途径</th>
-              <th width="100">商品</th>
+              <th width="100">
+                <select
+                  name="eidtadmin"
+                  v-model="selectedGoods"
+                  @change="searchorder(selectedGoods)"
+                >
+                  <option value="商品名称" selected="selected">商品名称</option>
+                  <option
+                    :value="goods.goods_name"
+                    v-for="(goods,index) in goodslist"
+                    :key="index"
+                  >{{goods.goods_name}}</option>
+                </select>
+              </th>
               <th width="30">数量</th>
               <th width="60">产品总价</th>
               <th width="60">支付金额</th>
@@ -37,7 +63,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(order,index) in orderlists.data" :key="index">
+            <tr v-for="(order,index) in orderlist.data" :key="index">
               <td>{{index+1}}</td>
               <td>{{order.order_no}}</td>
               <td>{{order.user_name || '线下客户'}}</td>
@@ -65,7 +91,7 @@
             </tr>
           </tbody>
         </table>
-        <Pages :dataTotal="orderlists.count" @pagechange="getpagesorder"></Pages>
+        <Pages :dataTotal="orderlist.count" @pagechange="getpagesorder" v-if="showPage"></Pages>
       </div>
     </div>
     <Tips v-if="showtips" :tips="tips"></Tips>
@@ -87,7 +113,10 @@ export default {
       condition: {},
       total: 0,
       currents: 1,
-      theicon1: "#icon-shangxiajiantou"
+      theicon1: "#icon-shangxiajiantou",
+      selectedGoods: "商品名称",
+      selectedState: "订单状态",
+      showPage: true
     };
   },
   created() {
@@ -95,15 +124,25 @@ export default {
     this.condition.limit = 10;
     this.condition.pages = 0;
     this.$store.dispatch("getOrderList", this.condition);
+    this.$store.dispatch("getGoodsList", [, {}]);
   },
   computed: {
-    ...mapGetters({ orderlists: "orderlist" })
+    ...mapGetters(["orderlist", "goodslist"])
+  },
+  watch: {
+    orderlist: {
+      handler(newval, oldval) {
+        this.theicon1 = "#icon-shangxiajiantou";
+        this.showPage = true;
+      }
+    },
+    deep: true
   },
   methods: {
     compare(prop) {
       return function(obj1, obj2) {
-        var val1 = parseInt(obj1[prop]);
-        var val2 = parseInt(obj2[prop]);
+        var val1 = obj1[prop];
+        var val2 = obj2[prop];
         if (val1 < val2) {
           return -1;
         } else if (val1 > val2) {
@@ -116,12 +155,12 @@ export default {
     sortOrder(mode, theicon) {
       if (this.theicon1 == "#icon-shengxu") {
         this.theicon1 = "#icon-jiangxu";
-        this.orderlists.data.reverse(
-          this.orderlists.data.sort(this.compare(mode))
+        this.orderlist.data.reverse(
+          this.orderlist.data.sort(this.compare(mode))
         );
       } else if (this.theicon1 == "#icon-shangxiajiantou") {
         this.theicon1 = "#icon-shengxu";
-        this.orderlists.data.sort(this.compare(mode));
+        this.orderlist.data.sort(this.compare(mode));
       } else {
         this.theicon1 = "#icon-shangxiajiantou";
         this.condition = this.$route.query;
@@ -138,11 +177,12 @@ export default {
       this.$store.dispatch("getOrderList", this.condition);
     },
     delivergoods(id, i) {
+      console.log(this.orderlist);
       axios
         .post("http://localhost:3333/admin/delivergoods", {
           order_id: id,
-          logistics: this.orderlists[i].logistics,
-          logistics_fee: this.orderlists[i].logistics_fee
+          logistics: this.orderlist.data[i].logistics,
+          logistics_fee: this.orderlist.data[i].logistics_fee
         })
         .then(
           response => {
@@ -197,7 +237,7 @@ export default {
     },
     getorder(way, data) {
       this.$router.push("/admin/orderlist?" + way + "=" + data);
-      this.getpagesorder(1, 10);
+      this.getpagesorder(0, 10);
     },
     searchorder(searchmsg) {
       axios
@@ -206,7 +246,6 @@ export default {
         })
         .then(
           response => {
-            console.log(response);
             if (response.data.code == 0) {
               this.$store.commit(RECEIVE_ORDER_LIST, response.data.orderlist);
               this.tips = response.data.message;
@@ -302,6 +341,12 @@ export default {
   color: #666;
   text-align: center;
   font-size: 12px;
+}
+.orderlist th select {
+  border: none;
+  background: #f2f2f2;
+  outline: none;
+  text-align: center;
 }
 tr:hover {
   background: rgb(174, 241, 253);
