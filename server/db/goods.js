@@ -671,6 +671,18 @@ module.exports = {
 
     //查询订单
     searchorder(client, data, callback) {
+        var sql1 = `select count(*) count from \`order\`
+         left join user on order.user_id=user.user_id
+        inner join goods on order.goods_id=goods.goods_id
+        left join address on order.address_id=address.address_id
+        left join order_invoice on order.invoice_id=order_invoice.invoice_id
+        left join order_logistics on order.order_logistics_id=order_logistics.order_logistics_id
+        where order_no like '%` + data.searchmsg + `\%' 
+        or pay_channel like '%` + data.searchmsg + `\%'
+        or goods_name like '%` + data.searchmsg + `\%'
+        or order.logistics like '%` + data.searchmsg + `\%'
+        or user_name like '%` + data.searchmsg + `\%' `;
+
         var sql = `select * from \`order\`
         left join user on order.user_id=user.user_id
         inner join goods on order.goods_id=goods.goods_id
@@ -681,14 +693,23 @@ module.exports = {
         or pay_channel like '%` + data.searchmsg + `\%'
         or goods_name like '%` + data.searchmsg + `\%'
         or order.logistics like '%` + data.searchmsg + `\%'
-        or user_name like '%` + data.searchmsg + `\%'`
-        client.query(sql, (err, result) => {
-            if (err) throw err
-            var resdata = {
-                count: result.length,
-                data: result
+        or user_name like '%` + data.searchmsg + `\%'
+        limit ` + data.pages + ` , ` + data.limit + ` `
+
+        client.query(sql1, (err, count) => {
+            if (err) {
+                throw err
+            } else {
+                client.query(sql, (err, result) => {
+                    if (err) throw err
+                    var total = JSON.parse(JSON.stringify(count))
+                    var resdata = {
+                        count: total[0].count,
+                        data: result
+                    }
+                    callback(resdata)
+                })
             }
-            callback(resdata);
         })
     },
 
